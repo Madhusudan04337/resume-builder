@@ -1,106 +1,744 @@
-
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-.builder{display:flex;height:760px;border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;font-family:var(--font-sans)}
-.fp{width:440px;min-width:440px;background:var(--color-background-primary);display:flex;flex-direction:column;border-right:.5px solid var(--color-border-tertiary)}
-.fh{padding:14px 16px 12px;border-bottom:.5px solid var(--color-border-tertiary);background:var(--color-background-primary);display:flex;align-items:center;gap:10px}
-.fh-icon{width:30px;height:30px;border-radius:8px;background:#EEF2FF;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.fh-icon svg{width:15px;height:15px;stroke:#4F46E5}
-.fh-text h2{font-size:13px;font-weight:500;color:var(--color-text-primary);letter-spacing:-.1px}
-.fh-text p{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
-.import-panel{padding:12px 14px;border-bottom:.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
-.import-header{display:flex;align-items:center;gap:7px;margin-bottom:6px}
-.import-badge{font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4338CA;letter-spacing:.2px;display:flex;align-items:center;gap:4px}
-.import-badge svg{width:9px;height:9px;fill:#4338CA}
-.import-ta{width:100%;font-size:11.5px;padding:8px 10px;border:1px solid #C7D2FE;border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans);resize:none;height:72px;line-height:1.55;transition:border-color .15s}
-.import-ta:focus{outline:none;border-color:#6366F1;box-shadow:0 0 0 3px rgba(99,102,241,.1)}
-.import-ta::placeholder{color:var(--color-text-tertiary);font-size:11px}
-.import-actions{display:flex;gap:6px;margin-top:8px;align-items:center}
-.ai-btn{display:flex;align-items:center;gap:5px;padding:6px 13px;border-radius:var(--border-radius-md);border:none;cursor:pointer;font-size:11.5px;font-weight:500;font-family:var(--font-sans);background:#4F46E5;color:#fff;flex-shrink:0;transition:background .15s}
-.ai-btn:hover{background:#4338CA}
-.ai-btn:disabled{background:#A5B4FC;cursor:not-allowed}
-.ai-btn svg{width:11px;height:11px;stroke:#fff}
-.clr-btn{padding:6px 10px;border-radius:var(--border-radius-md);border:1px solid #C7C7C7;cursor:pointer;font-size:11.5px;font-family:var(--font-sans);background:transparent;color:var(--color-text-secondary);transition:background .15s}
-.clr-btn:hover{background:var(--color-background-primary)}
-.ai-status{font-size:11px;color:var(--color-text-secondary);display:flex;align-items:center;gap:5px}
-.spin{display:inline-block;width:11px;height:11px;border:1.5px solid #C7D2FE;border-top-color:#4F46E5;border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.ai-ok{color:#16a34a;font-size:11px;font-weight:500}
-.ai-err{color:#dc2626;font-size:11px}
-.tabs{display:flex;gap:2px;padding:10px 14px;border-bottom:.5px solid var(--color-border-tertiary);flex-wrap:wrap;background:var(--color-background-secondary)}
-.tab{font-size:11px;padding:4px 9px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:var(--color-text-secondary);font-family:var(--font-sans);font-weight:400;transition:all .15s;white-space:nowrap}
-.tab:hover{background:var(--color-background-primary);color:var(--color-text-primary)}
-.tab.on{background:var(--color-background-primary);color:#4338CA;font-weight:500;box-shadow:0 0 0 .5px #C7D2FE}
-.fc{flex:1;overflow-y:auto;padding:14px 14px 8px;scrollbar-width:thin;scrollbar-color:var(--color-border-secondary) transparent}
-.ff{padding:10px 14px;border-top:.5px solid var(--color-border-tertiary);background:var(--color-background-primary)}
-.dlbtn{width:100%;padding:9px;background:#4F46E5;color:#fff;border:none;border-radius:var(--border-radius-md);cursor:pointer;font-size:12.5px;font-weight:500;font-family:var(--font-sans);display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s}
-.dlbtn:hover{background:#4338CA}
-.dlbtn svg{width:13px;height:13px;stroke:#fff}
-.lbl{display:block;font-size:11px;color:var(--color-text-secondary);margin-bottom:4px;font-weight:500;letter-spacing:.1px}
-.inp{width:100%;font-size:12px;padding:7px 10px;border:1px solid #CBD5E1;border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans);transition:border-color .15s,box-shadow .15s;height:32px}
-.inp:focus{outline:none;border-color:#6366F1;box-shadow:0 0 0 3px rgba(99,102,241,.08)}
-.inp:hover:not(:focus){border-color:#94A3B8}
-.ta{width:100%;font-size:12px;padding:7px 10px;border:1px solid #CBD5E1;border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans);resize:vertical;min-height:60px;line-height:1.55;transition:border-color .15s,box-shadow .15s}
-.ta:focus{outline:none;border-color:#6366F1;box-shadow:0 0 0 3px rgba(99,102,241,.08)}
-.ta:hover:not(:focus){border-color:#94A3B8}
-.sinp{width:100%;font-size:11px;padding:4px 8px;border:1px solid #CBD5E1;border-radius:6px;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans);height:26px;transition:border-color .15s}
-.sinp:focus{outline:none;border-color:#6366F1}
-.sinp:hover:not(:focus){border-color:#94A3B8}
-.fld{margin-bottom:9px}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.sec-label{font-size:10px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.6px;text-transform:uppercase;margin:0 0 10px;display:flex;align-items:center;gap:6px}
-.sec-label::after{content:'';flex:1;height:.5px;background:var(--color-border-tertiary)}
-.entry{background:var(--color-background-secondary);border:1px solid #E2E8F0;border-radius:var(--border-radius-md);padding:10px 32px 10px 10px;margin-bottom:8px;position:relative;transition:border-color .15s}
-.entry:hover{border-color:#CBD5E1}
-.rmv{position:absolute;top:8px;right:9px;background:none;border:none;cursor:pointer;width:18px;height:18px;border-radius:4px;color:var(--color-text-secondary);display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1;padding:0;transition:background .15s,color .15s}
-.rmv:hover{background:#FEE2E2;color:#DC2626}
-.addbtn{width:100%;padding:7px;background:transparent;border:1px dashed #CBD5E1;border-radius:var(--border-radius-md);cursor:pointer;font-size:11.5px;color:var(--color-text-secondary);font-family:var(--font-sans);margin-top:4px;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px}
-.addbtn:hover{background:var(--color-background-secondary);border-color:#6366F1;color:#4F46E5}
-.hint{font-size:11px;color:var(--color-text-tertiary);margin-top:3px;line-height:1.4}
-.srow{display:flex;align-items:center;gap:8px;margin-bottom:7px;padding:7px 8px;border-radius:var(--border-radius-md);border:.5px solid transparent;transition:all .15s}
-.srow:hover{background:var(--color-background-secondary);border-color:var(--color-border-tertiary)}
-.sico{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:700;transition:all .15s}
-.stog{width:34px;height:19px;border-radius:10px;border:none;cursor:pointer;position:relative;flex-shrink:0;transition:background .2s}
-.stog::after{content:'';width:15px;height:15px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,.15)}
-.stog.on{background:#4F46E5}.stog.on::after{transform:translateX(15px)}
-.stog.off{background:#D1D5DB}
-.sinfo{flex:1;min-width:0}
-.sinfo .lbl{margin-bottom:2px;font-size:11px}
-.pp{flex:1;background:#E8E4DE;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:16px}
-.rp{background:#fff;color:#000;font-family:Georgia,'Times New Roman',serif;font-size:10.5px;line-height:1.35;padding:15px 50px;width:680px;min-height:880px;flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,.12)}
-.rn{font-size:25px;font-variant:small-caps;text-align:center;font-weight:700;letter-spacing:2px;margin-bottom:3px;font-family:Georgia,serif}
-.rtitle{text-align:center;font-size:10.5px;margin-bottom:3px;font-style:italic;color:#333}
-.ra{text-align:center;font-size:10px;margin-bottom:3px}
-.rc{display:flex;justify-content:center;gap:10px;font-size:10px;margin-bottom:9px;flex-wrap:wrap}
-.rc a{color:#1a0dab;text-decoration:none}
-.rsh{font-size:12px;font-weight:700;border-bottom:1.5px solid #000;padding-bottom:1px;margin:8px 0 4px;font-family:Georgia,serif}
-.rrow{display:flex;justify-content:space-between;align-items:baseline}
-.rb{font-weight:700}.ri{font-style:italic}
-.rbl{list-style:none;padding:0;margin:2px 0}
-.rbl li{display:flex;gap:4px;margin-bottom:2px;font-size:10.5px}
-.rbl li::before{content:"•";flex-shrink:0}
-.rent{margin-bottom:5px}
-.rcrs{display:grid;grid-template-columns:repeat(4,1fr)}
-.rcrs ul{list-style:disc;padding-left:14px;margin:0;font-size:10.5px}
-.rcert ul{list-style:none;padding:0;margin:0}
-.rcert li{margin-bottom:4px;font-size:10.5px}
-.rcert a{color:#1a0dab;text-decoration:underline}
-.rach ul{list-style:none;padding:0;margin:0}
-.rach li{display:flex;gap:4px;margin-bottom:2px;font-size:10.5px}
-.rach li::before{content:"•";flex-shrink:0}
-@media print{
-  .fp,.tabs,.ff,.import-panel{display:none!important}
-  .builder{height:auto!important;border:none!important;border-radius:0!important}
-  .pp{background:white!important;padding:0!important;display:block!important}
-  .rp{width:100%!important;padding:.2in .3in!important;min-height:auto!important;box-shadow:none!important}
-}
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+  }
+
+  .builder {
+    display: flex;
+    height: 760px;
+    border: .5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    font-family: var(--font-sans)
+  }
+
+  .fp {
+    width: 440px;
+    min-width: 440px;
+    background: var(--color-background-primary);
+    display: flex;
+    flex-direction: column;
+    border-right: .5px solid var(--color-border-tertiary)
+  }
+
+  .fh {
+    padding: 14px 16px 12px;
+    border-bottom: .5px solid var(--color-border-tertiary);
+    background: var(--color-background-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px
+  }
+
+  .fh-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: #EEF2FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0
+  }
+
+  .fh-icon svg {
+    width: 15px;
+    height: 15px;
+    stroke: #4F46E5
+  }
+
+  .fh-text h2 {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    letter-spacing: -.1px
+  }
+
+  .fh-text p {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    margin-top: 1px
+  }
+
+  .import-panel {
+    padding: 12px 14px;
+    border-bottom: .5px solid var(--color-border-tertiary);
+    background: var(--color-background-secondary)
+  }
+
+  .import-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 6px
+  }
+
+  .import-badge {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: #EEF2FF;
+    color: #4338CA;
+    letter-spacing: .2px;
+    display: flex;
+    align-items: center;
+    gap: 4px
+  }
+
+  .import-badge svg {
+    width: 9px;
+    height: 9px;
+    fill: #4338CA
+  }
+
+  .import-ta {
+    width: 100%;
+    font-size: 11.5px;
+    padding: 8px 10px;
+    border: 1px solid #C7D2FE;
+    border-radius: var(--border-radius-md);
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    resize: none;
+    height: 72px;
+    line-height: 1.55;
+    transition: border-color .15s
+  }
+
+  .import-ta:focus {
+    outline: none;
+    border-color: #6366F1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, .1)
+  }
+
+  .import-ta::placeholder {
+    color: var(--color-text-tertiary);
+    font-size: 11px
+  }
+
+  .import-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    align-items: center
+  }
+
+  .ai-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 13px;
+    border-radius: var(--border-radius-md);
+    border: none;
+    cursor: pointer;
+    font-size: 11.5px;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    background: #4F46E5;
+    color: #fff;
+    flex-shrink: 0;
+    transition: background .15s
+  }
+
+  .ai-btn:hover {
+    background: #4338CA
+  }
+
+  .ai-btn:disabled {
+    background: #A5B4FC;
+    cursor: not-allowed
+  }
+
+  .ai-btn svg {
+    width: 11px;
+    height: 11px;
+    stroke: #fff
+  }
+
+  .clr-btn {
+    padding: 6px 10px;
+    border-radius: var(--border-radius-md);
+    border: 1px solid #C7C7C7;
+    cursor: pointer;
+    font-size: 11.5px;
+    font-family: var(--font-sans);
+    background: transparent;
+    color: var(--color-text-secondary);
+    transition: background .15s
+  }
+
+  .clr-btn:hover {
+    background: var(--color-background-primary)
+  }
+
+  .ai-status {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px
+  }
+
+  .spin {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border: 1.5px solid #C7D2FE;
+    border-top-color: #4F46E5;
+    border-radius: 50%;
+    animation: spin .7s linear infinite
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg)
+    }
+  }
+
+  .ai-ok {
+    color: #16a34a;
+    font-size: 11px;
+    font-weight: 500
+  }
+
+  .ai-err {
+    color: #dc2626;
+    font-size: 11px
+  }
+
+  .tabs {
+    display: flex;
+    gap: 2px;
+    padding: 10px 14px;
+    border-bottom: .5px solid var(--color-border-tertiary);
+    flex-wrap: wrap;
+    background: var(--color-background-secondary)
+  }
+
+  .tab {
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    transition: all .15s;
+    white-space: nowrap
+  }
+
+  .tab:hover {
+    background: var(--color-background-primary);
+    color: var(--color-text-primary)
+  }
+
+  .tab.on {
+    background: var(--color-background-primary);
+    color: #4338CA;
+    font-weight: 500;
+    box-shadow: 0 0 0 .5px #C7D2FE
+  }
+
+  .fc {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 14px 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-secondary) transparent
+  }
+
+  .ff {
+    padding: 10px 14px;
+    border-top: .5px solid var(--color-border-tertiary);
+    background: var(--color-background-primary)
+  }
+
+  .dlbtn {
+    width: 100%;
+    padding: 9px;
+    background: #4F46E5;
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    font-size: 12.5px;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background .15s
+  }
+
+  .dlbtn:hover {
+    background: #4338CA
+  }
+
+  .dlbtn svg {
+    width: 13px;
+    height: 13px;
+    stroke: #fff
+  }
+
+  .lbl {
+    display: block;
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+    font-weight: 500;
+    letter-spacing: .1px
+  }
+
+  .inp {
+    width: 100%;
+    font-size: 12px;
+    padding: 7px 10px;
+    border: 1px solid #CBD5E1;
+    border-radius: var(--border-radius-md);
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    transition: border-color .15s, box-shadow .15s;
+    height: 32px
+  }
+
+  .inp:focus {
+    outline: none;
+    border-color: #6366F1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, .08)
+  }
+
+  .inp:hover:not(:focus) {
+    border-color: #94A3B8
+  }
+
+  .ta {
+    width: 100%;
+    font-size: 12px;
+    padding: 7px 10px;
+    border: 1px solid #CBD5E1;
+    border-radius: var(--border-radius-md);
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    resize: vertical;
+    min-height: 60px;
+    line-height: 1.55;
+    transition: border-color .15s, box-shadow .15s
+  }
+
+  .ta:focus {
+    outline: none;
+    border-color: #6366F1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, .08)
+  }
+
+  .ta:hover:not(:focus) {
+    border-color: #94A3B8
+  }
+
+  .sinp {
+    width: 100%;
+    font-size: 11px;
+    padding: 4px 8px;
+    border: 1px solid #CBD5E1;
+    border-radius: 6px;
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    height: 26px;
+    transition: border-color .15s
+  }
+
+  .sinp:focus {
+    outline: none;
+    border-color: #6366F1
+  }
+
+  .sinp:hover:not(:focus) {
+    border-color: #94A3B8
+  }
+
+  .fld {
+    margin-bottom: 9px
+  }
+
+  .row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px
+  }
+
+  .sec-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px
+  }
+
+  .sec-label::after {
+    content: '';
+    flex: 1;
+    height: .5px;
+    background: var(--color-border-tertiary)
+  }
+
+  .entry {
+    background: var(--color-background-secondary);
+    border: 1px solid #E2E8F0;
+    border-radius: var(--border-radius-md);
+    padding: 10px 32px 10px 10px;
+    margin-bottom: 8px;
+    position: relative;
+    transition: border-color .15s
+  }
+
+  .entry:hover {
+    border-color: #CBD5E1
+  }
+
+  .rmv {
+    position: absolute;
+    top: 8px;
+    right: 9px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    line-height: 1;
+    padding: 0;
+    transition: background .15s, color .15s
+  }
+
+  .rmv:hover {
+    background: #FEE2E2;
+    color: #DC2626
+  }
+
+  .addbtn {
+    width: 100%;
+    padding: 7px;
+    background: transparent;
+    border: 1px dashed #CBD5E1;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    font-size: 11.5px;
+    color: var(--color-text-secondary);
+    font-family: var(--font-sans);
+    margin-top: 4px;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px
+  }
+
+  .addbtn:hover {
+    background: var(--color-background-secondary);
+    border-color: #6366F1;
+    color: #4F46E5
+  }
+
+  .hint {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    margin-top: 3px;
+    line-height: 1.4
+  }
+
+  .srow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7px;
+    padding: 7px 8px;
+    border-radius: var(--border-radius-md);
+    border: .5px solid transparent;
+    transition: all .15s
+  }
+
+  .srow:hover {
+    background: var(--color-background-secondary);
+    border-color: var(--color-border-tertiary)
+  }
+
+  .sico {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 700;
+    transition: all .15s
+  }
+
+  .stog {
+    width: 34px;
+    height: 19px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: background .2s
+  }
+
+  .stog::after {
+    content: '';
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #fff;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform .2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .15)
+  }
+
+  .stog.on {
+    background: #4F46E5
+  }
+
+  .stog.on::after {
+    transform: translateX(15px)
+  }
+
+  .stog.off {
+    background: #D1D5DB
+  }
+
+  .sinfo {
+    flex: 1;
+    min-width: 0
+  }
+
+  .sinfo .lbl {
+    margin-bottom: 2px;
+    font-size: 11px
+  }
+
+  .pp {
+    flex: 1;
+    background: #E8E4DE;
+    overflow: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 16px
+  }
+
+  .rp {
+    background: #fff;
+    color: #000;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 10.5px;
+    line-height: 1.35;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 20mm;
+    margin: auto;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .12);
+  }
+
+  .rn {
+    font-size: 25px;
+    font-variant: small-caps;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 3px;
+    font-family: Georgia, serif
+  }
+
+  .rtitle {
+    text-align: center;
+    font-size: 10.5px;
+    margin-bottom: 3px;
+    font-style: italic;
+    color: #333
+  }
+
+  .ra {
+    text-align: center;
+    font-size: 10px;
+    margin-bottom: 3px
+  }
+
+  .rc {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    font-size: 10px;
+    margin-bottom: 9px;
+    flex-wrap: wrap
+  }
+
+  .rc a {
+    color: #1a0dab;
+    text-decoration: none
+  }
+
+  .rsh {
+    font-size: 12px;
+    font-weight: 700;
+    border-bottom: 1.5px solid #000;
+    padding-bottom: 1px;
+    margin: 8px 0 4px;
+    font-family: Georgia, serif
+  }
+
+  .rrow {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline
+  }
+
+  .rb {
+    font-weight: 700
+  }
+
+  .ri {
+    font-style: italic
+  }
+
+  .rbl {
+    list-style: none;
+    padding: 0;
+    margin: 2px 0
+  }
+
+  .rbl li {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 2px;
+    font-size: 10.5px
+  }
+
+  .rbl li::before {
+    content: "•";
+    flex-shrink: 0
+  }
+
+  .rent {
+    margin-bottom: 5px
+  }
+
+  .rcrs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr)
+  }
+
+  .rcrs ul {
+    list-style: disc;
+    padding-left: 14px;
+    margin: 0;
+    font-size: 10.5px
+  }
+
+  .rcert ul {
+    list-style: none;
+    padding: 0;
+    margin: 0
+  }
+
+  .rcert li {
+    margin-bottom: 4px;
+    font-size: 10.5px
+  }
+
+  .rcert a {
+    color: #1a0dab;
+    text-decoration: underline
+  }
+
+  .rach ul {
+    list-style: none;
+    padding: 0;
+    margin: 0
+  }
+
+  .rach li {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 2px;
+    font-size: 10.5px
+  }
+
+  .rach li::before {
+    content: "•";
+    flex-shrink: 0
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  @media print {
+      body{
+        margin:0;
+      }
+
+    .fp,
+    .tabs,
+    .ff,
+    .import-panel {
+      display: none !important
+    }
+
+    .builder {
+      height: auto !important;
+      border: none !important;
+      border-radius: 0 !important
+    }
+
+    .pp {
+      background: white !important;
+      padding: 0 !important;
+      display: block !important
+    }
+
+    .rp {
+      width: 210mm !important;
+      min-height: 297mm !important;
+      padding: 12mm !important;
+      box-shadow: none !important;
+    }
+  }
 </style>
 
 <div class="builder">
   <div class="fp">
     <div class="fh">
       <div class="fh-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="14" y2="14"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <line x1="8" y1="10" x2="16" y2="10" />
+          <line x1="8" y1="14" x2="14" y2="14" />
+        </svg>
       </div>
       <div class="fh-text">
         <h2>Resume Builder</h2>
@@ -110,15 +748,21 @@
     <div class="import-panel">
       <div class="import-header">
         <span class="import-badge">
-          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
           AI Smart Import
         </span>
         <span style="font-size:12px;font-weight:500;color:var(--color-text-primary)">Data Warehouse</span>
       </div>
-      <textarea class="import-ta" id="importTa" placeholder="Paste your full resume text here to auto-fill all sections..."></textarea>
+      <textarea class="import-ta" id="importTa"
+        placeholder="Paste your full resume text here to auto-fill all sections..."></textarea>
       <div class="import-actions">
         <button class="ai-btn" id="aiBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+          </svg>
           Auto-fill with AI
         </button>
         <button class="clr-btn" id="clrBtn">Clear</button>
@@ -129,206 +773,222 @@
     <div class="fc" id="fc"></div>
     <div class="ff">
       <button class="dlbtn" id="dlbtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
         Download as PDF
       </button>
     </div>
   </div>
-  <div class="pp"><div class="rp" id="rp"></div></div>
+  <div class="pp">
+    <div class="rp" id="rp"></div>
+  </div>
 </div>
 
 <script>
-var SOCIAL_DEFS=[
-  {key:"phone",    label:"Phone",         icon:"☎", placeholder:"Your phone number",              isLink:false},
-  {key:"email",    label:"Email",         icon:"@",  placeholder:"you@gmail.com",                  isLink:true, prefix:"mailto:"},
-  {key:"linkedin", label:"LinkedIn",      icon:"in", placeholder:"linkedin.com/in/user",           isLink:true, prefix:"https://"},
-  {key:"github",   label:"GitHub",        icon:"GH", placeholder:"github.com/username",            isLink:true, prefix:"https://"},
-  {key:"portfolio",label:"Portfolio",     icon:"⬡",  placeholder:"yourportfolio.com",              isLink:true, prefix:"https://"},
-  {key:"leetcode", label:"LeetCode",      icon:"LC", placeholder:"leetcode.com/u/username",        isLink:true, prefix:"https://"},
-  {key:"gfg",      label:"GeeksforGeeks", icon:"GG", placeholder:"geeksforgeeks.org/user/...",     isLink:true, prefix:"https://"},
-  {key:"twitter",  label:"Twitter / X",   icon:"X",  placeholder:"twitter.com/username",          isLink:true, prefix:"https://"},
-  {key:"hackerrank",label:"HackerRank",   icon:"HR", placeholder:"hackerrank.com/profile/...",    isLink:true, prefix:"https://"},
-  {key:"codechef", label:"CodeChef",      icon:"CC", placeholder:"codechef.com/users/...",        isLink:true, prefix:"https://"}
-];
-var ICON_COLORS={
-  phone:{bg:"#EEF2FF",col:"#4338CA"},email:{bg:"#FFF7ED",col:"#C2410C"},
-  linkedin:{bg:"#EFF6FF",col:"#1D4ED8"},github:{bg:"#F9FAFB",col:"#374151"},
-  portfolio:{bg:"#F0FDF4",col:"#15803D"},leetcode:{bg:"#FEF9C3",col:"#A16207"},
-  gfg:{bg:"#F0FDF4",col:"#16A34A"},twitter:{bg:"#F0F9FF",col:"#0369A1"},
-  hackerrank:{bg:"#F0FDF4",col:"#15803D"},codechef:{bg:"#FFF7ED",col:"#C2410C"}
-};
-var S={
-  personal:{firstName:"",lastName:"",address:"",phone:"",email:"",linkedin:"",github:"",portfolio:"",leetcode:"",gfg:"",twitter:"",hackerrank:"",codechef:""},
-  headline:"",
-  socialEnabled:{phone:true,email:true,linkedin:true,github:true,portfolio:false,leetcode:false,gfg:false,twitter:false,hackerrank:false,codechef:false},
-  education:[],coursework:[],experience:[],projects:[],
-  skills:{languages:"",tools:"",tech:""},
-  leadership:[],certifications:[]
-};
-var TABS=["Personal","Education","Coursework","Experience","Projects","Skills","Leadership","Certifications"];
-var activeTab="Personal";
-function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-var DEFS={
-  education:{university:"",degree:"",start:"",end:"",loc:""},
-  experience:{company:"",role:"",start:"",end:"",loc:"",bullets:[]},
-  projects:{name:"",tech:"",date:"",bullets:[]},
-  leadership:{org:"",role:"",start:"",end:"",loc:"",bullets:[]},
-  certifications:{name:"",url:"",provider:"",start:"",end:"",skills:""}
-};
-async function parseResumeWithAI(text){
-  var prompt='You are a resume parser. Extract all information and return ONLY raw JSON with this structure:\n{"personal":{"firstName":"","lastName":"","address":"","phone":"","email":"","linkedin":"","github":"","portfolio":"","leetcode":"","gfg":"","twitter":"","hackerrank":"","codechef":""},"headline":"","education":[{"university":"","degree":"","start":"","end":"","loc":""}],"coursework":[],"experience":[{"company":"","role":"","start":"","end":"","loc":"","bullets":[]}],"projects":[{"name":"","tech":"","date":"","bullets":[]}],"skills":{"languages":"","tools":"","tech":""},"leadership":[{"org":"","role":"","start":"","end":"","loc":"","bullets":[]}],"certifications":[{"name":"","url":"","provider":"","start":"","end":"","skills":""}]}\nResume:\n"""\n'+text+'\n"""';
-  var resp=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:3000,messages:[{role:"user",content:prompt}]})});
-  if(!resp.ok)throw new Error("API error "+resp.status);
-  var data=await resp.json();
-  var raw=data.content.map(function(b){return b.text||"";}).join("").replace(/```json|```/g,"").trim();
-  return JSON.parse(raw);
-}
-function applyParsed(p){
-  if(p.personal){Object.keys(p.personal).forEach(function(k){if(k in S.personal&&p.personal[k])S.personal[k]=p.personal[k];});SOCIAL_DEFS.forEach(function(sd){if(S.personal[sd.key])S.socialEnabled[sd.key]=true;});}
-  if(p.headline)S.headline=p.headline;
-  if(Array.isArray(p.education)&&p.education.length)S.education=p.education;
-  if(Array.isArray(p.coursework)&&p.coursework.length)S.coursework=p.coursework;
-  if(Array.isArray(p.experience)&&p.experience.length)S.experience=p.experience;
-  if(Array.isArray(p.projects)&&p.projects.length)S.projects=p.projects;
-  if(p.skills){if(p.skills.languages)S.skills.languages=p.skills.languages;if(p.skills.tools)S.skills.tools=p.skills.tools;if(p.skills.tech)S.skills.tech=p.skills.tech;}
-  if(Array.isArray(p.leadership)&&p.leadership.length)S.leadership=p.leadership;
-  if(Array.isArray(p.certifications)&&p.certifications.length)S.certifications=p.certifications;
-}
-document.getElementById('aiBtn').addEventListener('click',async function(){
-  var txt=document.getElementById('importTa').value.trim();
-  if(!txt){document.getElementById('aiStatus').innerHTML='<span class="ai-err">Paste resume text first.</span>';return;}
-  var btn=this;btn.disabled=true;
-  document.getElementById('aiStatus').innerHTML='<span class="spin"></span> Analyzing…';
-  try{var parsed=await parseResumeWithAI(txt);applyParsed(parsed);renderTabs();renderForm();renderResume();document.getElementById('aiStatus').innerHTML='<span class="ai-ok">✓ Done!</span>';}
-  catch(err){document.getElementById('aiStatus').innerHTML='<span class="ai-err">'+esc(err.message)+'</span>';}
-  finally{btn.disabled=false;}
-});
-document.getElementById('clrBtn').addEventListener('click',function(){document.getElementById('importTa').value='';document.getElementById('aiStatus').innerHTML='';});
-function sec(label){return'<div class="sec-label">'+label+'</div>';}
-function personalForm(){
-  var P=S.personal;
-  return sec('Basic info')+
-    '<div class="row2"><div class="fld"><label class="lbl">First name</label><input class="inp" data-p="personal.firstName" value="'+esc(P.firstName)+'" placeholder="John"></div>'+
-    '<div class="fld"><label class="lbl">Last name</label><input class="inp" data-p="personal.lastName" value="'+esc(P.lastName)+'" placeholder="Doe"></div></div>'+
-    '<div class="fld"><label class="lbl">Headline / title</label><input class="inp" data-p="headline" value="'+esc(S.headline)+'" placeholder="Software Engineer | Python | React"></div>'+
-    '<div class="fld" style="margin-bottom:14px"><label class="lbl">Address / location</label><input class="inp" data-p="personal.address" value="'+esc(P.address)+'" placeholder="City, State"></div>'+
-    sec('Social & contact links')+
-    '<p class="hint" style="margin-bottom:10px">Toggle which links appear on your resume header.</p>'+
-    SOCIAL_DEFS.map(function(sd){
-      var on=S.socialEnabled[sd.key],val=P[sd.key]||'',ic=ICON_COLORS[sd.key]||{bg:'#F3F4F6',col:'#374151'};
-      return'<div class="srow"><div class="sico" style="background:'+(on?ic.bg:'var(--color-background-secondary)')+';color:'+(on?ic.col:'var(--color-text-tertiary)')+'">'+sd.icon+'</div>'+
-      '<button class="stog '+(on?'on':'off')+'" data-tog="'+sd.key+'"></button>'+
-      '<div class="sinfo"><label class="lbl">'+sd.label+'</label>'+
-      '<input class="sinp" placeholder="'+esc(sd.placeholder)+'" data-p="personal.'+sd.key+'" value="'+esc(val)+'"></div></div>';
-    }).join('');
-}
-function formHTML(tab){
-  if(tab==="Personal")return personalForm();
-  var E=S.education,C=S.coursework,X=S.experience,Pr=S.projects,Sk=S.skills,L=S.leadership,Ct=S.certifications;
-  if(tab==="Education")return sec('Education')+
-    E.map(function(e,i){return'<div class="entry"><button class="rmv" data-rm="education" data-idx="'+i+'">×</button>'+
-    '<div class="fld"><label class="lbl">Institution</label><input class="inp" data-p="education.'+i+'.university" value="'+esc(e.university)+'" placeholder="University name"></div>'+
-    '<div class="fld"><label class="lbl">Degree / class</label><input class="inp" data-p="education.'+i+'.degree" value="'+esc(e.degree)+'" placeholder="B.Tech Computer Science"></div>'+
-    '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="education.'+i+'.start" value="'+esc(e.start)+'" placeholder="2021"></div>'+
-    '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="education.'+i+'.end" value="'+esc(e.end)+'" placeholder="2025"></div></div>'+
-    '<div class="fld"><label class="lbl">Location / percentage</label><input class="inp" data-p="education.'+i+'.loc" value="'+esc(e.loc)+'" placeholder="Chennai, TN"></div></div>';}).join('')+
-    '<button class="addbtn" data-add="education">+ Add education</button>';
-  if(tab==="Coursework")return sec('Relevant coursework')+
-    '<div class="fld"><label class="lbl">Courses (one per line)</label>'+
-    '<textarea class="ta" style="min-height:160px" data-p="coursework">'+C.filter(Boolean).join('\n')+'</textarea></div>'+
-    '<p class="hint">Displayed in 4 columns on the resume</p>';
-  if(tab==="Experience")return sec('Work experience')+
-    X.map(function(e,i){return'<div class="entry"><button class="rmv" data-rm="experience" data-idx="'+i+'">×</button>'+
-    '<div class="fld"><label class="lbl">Company</label><input class="inp" data-p="experience.'+i+'.company" value="'+esc(e.company)+'" placeholder="Company name"></div>'+
-    '<div class="fld"><label class="lbl">Role</label><input class="inp" data-p="experience.'+i+'.role" value="'+esc(e.role)+'" placeholder="Software Engineer"></div>'+
-    '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="experience.'+i+'.start" value="'+esc(e.start)+'" placeholder="Jun 2024"></div>'+
-    '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="experience.'+i+'.end" value="'+esc(e.end)+'" placeholder="Present"></div></div>'+
-    '<div class="fld"><label class="lbl">Location</label><input class="inp" data-p="experience.'+i+'.loc" value="'+esc(e.loc)+'" placeholder="Remote"></div>'+
-    '<div class="fld"><label class="lbl">Bullets (one per line)</label>'+
-    '<textarea class="ta" data-p="experience.'+i+'.bullets" placeholder="Describe your responsibilities...">'+e.bullets.join('\n')+'</textarea></div></div>';}).join('')+
-    '<button class="addbtn" data-add="experience">+ Add experience</button>';
-  if(tab==="Projects")return sec('Projects')+
-    Pr.map(function(p,i){return'<div class="entry"><button class="rmv" data-rm="projects" data-idx="'+i+'">×</button>'+
-    '<div class="fld"><label class="lbl">Project name</label><input class="inp" data-p="projects.'+i+'.name" value="'+esc(p.name)+'" placeholder="My Portfolio"></div>'+
-    '<div class="fld"><label class="lbl">Tech stack</label><input class="inp" data-p="projects.'+i+'.tech" value="'+esc(p.tech)+'" placeholder="React, Node.js, MongoDB"></div>'+
-    '<div class="fld"><label class="lbl">Date</label><input class="inp" data-p="projects.'+i+'.date" value="'+esc(p.date)+'" placeholder="2025"></div>'+
-    '<div class="fld"><label class="lbl">Bullets (one per line)</label>'+
-    '<textarea class="ta" data-p="projects.'+i+'.bullets" placeholder="Describe what you built...">'+p.bullets.join('\n')+'</textarea></div></div>';}).join('')+
-    '<button class="addbtn" data-add="projects">+ Add project</button>';
-  if(tab==="Skills")return sec('Technical skills')+
-    '<div class="fld"><label class="lbl">Hard skills / languages</label><input class="inp" data-p="skills.languages" value="'+esc(Sk.languages)+'" placeholder="Python, JavaScript, TypeScript, SQL"></div>'+
-    '<div class="fld"><label class="lbl">Developer tools</label><input class="inp" data-p="skills.tools" value="'+esc(Sk.tools)+'" placeholder="VS Code, Git, Postman, Docker"></div>'+
-    '<div class="fld"><label class="lbl">Technologies / frameworks</label><input class="inp" data-p="skills.tech" value="'+esc(Sk.tech)+'" placeholder="React, Node.js, Django, REST APIs"></div>';
-  if(tab==="Leadership")return sec('Achievements & extracurricular')+
-    L.map(function(e,i){return'<div class="entry"><button class="rmv" data-rm="leadership" data-idx="'+i+'">×</button>'+
-    '<div class="fld"><label class="lbl">Section title</label><input class="inp" data-p="leadership.'+i+'.org" value="'+esc(e.org)+'" placeholder="Achievements"></div>'+
-    '<div class="fld"><label class="lbl">Subtitle / role (optional)</label><input class="inp" data-p="leadership.'+i+'.role" value="'+esc(e.role)+'"></div>'+
-    '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="leadership.'+i+'.start" value="'+esc(e.start)+'"></div>'+
-    '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="leadership.'+i+'.end" value="'+esc(e.end)+'"></div></div>'+
-    '<div class="fld"><label class="lbl">Location (optional)</label><input class="inp" data-p="leadership.'+i+'.loc" value="'+esc(e.loc)+'"></div>'+
-    '<div class="fld"><label class="lbl">Bullets (one per line)</label>'+
-    '<textarea class="ta" style="min-height:80px" data-p="leadership.'+i+'.bullets" placeholder="Describe your achievement...">'+e.bullets.join('\n')+'</textarea></div></div>';}).join('')+
-    '<button class="addbtn" data-add="leadership">+ Add section</button>';
-  if(tab==="Certifications")return sec('Certifications')+
-    Ct.map(function(c,i){return'<div class="entry"><button class="rmv" data-rm="certifications" data-idx="'+i+'">×</button>'+
-    '<div class="fld"><label class="lbl">Name</label><input class="inp" data-p="certifications.'+i+'.name" value="'+esc(c.name)+'" placeholder="AWS Solutions Architect"></div>'+
-    '<div class="fld"><label class="lbl">Certificate URL</label><input class="inp" placeholder="https://..." data-p="certifications.'+i+'.url" value="'+esc(c.url)+'"></div>'+
-    '<div class="fld"><label class="lbl">Provider</label><input class="inp" data-p="certifications.'+i+'.provider" value="'+esc(c.provider)+'" placeholder="Amazon Web Services"></div>'+
-    '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="certifications.'+i+'.start" value="'+esc(c.start)+'"></div>'+
-    '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="certifications.'+i+'.end" value="'+esc(c.end)+'"></div></div>'+
-    '<div class="fld"><label class="lbl">Skills learned</label><input class="inp" data-p="certifications.'+i+'.skills" value="'+esc(c.skills)+'" placeholder="EC2, S3, Lambda, IAM"></div></div>';}).join('')+
-    '<button class="addbtn" data-add="certifications">+ Add certification</button>';
-  return '';
-}
-function buls(arr){if(!arr||!arr.length)return'';return'<ul class="rbl">'+arr.filter(Boolean).map(function(b){return'<li>'+esc(b)+'</li>';}).join('')+'</ul>';}
-function dr(s,e){return[s,e].filter(Boolean).join(' – ');}
-function resumeHTML(){
-  var P=S.personal,E=S.education,C=S.coursework,X=S.experience,Pr=S.projects,Sk=S.skills,L=S.leadership,Ct=S.certifications;
-  var h='';
-  h+='<div class="rn">'+esc(P.firstName)+(P.lastName?' '+esc(P.lastName):'')+'</div>';
-  if(S.headline)h+='<div class="rtitle">'+esc(S.headline)+'</div>';
-  if(P.address)h+='<div class="ra">'+esc(P.address)+'</div>';
-  var ctItems=[];
-  SOCIAL_DEFS.forEach(function(sd){
-    if(!S.socialEnabled[sd.key])return;
-    var val=P[sd.key]||'';if(!val)return;
-    var href=sd.key==='email'?'mailto:'+val:sd.isLink?(val.startsWith('http')?val:sd.prefix+val):null;
-    var ico='<span style="font-size:9px;font-weight:700;margin-right:2px">'+sd.icon+'</span>';
-    ctItems.push('<span style="display:flex;align-items:center;gap:1px">'+ico+(href?'<a href="'+esc(href)+'" target="_blank" rel="noopener" style="color:#1a0dab;text-decoration:none">'+esc(val)+'</a>':esc(val))+'</span>');
+  var SOCIAL_DEFS = [
+    { key: "phone", label: "Phone", icon: "☎", placeholder: "Your phone number", isLink: false },
+    { key: "email", label: "Email", icon: "@", placeholder: "you@gmail.com", isLink: true, prefix: "mailto:" },
+    { key: "linkedin", label: "LinkedIn", icon: "in", placeholder: "linkedin.com/in/user", isLink: true, prefix: "https://" },
+    { key: "github", label: "GitHub", icon: "GH", placeholder: "github.com/username", isLink: true, prefix: "https://" },
+    { key: "portfolio", label: "Portfolio", icon: "⬡", placeholder: "yourportfolio.com", isLink: true, prefix: "https://" },
+    { key: "leetcode", label: "LeetCode", icon: "LC", placeholder: "leetcode.com/u/username", isLink: true, prefix: "https://" },
+    { key: "gfg", label: "GeeksforGeeks", icon: "GG", placeholder: "geeksforgeeks.org/user/...", isLink: true, prefix: "https://" },
+    { key: "twitter", label: "Twitter / X", icon: "X", placeholder: "twitter.com/username", isLink: true, prefix: "https://" },
+    { key: "hackerrank", label: "HackerRank", icon: "HR", placeholder: "hackerrank.com/profile/...", isLink: true, prefix: "https://" },
+    { key: "codechef", label: "CodeChef", icon: "CC", placeholder: "codechef.com/users/...", isLink: true, prefix: "https://" }
+  ];
+  var ICON_COLORS = {
+    phone: { bg: "#EEF2FF", col: "#4338CA" }, email: { bg: "#FFF7ED", col: "#C2410C" },
+    linkedin: { bg: "#EFF6FF", col: "#1D4ED8" }, github: { bg: "#F9FAFB", col: "#374151" },
+    portfolio: { bg: "#F0FDF4", col: "#15803D" }, leetcode: { bg: "#FEF9C3", col: "#A16207" },
+    gfg: { bg: "#F0FDF4", col: "#16A34A" }, twitter: { bg: "#F0F9FF", col: "#0369A1" },
+    hackerrank: { bg: "#F0FDF4", col: "#15803D" }, codechef: { bg: "#FFF7ED", col: "#C2410C" }
+  };
+  var S = {
+    personal: { firstName: "", lastName: "", address: "", phone: "", email: "", linkedin: "", github: "", portfolio: "", leetcode: "", gfg: "", twitter: "", hackerrank: "", codechef: "" },
+    headline: "",
+    socialEnabled: { phone: true, email: true, linkedin: true, github: true, portfolio: false, leetcode: false, gfg: false, twitter: false, hackerrank: false, codechef: false },
+    education: [], coursework: [], experience: [], projects: [],
+    skills: { languages: "", tools: "", tech: "" },
+    leadership: [], certifications: []
+  };
+  var TABS = ["Personal", "Education", "Coursework", "Experience", "Projects", "Skills", "Leadership", "Certifications"];
+  var activeTab = "Personal";
+  function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  var DEFS = {
+    education: { university: "", degree: "", start: "", end: "", loc: "" },
+    experience: { company: "", role: "", start: "", end: "", loc: "", bullets: [] },
+    projects: { name: "", tech: "", date: "", bullets: [] },
+    leadership: { org: "", role: "", start: "", end: "", loc: "", bullets: [] },
+    certifications: { name: "", url: "", provider: "", start: "", end: "", skills: "" }
+  };
+  async function parseResumeWithAI(text) {
+    var prompt = 'You are a resume parser. Extract all information and return ONLY raw JSON with this structure:\n{"personal":{"firstName":"","lastName":"","address":"","phone":"","email":"","linkedin":"","github":"","portfolio":"","leetcode":"","gfg":"","twitter":"","hackerrank":"","codechef":""},"headline":"","education":[{"university":"","degree":"","start":"","end":"","loc":""}],"coursework":[],"experience":[{"company":"","role":"","start":"","end":"","loc":"","bullets":[]}],"projects":[{"name":"","tech":"","date":"","bullets":[]}],"skills":{"languages":"","tools":"","tech":""},"leadership":[{"org":"","role":"","start":"","end":"","loc":"","bullets":[]}],"certifications":[{"name":"","url":"","provider":"","start":"","end":"","skills":""}]}\nResume:\n"""\n' + text + '\n"""';
+    var resp = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 3000, messages: [{ role: "user", content: prompt }] }) });
+    if (!resp.ok) throw new Error("API error " + resp.status);
+    var data = await resp.json();
+    var raw = data.content.map(function (b) { return b.text || ""; }).join("").replace(/```json|```/g, "").trim();
+    return JSON.parse(raw);
+  }
+  function applyParsed(p) {
+    if (p.personal) { Object.keys(p.personal).forEach(function (k) { if (k in S.personal && p.personal[k]) S.personal[k] = p.personal[k]; }); SOCIAL_DEFS.forEach(function (sd) { if (S.personal[sd.key]) S.socialEnabled[sd.key] = true; }); }
+    if (p.headline) S.headline = p.headline;
+    if (Array.isArray(p.education) && p.education.length) S.education = p.education;
+    if (Array.isArray(p.coursework) && p.coursework.length) S.coursework = p.coursework;
+    if (Array.isArray(p.experience) && p.experience.length) S.experience = p.experience;
+    if (Array.isArray(p.projects) && p.projects.length) S.projects = p.projects;
+    if (p.skills) { if (p.skills.languages) S.skills.languages = p.skills.languages; if (p.skills.tools) S.skills.tools = p.skills.tools; if (p.skills.tech) S.skills.tech = p.skills.tech; }
+    if (Array.isArray(p.leadership) && p.leadership.length) S.leadership = p.leadership;
+    if (Array.isArray(p.certifications) && p.certifications.length) S.certifications = p.certifications;
+  }
+  document.getElementById('aiBtn').addEventListener('click', async function () {
+    var txt = document.getElementById('importTa').value.trim();
+    if (!txt) { document.getElementById('aiStatus').innerHTML = '<span class="ai-err">Paste resume text first.</span>'; return; }
+    var btn = this; btn.disabled = true;
+    document.getElementById('aiStatus').innerHTML = '<span class="spin"></span> Analyzing…';
+    try { var parsed = await parseResumeWithAI(txt); applyParsed(parsed); renderTabs(); renderForm(); renderResume(); document.getElementById('aiStatus').innerHTML = '<span class="ai-ok">✓ Done!</span>'; }
+    catch (err) { document.getElementById('aiStatus').innerHTML = '<span class="ai-err">' + esc(err.message) + '</span>'; }
+    finally { btn.disabled = false; }
   });
-  if(ctItems.length)h+='<div class="rc">'+ctItems.join('<span style="color:#999;padding:0 2px">|</span>')+'</div>';
-  if(E.length){h+='<div class="rsh">Education</div>';E.forEach(function(e){h+='<div class="rent"><div class="rrow"><span class="rb">'+esc(e.university)+'</span><span>'+esc(dr(e.start,e.end))+'</span></div><div class="rrow"><span class="ri">'+esc(e.degree)+'</span><span class="ri">'+esc(e.loc)+'</span></div></div>';});}
-  var crs=C.filter(Boolean);
-  if(crs.length){h+='<div class="rsh">Relevant Coursework</div><div class="rcrs">';var pc=Math.ceil(crs.length/4);for(var c=0;c<4;c++){var sl=crs.slice(c*pc,(c+1)*pc);if(sl.length)h+='<ul>'+sl.map(function(s){return'<li>'+esc(s)+'</li>';}).join('')+'</ul>';}h+='</div>';}
-  if(X.length){h+='<div class="rsh">Work Experience</div>';X.forEach(function(e){h+='<div class="rent"><div class="rrow"><span class="rb">'+esc(e.company)+'</span><span>'+esc(dr(e.start,e.end))+'</span></div><div class="rrow"><span class="ri">'+esc(e.role)+'</span><span class="ri">'+esc(e.loc)+'</span></div>'+buls(e.bullets)+'</div>';});}
-  if(Pr.length){h+='<div class="rsh">Technical Projects</div>';Pr.forEach(function(p){h+='<div class="rent"><div class="rrow"><span><span class="rb">'+esc(p.name)+'</span>'+(p.tech?' <span class="ri">| '+esc(p.tech)+'</span>':'')+'</span><span>'+esc(p.date)+'</span></div>'+buls(p.bullets)+'</div>';});}
-  if(Sk.languages||Sk.tools||Sk.tech){h+='<div class="rsh">Technical Skills</div>';if(Sk.languages)h+='<div><span class="rb">Hard Skills</span>: '+esc(Sk.languages)+'</div>';if(Sk.tools)h+='<div><span class="rb">Developer Tools</span>: '+esc(Sk.tools)+'</div>';if(Sk.tech)h+='<div><span class="rb">Technologies/Frameworks</span>: '+esc(Sk.tech)+'</div>';}
-  if(Ct&&Ct.length){h+='<div class="rsh">Certifications</div><div class="rcert"><ul>';Ct.forEach(function(c){var np=c.url?'<a href="'+esc(c.url)+'" target="_blank" rel="noopener">'+esc(c.name)+'</a>':'<span class="rb">'+esc(c.name)+'</span>';var meta=(c.provider?esc(c.provider):'')+(dr(c.start,c.end)?' ('+esc(dr(c.start,c.end))+')':'');h+='<li>• '+np+(meta?' - '+meta:'');if(c.skills)h+='<br><span class="rb">Skills learned:</span> '+esc(c.skills);h+='</li>';});h+='</ul></div>';}
-  if(L.length){L.forEach(function(e){if(!e.org&&!e.bullets.length)return;h+='<div class="rsh">'+esc(e.org)+'</div>';if(e.role||dr(e.start,e.end)){h+='<div class="rrow" style="margin-bottom:3px">';if(e.role)h+='<span class="ri">'+esc(e.role)+'</span>';if(dr(e.start,e.end))h+='<span>'+esc(dr(e.start,e.end))+'</span>';h+='</div>';}if(e.loc)h+='<div class="ri" style="margin-bottom:2px">'+esc(e.loc)+'</div>';h+='<div class="rach"><ul>'+e.bullets.filter(Boolean).map(function(b){return'<li>'+esc(b)+'</li>';}).join('')+'</ul></div>';});}
-  return h;
-}
-function renderTabs(){document.getElementById('tabs').innerHTML=TABS.map(function(t){return'<button class="tab'+(t===activeTab?' on':'')+'" data-tab="'+t+'">'+t+'</button>';}).join('');}
-function renderForm(){document.getElementById('fc').innerHTML=formHTML(activeTab);}
-function renderResume(){document.getElementById('rp').innerHTML=resumeHTML();}
-document.getElementById('tabs').addEventListener('click',function(e){var btn=e.target.closest('[data-tab]');if(!btn)return;activeTab=btn.dataset.tab;renderTabs();renderForm();});
-document.getElementById('fc').addEventListener('click',function(e){
-  var tog=e.target.closest('[data-tog]');
-  if(tog){var k=tog.dataset.tog;S.socialEnabled[k]=!S.socialEnabled[k];renderForm();renderResume();return;}
-  var btn=e.target.closest('[data-add],[data-rm]');if(!btn)return;
-  if(btn.dataset.add){var key=btn.dataset.add;S[key].push(JSON.parse(JSON.stringify(DEFS[key])));renderForm();renderResume();}
-  if(btn.dataset.rm){var key=btn.dataset.rm,idx=+btn.dataset.idx;S[key].splice(idx,1);renderForm();renderResume();}
-});
-document.getElementById('fc').addEventListener('input',function(e){
-  var t=e.target,p=t.dataset.p;if(!p)return;
-  if(p==='coursework'){S.coursework=t.value.split('\n').map(function(s){return s.trim();}).filter(Boolean);renderResume();return;}
-  if(p==='headline'){S.headline=t.value;renderResume();return;}
-  var keys=p.split('.');var cur=S;
-  for(var i=0;i<keys.length-1;i++){cur=cur[isNaN(keys[i])?keys[i]:+keys[i]];}
-  var last=keys[keys.length-1];
-  if(last==='bullets')cur[last]=t.value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
-  else cur[last]=t.value;
-  renderResume();
-});
-document.getElementById('dlbtn').addEventListener('click',function(){window.print();});
-renderTabs();renderForm();renderResume();
+  document.getElementById('clrBtn').addEventListener('click', function () { document.getElementById('importTa').value = ''; document.getElementById('aiStatus').innerHTML = ''; });
+  function sec(label) { return '<div class="sec-label">' + label + '</div>'; }
+  function personalForm() {
+    var P = S.personal;
+    return sec('Basic info') +
+      '<div class="row2"><div class="fld"><label class="lbl">First name</label><input class="inp" data-p="personal.firstName" value="' + esc(P.firstName) + '" placeholder="John"></div>' +
+      '<div class="fld"><label class="lbl">Last name</label><input class="inp" data-p="personal.lastName" value="' + esc(P.lastName) + '" placeholder="Doe"></div></div>' +
+      '<div class="fld"><label class="lbl">Headline / title</label><input class="inp" data-p="headline" value="' + esc(S.headline) + '" placeholder="Software Engineer | Python | React"></div>' +
+      '<div class="fld" style="margin-bottom:14px"><label class="lbl">Address / location</label><input class="inp" data-p="personal.address" value="' + esc(P.address) + '" placeholder="City, State"></div>' +
+      sec('Social & contact links') +
+      '<p class="hint" style="margin-bottom:10px">Toggle which links appear on your resume header.</p>' +
+      SOCIAL_DEFS.map(function (sd) {
+        var on = S.socialEnabled[sd.key], val = P[sd.key] || '', ic = ICON_COLORS[sd.key] || { bg: '#F3F4F6', col: '#374151' };
+        return '<div class="srow"><div class="sico" style="background:' + (on ? ic.bg : 'var(--color-background-secondary)') + ';color:' + (on ? ic.col : 'var(--color-text-tertiary)') + '">' + sd.icon + '</div>' +
+          '<button class="stog ' + (on ? 'on' : 'off') + '" data-tog="' + sd.key + '"></button>' +
+          '<div class="sinfo"><label class="lbl">' + sd.label + '</label>' +
+          '<input class="sinp" placeholder="' + esc(sd.placeholder) + '" data-p="personal.' + sd.key + '" value="' + esc(val) + '"></div></div>';
+      }).join('');
+  }
+  function formHTML(tab) {
+    if (tab === "Personal") return personalForm();
+    var E = S.education, C = S.coursework, X = S.experience, Pr = S.projects, Sk = S.skills, L = S.leadership, Ct = S.certifications;
+    if (tab === "Education") return sec('Education') +
+      E.map(function (e, i) {
+        return '<div class="entry"><button class="rmv" data-rm="education" data-idx="' + i + '">×</button>' +
+          '<div class="fld"><label class="lbl">Institution</label><input class="inp" data-p="education.' + i + '.university" value="' + esc(e.university) + '" placeholder="University name"></div>' +
+          '<div class="fld"><label class="lbl">Degree / class</label><input class="inp" data-p="education.' + i + '.degree" value="' + esc(e.degree) + '" placeholder="B.Tech Computer Science"></div>' +
+          '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="education.' + i + '.start" value="' + esc(e.start) + '" placeholder="2021"></div>' +
+          '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="education.' + i + '.end" value="' + esc(e.end) + '" placeholder="2025"></div></div>' +
+          '<div class="fld"><label class="lbl">Location / percentage</label><input class="inp" data-p="education.' + i + '.loc" value="' + esc(e.loc) + '" placeholder="Chennai, TN"></div></div>';
+      }).join('') +
+      '<button class="addbtn" data-add="education">+ Add education</button>';
+    if (tab === "Coursework") return sec('Relevant coursework') +
+      '<div class="fld"><label class="lbl">Courses (one per line)</label>' +
+      '<textarea class="ta" style="min-height:160px" data-p="coursework">' + C.filter(Boolean).join('\n') + '</textarea></div>' +
+      '<p class="hint">Displayed in 4 columns on the resume</p>';
+    if (tab === "Experience") return sec('Work experience') +
+      X.map(function (e, i) {
+        return '<div class="entry"><button class="rmv" data-rm="experience" data-idx="' + i + '">×</button>' +
+          '<div class="fld"><label class="lbl">Company</label><input class="inp" data-p="experience.' + i + '.company" value="' + esc(e.company) + '" placeholder="Company name"></div>' +
+          '<div class="fld"><label class="lbl">Role</label><input class="inp" data-p="experience.' + i + '.role" value="' + esc(e.role) + '" placeholder="Software Engineer"></div>' +
+          '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="experience.' + i + '.start" value="' + esc(e.start) + '" placeholder="Jun 2024"></div>' +
+          '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="experience.' + i + '.end" value="' + esc(e.end) + '" placeholder="Present"></div></div>' +
+          '<div class="fld"><label class="lbl">Location</label><input class="inp" data-p="experience.' + i + '.loc" value="' + esc(e.loc) + '" placeholder="Remote"></div>' +
+          '<div class="fld"><label class="lbl">Bullets (one per line)</label>' +
+          '<textarea class="ta" data-p="experience.' + i + '.bullets" placeholder="Describe your responsibilities...">' + e.bullets.join('\n') + '</textarea></div></div>';
+      }).join('') +
+      '<button class="addbtn" data-add="experience">+ Add experience</button>';
+    if (tab === "Projects") return sec('Projects') +
+      Pr.map(function (p, i) {
+        return '<div class="entry"><button class="rmv" data-rm="projects" data-idx="' + i + '">×</button>' +
+          '<div class="fld"><label class="lbl">Project name</label><input class="inp" data-p="projects.' + i + '.name" value="' + esc(p.name) + '" placeholder="My Portfolio"></div>' +
+          '<div class="fld"><label class="lbl">Tech stack</label><input class="inp" data-p="projects.' + i + '.tech" value="' + esc(p.tech) + '" placeholder="React, Node.js, MongoDB"></div>' +
+          '<div class="fld"><label class="lbl">Date</label><input class="inp" data-p="projects.' + i + '.date" value="' + esc(p.date) + '" placeholder="2025"></div>' +
+          '<div class="fld"><label class="lbl">Bullets (one per line)</label>' +
+          '<textarea class="ta" data-p="projects.' + i + '.bullets" placeholder="Describe what you built...">' + p.bullets.join('\n') + '</textarea></div></div>';
+      }).join('') +
+      '<button class="addbtn" data-add="projects">+ Add project</button>';
+    if (tab === "Skills") return sec('Technical skills') +
+      '<div class="fld"><label class="lbl">Hard skills / languages</label><input class="inp" data-p="skills.languages" value="' + esc(Sk.languages) + '" placeholder="Python, JavaScript, TypeScript, SQL"></div>' +
+      '<div class="fld"><label class="lbl">Developer tools</label><input class="inp" data-p="skills.tools" value="' + esc(Sk.tools) + '" placeholder="VS Code, Git, Postman, Docker"></div>' +
+      '<div class="fld"><label class="lbl">Technologies / frameworks</label><input class="inp" data-p="skills.tech" value="' + esc(Sk.tech) + '" placeholder="React, Node.js, Django, REST APIs"></div>';
+    if (tab === "Leadership") return sec('Achievements & extracurricular') +
+      L.map(function (e, i) {
+        return '<div class="entry"><button class="rmv" data-rm="leadership" data-idx="' + i + '">×</button>' +
+          '<div class="fld"><label class="lbl">Section title</label><input class="inp" data-p="leadership.' + i + '.org" value="' + esc(e.org) + '" placeholder="Achievements"></div>' +
+          '<div class="fld"><label class="lbl">Subtitle / role (optional)</label><input class="inp" data-p="leadership.' + i + '.role" value="' + esc(e.role) + '"></div>' +
+          '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="leadership.' + i + '.start" value="' + esc(e.start) + '"></div>' +
+          '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="leadership.' + i + '.end" value="' + esc(e.end) + '"></div></div>' +
+          '<div class="fld"><label class="lbl">Location (optional)</label><input class="inp" data-p="leadership.' + i + '.loc" value="' + esc(e.loc) + '"></div>' +
+          '<div class="fld"><label class="lbl">Bullets (one per line)</label>' +
+          '<textarea class="ta" style="min-height:80px" data-p="leadership.' + i + '.bullets" placeholder="Describe your achievement...">' + e.bullets.join('\n') + '</textarea></div></div>';
+      }).join('') +
+      '<button class="addbtn" data-add="leadership">+ Add section</button>';
+    if (tab === "Certifications") return sec('Certifications') +
+      Ct.map(function (c, i) {
+        return '<div class="entry"><button class="rmv" data-rm="certifications" data-idx="' + i + '">×</button>' +
+          '<div class="fld"><label class="lbl">Name</label><input class="inp" data-p="certifications.' + i + '.name" value="' + esc(c.name) + '" placeholder="AWS Solutions Architect"></div>' +
+          '<div class="fld"><label class="lbl">Certificate URL</label><input class="inp" placeholder="https://..." data-p="certifications.' + i + '.url" value="' + esc(c.url) + '"></div>' +
+          '<div class="fld"><label class="lbl">Provider</label><input class="inp" data-p="certifications.' + i + '.provider" value="' + esc(c.provider) + '" placeholder="Amazon Web Services"></div>' +
+          '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="certifications.' + i + '.start" value="' + esc(c.start) + '"></div>' +
+          '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="certifications.' + i + '.end" value="' + esc(c.end) + '"></div></div>' +
+          '<div class="fld"><label class="lbl">Skills learned</label><input class="inp" data-p="certifications.' + i + '.skills" value="' + esc(c.skills) + '" placeholder="EC2, S3, Lambda, IAM"></div></div>';
+      }).join('') +
+      '<button class="addbtn" data-add="certifications">+ Add certification</button>';
+    return '';
+  }
+  function buls(arr) { if (!arr || !arr.length) return ''; return '<ul class="rbl">' + arr.filter(Boolean).map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul>'; }
+  function dr(s, e) { return [s, e].filter(Boolean).join(' – '); }
+  function resumeHTML() {
+    var P = S.personal, E = S.education, C = S.coursework, X = S.experience, Pr = S.projects, Sk = S.skills, L = S.leadership, Ct = S.certifications;
+    var h = '';
+    h += '<div class="rn">' + esc(P.firstName) + (P.lastName ? ' ' + esc(P.lastName) : '') + '</div>';
+    if (S.headline) h += '<div class="rtitle">' + esc(S.headline) + '</div>';
+    if (P.address) h += '<div class="ra">' + esc(P.address) + '</div>';
+    var ctItems = [];
+    SOCIAL_DEFS.forEach(function (sd) {
+      if (!S.socialEnabled[sd.key]) return;
+      var val = P[sd.key] || ''; if (!val) return;
+      var href = sd.key === 'email' ? 'mailto:' + val : sd.isLink ? (val.startsWith('http') ? val : sd.prefix + val) : null;
+      var ico = '<span style="font-size:9px;font-weight:700;margin-right:2px">' + sd.icon + '</span>';
+      ctItems.push('<span style="display:flex;align-items:center;gap:1px">' + ico + (href ? '<a href="' + esc(href) + '" target="_blank" rel="noopener" style="color:#1a0dab;text-decoration:none">' + esc(val) + '</a>' : esc(val)) + '</span>');
+    });
+    if (ctItems.length) h += '<div class="rc">' + ctItems.join('<span style="color:#999;padding:0 2px">|</span>') + '</div>';
+    if (E.length) { h += '<div class="rsh">Education</div>'; E.forEach(function (e) { h += '<div class="rent"><div class="rrow"><span class="rb">' + esc(e.university) + '</span><span>' + esc(dr(e.start, e.end)) + '</span></div><div class="rrow"><span class="ri">' + esc(e.degree) + '</span><span class="ri">' + esc(e.loc) + '</span></div></div>'; }); }
+    var crs = C.filter(Boolean);
+    if (crs.length) { h += '<div class="rsh">Relevant Coursework</div><div class="rcrs">'; var pc = Math.ceil(crs.length / 4); for (var c = 0; c < 4; c++) { var sl = crs.slice(c * pc, (c + 1) * pc); if (sl.length) h += '<ul>' + sl.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>'; } h += '</div>'; }
+    if (X.length) { h += '<div class="rsh">Work Experience</div>'; X.forEach(function (e) { h += '<div class="rent"><div class="rrow"><span class="rb">' + esc(e.company) + '</span><span>' + esc(dr(e.start, e.end)) + '</span></div><div class="rrow"><span class="ri">' + esc(e.role) + '</span><span class="ri">' + esc(e.loc) + '</span></div>' + buls(e.bullets) + '</div>'; }); }
+    if (Pr.length) { h += '<div class="rsh">Technical Projects</div>'; Pr.forEach(function (p) { h += '<div class="rent"><div class="rrow"><span><span class="rb">' + esc(p.name) + '</span>' + (p.tech ? ' <span class="ri">| ' + esc(p.tech) + '</span>' : '') + '</span><span>' + esc(p.date) + '</span></div>' + buls(p.bullets) + '</div>'; }); }
+    if (Sk.languages || Sk.tools || Sk.tech) { h += '<div class="rsh">Technical Skills</div>'; if (Sk.languages) h += '<div><span class="rb">Hard Skills</span>: ' + esc(Sk.languages) + '</div>'; if (Sk.tools) h += '<div><span class="rb">Developer Tools</span>: ' + esc(Sk.tools) + '</div>'; if (Sk.tech) h += '<div><span class="rb">Technologies/Frameworks</span>: ' + esc(Sk.tech) + '</div>'; }
+    if (Ct && Ct.length) { h += '<div class="rsh">Certifications</div><div class="rcert"><ul>'; Ct.forEach(function (c) { var np = c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.name) + '</a>' : '<span class="rb">' + esc(c.name) + '</span>'; var meta = (c.provider ? esc(c.provider) : '') + (dr(c.start, c.end) ? ' (' + esc(dr(c.start, c.end)) + ')' : ''); h += '<li>• ' + np + (meta ? ' - ' + meta : ''); if (c.skills) h += '<br><span class="rb">Skills learned:</span> ' + esc(c.skills); h += '</li>'; }); h += '</ul></div>'; }
+    if (L.length) { L.forEach(function (e) { if (!e.org && !e.bullets.length) return; h += '<div class="rsh">' + esc(e.org) + '</div>'; if (e.role || dr(e.start, e.end)) { h += '<div class="rrow" style="margin-bottom:3px">'; if (e.role) h += '<span class="ri">' + esc(e.role) + '</span>'; if (dr(e.start, e.end)) h += '<span>' + esc(dr(e.start, e.end)) + '</span>'; h += '</div>'; } if (e.loc) h += '<div class="ri" style="margin-bottom:2px">' + esc(e.loc) + '</div>'; h += '<div class="rach"><ul>' + e.bullets.filter(Boolean).map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul></div>'; }); }
+    return h;
+  }
+  function renderTabs() { document.getElementById('tabs').innerHTML = TABS.map(function (t) { return '<button class="tab' + (t === activeTab ? ' on' : '') + '" data-tab="' + t + '">' + t + '</button>'; }).join(''); }
+  function renderForm() { document.getElementById('fc').innerHTML = formHTML(activeTab); }
+  function renderResume() { document.getElementById('rp').innerHTML = resumeHTML(); }
+  document.getElementById('tabs').addEventListener('click', function (e) { var btn = e.target.closest('[data-tab]'); if (!btn) return; activeTab = btn.dataset.tab; renderTabs(); renderForm(); });
+  document.getElementById('fc').addEventListener('click', function (e) {
+    var tog = e.target.closest('[data-tog]');
+    if (tog) { var k = tog.dataset.tog; S.socialEnabled[k] = !S.socialEnabled[k]; renderForm(); renderResume(); return; }
+    var btn = e.target.closest('[data-add],[data-rm]'); if (!btn) return;
+    if (btn.dataset.add) { var key = btn.dataset.add; S[key].push(JSON.parse(JSON.stringify(DEFS[key]))); renderForm(); renderResume(); }
+    if (btn.dataset.rm) { var key = btn.dataset.rm, idx = +btn.dataset.idx; S[key].splice(idx, 1); renderForm(); renderResume(); }
+  });
+  document.getElementById('fc').addEventListener('input', function (e) {
+    var t = e.target, p = t.dataset.p; if (!p) return;
+    if (p === 'coursework') { S.coursework = t.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean); renderResume(); return; }
+    if (p === 'headline') { S.headline = t.value; renderResume(); return; }
+    var keys = p.split('.'); var cur = S;
+    for (var i = 0; i < keys.length - 1; i++) { cur = cur[isNaN(keys[i]) ? keys[i] : +keys[i]]; }
+    var last = keys[keys.length - 1];
+    if (last === 'bullets') cur[last] = t.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+    else cur[last] = t.value;
+    renderResume();
+  });
+  document.getElementById('dlbtn').addEventListener('click', function () { window.print(); });
+  renderTabs(); renderForm(); renderResume();
 </script>
