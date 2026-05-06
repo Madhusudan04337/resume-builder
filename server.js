@@ -3,9 +3,11 @@ const OpenAI = require('openai');
 const cors = require('cors');
 require('dotenv').config();
 
+const path = require('path');
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(express.static(__dirname));
 
 const openai = new OpenAI({
     baseURL: "https://openrouter.ai/api/v1",

@@ -846,7 +846,7 @@
     certifications: { name: "", url: "", provider: "", start: "", end: "", skills: "" }
   };
   async function parseResumeWithAI(text) {
-    const response = await fetch('http://localhost:5000/api/parse-resume', {
+    const response = await fetch('/api/parse-resume', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text })
@@ -1128,7 +1128,7 @@
     btn.innerHTML = '<span class="spin" style="width:10px;height:10px"></span> Polishing...';
 
     try {
-      const response = await fetch('http://localhost:5000/api/generate-summary', {
+      const response = await fetch('/api/generate-summary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ skills, experience })
@@ -1164,7 +1164,7 @@
     resDiv.innerHTML = '';
 
     try {
-      const response = await fetch('http://localhost:5000/api/score-resume', {
+      const response = await fetch('/api/score-resume', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ resume: JSON.stringify(S) })
