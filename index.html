@@ -1,4 +1,11 @@
-<style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MDK | AI Resume Builder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
   * {
     box-sizing: border-box;
     margin: 0;
@@ -547,7 +554,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    padding: 16px
+    padding: 20px; /* Outer page margin */
   }
 
   .rp {
@@ -558,7 +565,7 @@
     line-height: 1.35;
     width: 210mm;
     min-height: 297mm;
-    padding: 20mm;
+    padding: 10.6mm 11.9mm; /* Top: 40px, L/R: 45px */
     margin: auto;
     box-shadow: 0 2px 12px rgba(0, 0, 0, .12);
   }
@@ -724,11 +731,13 @@
     .rp {
       width: 210mm !important;
       min-height: 297mm !important;
-      padding: 12mm !important;
+      padding: 10.6mm 11.9mm !important;
       box-shadow: none !important;
     }
   }
 </style>
+</head>
+<body>
 
 <div class="builder">
   <div class="fp">
@@ -988,54 +997,75 @@
     
     // Template styles
     var st = {
-      classic: { font: "Georgia, serif", align: "center", sectionLine: "1.5px solid #000", bg: "#fff", col: "#000" },
-      modern: { font: "Inter, system-ui, sans-serif", align: "left", sectionLine: "2px solid #4F46E5", bg: "#fff", col: "#1F2937" },
-      minimal: { font: "Roboto, sans-serif", align: "left", sectionLine: "0.5px solid #64748b", bg: "#fff", col: "#334155" }
+      classic: { font: "'Georgia', serif", align: "center", sectionLine: "1.5px solid #000", bg: "#fff", col: "#000", brand: "#000" },
+      modern: { font: "'Inter', sans-serif", align: "left", sectionLine: "1.5px solid #2D1E5F", bg: "#fff", col: "#1F2937", brand: "#2D1E5F" },
+      minimal: { font: "'Roboto', sans-serif", align: "left", sectionLine: "0.5px solid #64748b", bg: "#fff", col: "#334155", brand: "#334155" }
     }[t];
 
     h += '<div style="font-family:' + st.font + ';color:' + st.col + '">';
-    h += '<div class="rn" style="text-align:' + st.align + '">' + esc(P.firstName) + (P.lastName ? ' ' + esc(P.lastName) : '') + '</div>';
-    if (S.headline) h += '<div class="rtitle" style="text-align:' + st.align + '">' + esc(S.headline) + '</div>';
-    if (P.address) h += '<div class="ra" style="text-align:' + st.align + '">' + esc(P.address) + '</div>';
+    if (t === "modern") {
+      h += '<div style="margin-bottom:15px">';
+      h += '<div style="font-size:24px;font-weight:800;color:' + st.brand + ';line-height:1.2">' + esc(P.firstName) + (P.lastName ? ' ' + esc(P.lastName) : '') + '</div>';
+      if (S.headline) h += '<div style="font-style:italic;font-size:13px;color:' + st.brand + ';margin-top:2px;margin-bottom:6px">' + esc(S.headline) + '</div>';
+      
+      var rows = [[], []];
+      // Row 1: Email, Phone, Location
+      if (P.email && S.socialEnabled.email) rows[0].push('<span style="display:inline-flex;align-items:center;gap:4px;color:' + st.brand + '"><svg style="width:10px;height:10px;fill:currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><a href="mailto:' + esc(P.email) + '" style="color:inherit;text-decoration:underline">' + esc(P.email) + '</a></span>');
+      if (P.phone && S.socialEnabled.phone) rows[0].push('<span style="display:inline-flex;align-items:center;gap:4px;color:' + st.brand + '"><svg style="width:10px;height:10px;fill:currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>' + esc(P.phone) + '</span>');
+      if (P.address) rows[0].push('<span style="display:inline-flex;align-items:center;gap:4px;color:' + st.brand + '"><svg style="width:10px;height:10px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>' + esc(P.address) + '</span>');
+      
+      // Row 2: GitHub, LinkedIn
+      if (P.github && S.socialEnabled.github) rows[1].push('<span style="display:inline-flex;align-items:center;gap:4px;color:' + st.brand + '"><svg style="width:10px;height:10px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><a href="' + (P.github.startsWith('http') ? P.github : 'https://github.com/' + P.github) + '" style="color:inherit;text-decoration:underline">' + esc(P.github) + '</a></span>');
+      if (P.linkedin && S.socialEnabled.linkedin) rows[1].push('<span style="display:inline-flex;align-items:center;gap:4px;color:' + st.brand + '"><svg style="width:10px;height:10px;fill:currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.238 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg><a href="' + (P.linkedin.startsWith('http') ? P.linkedin : 'https://linkedin.com/in/' + P.linkedin) + '" style="color:inherit;text-decoration:underline">' + esc(P.linkedin) + '</a></span>');
+      
+      h += '<div style="font-size:11px;display:flex;flex-direction:column;gap:3px">';
+      rows.forEach(function(r) {
+        if (r.length) h += '<div style="display:flex;align-items:center;gap:8px">' + r.join('<span style="color:#D1D5DB">|</span>') + '</div>';
+      });
+      h += '</div></div>';
+    } else {
+      h += '<div class="rn" style="text-align:' + st.align + '">' + esc(P.firstName) + (P.lastName ? ' ' + esc(P.lastName) : '') + '</div>';
+      if (S.headline) h += '<div class="rtitle" style="text-align:' + st.align + '">' + esc(S.headline) + '</div>';
+      if (P.address) h += '<div class="ra" style="text-align:' + st.align + '">' + esc(P.address) + '</div>';
+      
+      var ctItems = [];
+      SOCIAL_DEFS.forEach(function (sd) {
+        if (!S.socialEnabled[sd.key]) return;
+        var val = P[sd.key] || ''; if (!val) return;
+        var href = sd.key === 'email' ? 'mailto:' + val : sd.isLink ? (val.startsWith('http') ? val : sd.prefix + val) : null;
+        var ico = '<span style="font-size:9px;font-weight:700;margin-right:2px">' + sd.icon + '</span>';
+        ctItems.push('<span style="display:flex;align-items:center;gap:1px">' + ico + (href ? '<a href="' + esc(href) + '" target="_blank" rel="noopener" style="color:#1a0dab;text-decoration:none">' + esc(val) + '</a>' : esc(val)) + '</span>');
+      });
+      if (ctItems.length) h += '<div class="rc" style="justify-content:' + (st.align === 'center' ? 'center' : 'flex-start') + '">' + ctItems.join('<span style="color:#999;padding:0 2px">|</span>') + '</div>';
+    }
     
-    var ctItems = [];
-    SOCIAL_DEFS.forEach(function (sd) {
-      if (!S.socialEnabled[sd.key]) return;
-      var val = P[sd.key] || ''; if (!val) return;
-      var href = sd.key === 'email' ? 'mailto:' + val : sd.isLink ? (val.startsWith('http') ? val : sd.prefix + val) : null;
-      var ico = '<span style="font-size:9px;font-weight:700;margin-right:2px">' + sd.icon + '</span>';
-      ctItems.push('<span style="display:flex;align-items:center;gap:1px">' + ico + (href ? '<a href="' + esc(href) + '" target="_blank" rel="noopener" style="color:#1a0dab;text-decoration:none">' + esc(val) + '</a>' : esc(val)) + '</span>');
-    });
-    
-    if (ctItems.length) h += '<div class="rc" style="justify-content:' + (st.align === 'center' ? 'center' : 'flex-start') + '">' + ctItems.join('<span style="color:#999;padding:0 2px">|</span>') + '</div>';
-    
-    var sh = function(label) { return '<div class="rsh" style="border-bottom:' + st.sectionLine + '">' + label + '</div>'; };
+    var sh = function(label) { return '<div class="rsh" style="border-bottom:' + st.sectionLine + ';color:' + st.brand + ';font-weight:700;letter-spacing:-0.01em">' + label + '</div>'; };
 
     if (P.summary && S.socialEnabled.summary) {
       h += sh('Professional Summary');
-      h += '<div style="margin-bottom:8px;font-size:10.5px;text-align:justify">' + linkify(esc(P.summary)) + '</div>';
+      h += '<div style="margin-bottom:8px;font-size:10.5px;text-align:justify;line-height:1.5">' + linkify(esc(P.summary)) + '</div>';
     }
 
     S.sectionOrder.forEach(function(secName) {
       if (secName === "Education" && E.length) {
-        h += sh('Education'); E.forEach(function (e) { h += '<div class="rent"><div class="rrow"><span class="rb">' + esc(e.university) + '</span><span>' + esc(dr(e.start, e.end)) + '</span></div><div class="rrow"><span class="ri">' + esc(e.degree) + '</span><span class="ri">' + esc(e.loc) + '</span></div></div>'; });
+        h += sh('Education'); E.forEach(function (e) { h += '<div class="rent"><div class="rrow"><span class="rb" style="color:' + st.brand + ';font-weight:700">' + esc(e.university) + '</span><span style="font-weight:500">' + esc(dr(e.start, e.end)) + '</span></div><div class="rrow"><span class="ri" style="color:' + st.brand + ';font-style:italic">' + esc(e.degree) + '</span><span class="ri">' + esc(e.loc) + '</span></div></div>'; });
       } else if (secName === "Coursework") {
         var crs = C.filter(Boolean);
         if (crs.length) { h += sh('Relevant Coursework'); h += '<div class="rcrs">'; var pc = Math.ceil(crs.length / 4); for (var c = 0; c < 4; c++) { var sl = crs.slice(c * pc, (c + 1) * pc); if (sl.length) h += '<ul>' + sl.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>'; } h += '</div>'; }
       } else if (secName === "Experience" && X.length) {
-        h += sh('Work Experience'); X.forEach(function (e) { h += '<div class="rent"><div class="rrow"><span class="rb">' + esc(e.company) + '</span><span>' + esc(dr(e.start, e.end)) + '</span></div><div class="rrow"><span class="ri">' + esc(e.role) + '</span><span class="ri">' + esc(e.loc) + '</span></div>' + buls(e.bullets) + '</div>'; });
+        h += sh('Work Experience'); X.forEach(function (e) { h += '<div class="rent"><div class="rrow"><span class="rb" style="color:' + st.brand + ';font-weight:700">' + esc(e.company) + '</span><span style="font-weight:500">' + esc(dr(e.start, e.end)) + '</span></div><div class="rrow"><span class="ri" style="color:' + st.brand + ';font-style:italic">' + esc(e.role) + '</span><span class="ri">' + esc(e.loc) + '</span></div>' + buls(e.bullets) + '</div>'; });
       } else if (secName === "Projects" && Pr.length) {
         h += sh('Technical Projects'); Pr.forEach(function (p) { 
-          h += '<div class="rent"><div class="rrow"><span><span class="rb">' + esc(p.name) + '</span>' + (p.tech ? ' <span class="ri">| ' + esc(p.tech) + '</span>' : '') + '</span><span>' + esc(p.date) + '</span></div>';
+          h += '<div class="rent"><div class="rrow"><span><span class="rb" style="color:' + st.brand + ';font-weight:700">' + esc(p.name) + '</span>' + (p.tech ? ' <span class="ri" style="color:' + st.brand + ';font-style:italic">| ' + esc(p.tech) + '</span>' : '') + '</span><span style="font-weight:500">' + esc(p.date) + '</span></div>';
           var links = [];
           if (p.github) {
-            var ghUrl = p.github.startsWith('http') ? p.github : 'https://' + p.github;
-            links.push('<a href="' + ghUrl + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:3px;color:#1a0dab;text-decoration:none;font-size:9.5px;margin-top:2px">' +
+            var ghUrl = p.github.startsWith('http') ? p.github : 'https://github.com/' + p.github;
+            links.push('<a href="' + ghUrl + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:3px;color:' + st.brand + ';text-decoration:none;font-size:9.5px;margin-top:2px">' +
               '<svg style="width:10px;height:10px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>GitHub Repository</a>');
           }
           if (p.demo) {
             var demoUrl = p.demo.startsWith('http') ? p.demo : 'https://' + p.demo;
-            links.push('<a href="' + demoUrl + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:3px;color:#1a0dab;text-decoration:none;font-size:9.5px;margin-top:2px">' +
+            links.push('<a href="' + demoUrl + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:3px;color:' + st.brand + ';text-decoration:none;font-size:9.5px;margin-top:2px">' +
               '<svg style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>Live Demo</a>');
           }
           if (links.length) h += '<div style="display:flex;gap:12px;margin-bottom:3px">' + links.join('') + '</div>';
@@ -1046,9 +1076,9 @@
       } else if (secName === "Languages" && Sk.languages) {
         h += sh('Languages'); h += '<div>' + esc(Sk.languages) + '</div>';
       } else if (secName === "Certifications" && Ct && Ct.length) {
-        h += sh('Certifications'); h += '<div class="rcert"><ul>'; Ct.forEach(function (c) { var np = c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.name) + '</a>' : '<span class="rb">' + esc(c.name) + '</span>'; var meta = (c.provider ? esc(c.provider) : '') + (dr(c.start, c.end) ? ' (' + esc(dr(c.start, c.end)) + ')' : ''); h += '<li>• ' + np + (meta ? ' - ' + meta : ''); if (c.skills) h += '<br><span class="rb">Skills learned:</span> ' + esc(c.skills); h += '</li>'; }); h += '</ul></div>';
+        h += sh('Certifications'); h += '<div class="rcert"><ul>'; Ct.forEach(function (c) { var np = c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener" style="color:' + st.brand + ';font-weight:700">' + esc(c.name) + '</a>' : '<span class="rb" style="color:' + st.brand + '">' + esc(c.name) + '</span>'; var meta = (c.provider ? esc(c.provider) : '') + (dr(c.start, c.end) ? ' (' + esc(dr(c.start, c.end)) + ')' : ''); h += '<li>• ' + np + (meta ? ' - ' + meta : ''); if (c.skills) h += '<br><span class="rb" style="color:' + st.brand + '">Skills learned:</span> ' + esc(c.skills); h += '</li>'; }); h += '</ul></div>';
       } else if (secName === "Leadership" && L.length) {
-        L.forEach(function (e) { if (!e.org && !e.bullets.length) return; h += sh(esc(e.org)); if (e.role || dr(e.start, e.end)) { h += '<div class="rrow" style="margin-bottom:3px">'; if (e.role) h += '<span class="ri">' + esc(e.role) + '</span>'; if (dr(e.start, e.end)) h += '<span>' + esc(dr(e.start, e.end)) + '</span>'; h += '</div>'; } if (e.loc) h += '<div class="ri" style="margin-bottom:2px">' + esc(e.loc) + '</div>'; h += '<div class="rach"><ul>' + e.bullets.filter(Boolean).map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul></div>'; });
+        L.forEach(function (e) { if (!e.org && !e.bullets.length) return; h += sh(esc(e.org)); if (e.role || dr(e.start, e.end)) { h += '<div class="rrow" style="margin-bottom:3px">'; if (e.role) h += '<span class="ri" style="color:' + st.brand + '">' + esc(e.role) + '</span>'; if (dr(e.start, e.end)) h += '<span>' + esc(dr(e.start, e.end)) + '</span>'; h += '</div>'; } if (e.loc) h += '<div class="ri" style="margin-bottom:2px">' + esc(e.loc) + '</div>'; h += '<div class="rach"><ul>' + e.bullets.filter(Boolean).map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul></div>'; });
       }
     });
     
@@ -1204,3 +1234,5 @@
   renderResume = function() { originalRenderResume(); saveToLocal(); }
 
 </script>
+</body>
+</html>
