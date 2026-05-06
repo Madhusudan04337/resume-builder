@@ -823,6 +823,7 @@
     template: "classic",
     education: [], coursework: [], experience: [], projects: [],
     skills: { languages: "", tools: "", tech: "" },
+    spokenLanguages: "",
     leadership: [], certifications: [],
     sectionOrder: ["Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Certifications", "Leadership"]
   };
@@ -862,6 +863,7 @@
     if (Array.isArray(p.experience) && p.experience.length) S.experience = p.experience;
     if (Array.isArray(p.projects) && p.projects.length) S.projects = p.projects;
     if (p.skills) { if (p.skills.languages) S.skills.languages = p.skills.languages; if (p.skills.tools) S.skills.tools = p.skills.tools; if (p.skills.tech) S.skills.tech = p.skills.tech; }
+    if (p.spokenLanguages) S.spokenLanguages = p.spokenLanguages;
     if (Array.isArray(p.leadership) && p.leadership.length) S.leadership = p.leadership;
     if (Array.isArray(p.certifications) && p.certifications.length) S.certifications = p.certifications;
   }
@@ -957,12 +959,13 @@
       }).join('') +
       '<button class="addbtn" data-add="projects">+ Add project</button>';
     if (tab === "Skills") return sec('Technical skills') +
+      '<div class="fld"><label class="lbl">Programming Languages</label><input class="inp" data-p="skills.languages" value="' + esc(Sk.languages) + '" placeholder="Python, Java, JavaScript, C++"></div>' +
       '<div class="fld"><label class="lbl">Developer tools</label><input class="inp" data-p="skills.tools" value="' + esc(Sk.tools) + '" placeholder="VS Code, Git, Postman, Docker"></div>' +
       '<div class="fld"><label class="lbl">Technologies / frameworks</label><input class="inp" data-p="skills.tech" value="' + esc(Sk.tech) + '" placeholder="React, Node.js, Django, REST APIs"></div>';
-    if (tab === "Languages") return sec('Languages') +
-      '<div class="fld"><label class="lbl">Technical or Spoken Languages</label>' +
-      '<input class="inp" data-p="skills.languages" value="' + esc(Sk.languages) + '" placeholder="English, Hindi, Python, Java, SQL"></div>' +
-      '<p class="hint">List the languages you are proficient in.</p>';
+    if (tab === "Languages") return sec('Spoken Languages') +
+      '<div class="fld"><label class="lbl">Languages (Spoken/Written)</label>' +
+      '<input class="inp" data-p="spokenLanguages" value="' + esc(S.spokenLanguages) + '" placeholder="Tamil, Hindi, English"></div>' +
+      '<p class="hint">List the spoken languages you are proficient in.</p>';
     if (tab === "Leadership") return sec('Achievements & extracurricular') +
       L.map(function (e, i) {
         return '<div class="entry"><button class="rmv" data-rm="leadership" data-idx="' + i + '">×</button>' +
@@ -1071,10 +1074,13 @@
           if (links.length) h += '<div style="display:flex;gap:12px;margin-bottom:3px">' + links.join('') + '</div>';
           h += buls(p.bullets) + '</div>'; 
         });
-      } else if (secName === "Skills" && (Sk.tools || Sk.tech)) {
-        h += sh('Technical Skills'); if (Sk.tools) h += '<div><span class="rb">Developer Tools</span>: ' + esc(Sk.tools) + '</div>'; if (Sk.tech) h += '<div><span class="rb">Technologies/Frameworks</span>: ' + esc(Sk.tech) + '</div>';
-      } else if (secName === "Languages" && Sk.languages) {
-        h += sh('Languages'); h += '<div>' + esc(Sk.languages) + '</div>';
+      } else if (secName === "Skills" && (Sk.languages || Sk.tools || Sk.tech)) {
+        h += sh('Technical Skills'); 
+        if (Sk.languages) h += '<div><span class="rb">Languages</span>: ' + esc(Sk.languages) + '</div>';
+        if (Sk.tools) h += '<div><span class="rb">Developer Tools</span>: ' + esc(Sk.tools) + '</div>'; 
+        if (Sk.tech) h += '<div><span class="rb">Technologies/Frameworks</span>: ' + esc(Sk.tech) + '</div>';
+      } else if (secName === "Languages" && S.spokenLanguages) {
+        h += sh('Languages'); h += '<div>' + esc(S.spokenLanguages) + '</div>';
       } else if (secName === "Certifications" && Ct && Ct.length) {
         h += sh('Certifications'); h += '<div class="rcert"><ul>'; Ct.forEach(function (c) { var np = c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener" style="color:' + st.brand + ';font-weight:700">' + esc(c.name) + '</a>' : '<span class="rb" style="color:' + st.brand + '">' + esc(c.name) + '</span>'; var meta = (c.provider ? esc(c.provider) : '') + (dr(c.start, c.end) ? ' (' + esc(dr(c.start, c.end)) + ')' : ''); h += '<li>• ' + np + (meta ? ' - ' + meta : ''); if (c.skills) h += '<br><span class="rb" style="color:' + st.brand + '">Skills learned:</span> ' + esc(c.skills); h += '</li>'; }); h += '</ul></div>';
       } else if (secName === "Leadership" && L.length) {
@@ -1108,7 +1114,7 @@
     renderResume();
   });
   async function getAISummary() {
-    const skills = [S.skills.languages, S.skills.tools, S.skills.tech].filter(Boolean).join(', ');
+    const skills = [S.skills.languages, S.skills.tools, S.skills.tech, S.spokenLanguages].filter(Boolean).join(', ');
     const experience = S.experience.map(e => e.role + " at " + e.company + " (" + e.bullets.join('; ') + ")").join(' | ');
 
     if (!skills && !experience) {
@@ -1215,6 +1221,13 @@
         // Migration for new sections
         if (S.sectionOrder && !S.sectionOrder.includes("Languages")) {
           S.sectionOrder.push("Languages");
+        }
+        // Migration for spoken languages
+        if (S.spokenLanguages === undefined && S.skills && S.skills.languages) {
+           S.spokenLanguages = S.skills.languages;
+           S.skills.languages = ""; // Clear it so it can be used for programming
+        } else if (S.spokenLanguages === undefined) {
+           S.spokenLanguages = "";
         }
         renderTabs(); renderForm(); renderResume();
       } catch (e) { console.error("Load failed", e); }

@@ -70,6 +70,7 @@ app.post('/api/parse-resume', async (req, res) => {
   "experience": [{"company": "", "role": "", "start": "", "end": "", "loc": "", "bullets": []}],
   "projects": [{"name": "", "tech": "", "date": "", "bullets": []}],
   "skills": {"languages": "", "tools": "", "tech": ""},
+  "spokenLanguages": "",
   "leadership": [{"org": "", "role": "", "start": "", "end": "", "loc": "", "bullets": []}],
   "certifications": [{"name": "", "url": "", "provider": "", "start": "", "end": "", "skills": ""}]
 }
