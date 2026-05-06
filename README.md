@@ -85,11 +85,11 @@ I built this tool to:
 
 ## 📌 Future Improvements
 
-- Backend integration for AI feature  
-- Multiple resume templates  
-- Save & load resume data  
-- Drag-and-drop section ordering  
-- Resume scoring (ATS optimization)  
+- [x] Backend integration for AI feature  
+- [x] Multiple resume templates  
+- [x] Save & load resume data  
+- [x] Drag-and-drop section ordering  
+- [x] Resume scoring (ATS optimization)  
 
 ---
 

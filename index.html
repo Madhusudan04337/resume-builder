@@ -808,30 +808,42 @@
     hackerrank: { bg: "#F0FDF4", col: "#15803D" }, codechef: { bg: "#FFF7ED", col: "#C2410C" }
   };
   var S = {
-    personal: { firstName: "", lastName: "", address: "", phone: "", email: "", linkedin: "", github: "", portfolio: "", leetcode: "", gfg: "", twitter: "", hackerrank: "", codechef: "" },
+    personal: { firstName: "", lastName: "", address: "", phone: "", email: "", linkedin: "", github: "", portfolio: "", leetcode: "", gfg: "", twitter: "", hackerrank: "", codechef: "", summary: "" },
     headline: "",
-    socialEnabled: { phone: true, email: true, linkedin: true, github: true, portfolio: false, leetcode: false, gfg: false, twitter: false, hackerrank: false, codechef: false },
+    socialEnabled: { phone: true, email: true, linkedin: true, github: true, portfolio: false, leetcode: false, gfg: false, twitter: false, hackerrank: false, codechef: false, summary: true },
+    template: "classic",
     education: [], coursework: [], experience: [], projects: [],
     skills: { languages: "", tools: "", tech: "" },
-    leadership: [], certifications: []
+    leadership: [], certifications: [],
+    sectionOrder: ["Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Certifications", "Leadership"]
   };
-  var TABS = ["Personal", "Education", "Coursework", "Experience", "Projects", "Skills", "Leadership", "Certifications"];
+  var TABS = ["Personal", "Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Leadership", "Certifications"];
   var activeTab = "Personal";
   function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function linkify(text) {
+    if (!text) return "";
+    var urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+    return text.replace(urlRegex, function(url) {
+      var href = url.startsWith("http") ? url : "https://" + url;
+      return '<a href="' + href + '" target="_blank" rel="noopener" style="color:#1a0dab;text-decoration:underline">' + url + '</a>';
+    });
+  }
   var DEFS = {
     education: { university: "", degree: "", start: "", end: "", loc: "" },
     experience: { company: "", role: "", start: "", end: "", loc: "", bullets: [] },
-    projects: { name: "", tech: "", date: "", bullets: [] },
+    projects: { name: "", tech: "", date: "", github: "", demo: "", bullets: [] },
     leadership: { org: "", role: "", start: "", end: "", loc: "", bullets: [] },
     certifications: { name: "", url: "", provider: "", start: "", end: "", skills: "" }
   };
   async function parseResumeWithAI(text) {
-    var prompt = 'You are a resume parser. Extract all information and return ONLY raw JSON with this structure:\n{"personal":{"firstName":"","lastName":"","address":"","phone":"","email":"","linkedin":"","github":"","portfolio":"","leetcode":"","gfg":"","twitter":"","hackerrank":"","codechef":""},"headline":"","education":[{"university":"","degree":"","start":"","end":"","loc":""}],"coursework":[],"experience":[{"company":"","role":"","start":"","end":"","loc":"","bullets":[]}],"projects":[{"name":"","tech":"","date":"","bullets":[]}],"skills":{"languages":"","tools":"","tech":""},"leadership":[{"org":"","role":"","start":"","end":"","loc":"","bullets":[]}],"certifications":[{"name":"","url":"","provider":"","start":"","end":"","skills":""}]}\nResume:\n"""\n' + text + '\n"""';
-    var resp = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 3000, messages: [{ role: "user", content: prompt }] }) });
-    if (!resp.ok) throw new Error("API error " + resp.status);
-    var data = await resp.json();
-    var raw = data.content.map(function (b) { return b.text || ""; }).join("").replace(/```json|```/g, "").trim();
-    return JSON.parse(raw);
+    const response = await fetch('http://localhost:5000/api/parse-resume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+    });
+
+    if (!response.ok) throw new Error("Backend server error");
+    return await response.json();
   }
   function applyParsed(p) {
     if (p.personal) { Object.keys(p.personal).forEach(function (k) { if (k in S.personal && p.personal[k]) S.personal[k] = p.personal[k]; }); SOCIAL_DEFS.forEach(function (sd) { if (S.personal[sd.key]) S.socialEnabled[sd.key] = true; }); }
@@ -862,6 +874,12 @@
       '<div class="fld"><label class="lbl">Last name</label><input class="inp" data-p="personal.lastName" value="' + esc(P.lastName) + '" placeholder="Doe"></div></div>' +
       '<div class="fld"><label class="lbl">Headline / title</label><input class="inp" data-p="headline" value="' + esc(S.headline) + '" placeholder="Software Engineer | Python | React"></div>' +
       '<div class="fld" style="margin-bottom:14px"><label class="lbl">Address / location</label><input class="inp" data-p="personal.address" value="' + esc(P.address) + '" placeholder="City, State"></div>' +
+      sec('Professional Summary') +
+      '<div class="fld"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
+      '<div style="display:flex;align-items:center;gap:8px"><button class="stog ' + (S.socialEnabled.summary ? 'on' : 'off') + '" data-tog="summary"></button>' +
+      '<label class="lbl" style="margin-bottom:0">Show on resume</label></div>' +
+      '<button class="ai-btn" id="aiPolishBtn" style="padding:4px 10px;font-size:10.5px">✨ AI Polish</button></div>' +
+      '<textarea class="ta" id="summary-field" data-p="personal.summary" placeholder="Experienced Software Engineer with a focus on..." style="min-height:80px;' + (S.socialEnabled.summary ? '' : 'opacity:0.6') + '">' + esc(P.summary) + '</textarea></div>' +
       sec('Social & contact links') +
       '<p class="hint" style="margin-bottom:10px">Toggle which links appear on your resume header.</p>' +
       SOCIAL_DEFS.map(function (sd) {
@@ -870,7 +888,23 @@
           '<button class="stog ' + (on ? 'on' : 'off') + '" data-tog="' + sd.key + '"></button>' +
           '<div class="sinfo"><label class="lbl">' + sd.label + '</label>' +
           '<input class="sinp" placeholder="' + esc(sd.placeholder) + '" data-p="personal.' + sd.key + '" value="' + esc(val) + '"></div></div>';
-      }).join('');
+      }).join('') +
+      sec('Resume Settings') +
+      '<div class="fld"><label class="lbl">Resume Template</label>' +
+      '<select class="inp" data-p="template" style="height:34px;cursor:pointer">' +
+      '<option value="classic"' + (S.template === 'classic' ? ' selected' : '') + '>Classic (Serif, Centered)</option>' +
+      '<option value="modern"' + (S.template === 'modern' ? ' selected' : '') + '>Modern (Sans, Left-aligned)</option>' +
+      '<option value="minimal"' + (S.template === 'minimal' ? ' selected' : '') + '>Minimal (Condensed)</option>' +
+      '</select></div>' +
+      '<div style="margin-top:12px"><button class="ai-btn" id="scoreBtn" style="width:100%;justify-content:center;background:#059669">📊 Score My Resume (ATS Check)</button>' +
+      '<div id="scoreResult" style="margin-top:8px"></div></div>' +
+      sec('Section Order (Drag to reorder)') +
+      '<div id="orderList" style="display:flex;flex-direction:column;gap:4px">' +
+      S.sectionOrder.map(function(name, i) {
+        return '<div class="entry" draggable="true" data-idx="' + i + '" style="cursor:grab;margin-bottom:0;padding:6px 10px;display:flex;align-items:center;gap:8px">' +
+          '<span style="color:#94A3B8">☰</span><span style="font-size:11.5px">' + name + '</span></div>';
+      }).join('') +
+      '</div>';
   }
   function formHTML(tab) {
     if (tab === "Personal") return personalForm();
@@ -905,6 +939,8 @@
       Pr.map(function (p, i) {
         return '<div class="entry"><button class="rmv" data-rm="projects" data-idx="' + i + '">×</button>' +
           '<div class="fld"><label class="lbl">Project name</label><input class="inp" data-p="projects.' + i + '.name" value="' + esc(p.name) + '" placeholder="My Portfolio"></div>' +
+          '<div class="row2"><div class="fld"><label class="lbl">GitHub Repository</label><input class="inp" data-p="projects.' + i + '.github" value="' + esc(p.github) + '" placeholder="https://github.com/..."></div>' +
+          '<div class="fld"><label class="lbl">Live Demo</label><input class="inp" data-p="projects.' + i + '.demo" value="' + esc(p.demo) + '" placeholder="https://..."></div></div>' +
           '<div class="fld"><label class="lbl">Tech stack</label><input class="inp" data-p="projects.' + i + '.tech" value="' + esc(p.tech) + '" placeholder="React, Node.js, MongoDB"></div>' +
           '<div class="fld"><label class="lbl">Date</label><input class="inp" data-p="projects.' + i + '.date" value="' + esc(p.date) + '" placeholder="2025"></div>' +
           '<div class="fld"><label class="lbl">Bullets (one per line)</label>' +
@@ -912,9 +948,12 @@
       }).join('') +
       '<button class="addbtn" data-add="projects">+ Add project</button>';
     if (tab === "Skills") return sec('Technical skills') +
-      '<div class="fld"><label class="lbl">Hard skills / languages</label><input class="inp" data-p="skills.languages" value="' + esc(Sk.languages) + '" placeholder="Python, JavaScript, TypeScript, SQL"></div>' +
       '<div class="fld"><label class="lbl">Developer tools</label><input class="inp" data-p="skills.tools" value="' + esc(Sk.tools) + '" placeholder="VS Code, Git, Postman, Docker"></div>' +
       '<div class="fld"><label class="lbl">Technologies / frameworks</label><input class="inp" data-p="skills.tech" value="' + esc(Sk.tech) + '" placeholder="React, Node.js, Django, REST APIs"></div>';
+    if (tab === "Languages") return sec('Languages') +
+      '<div class="fld"><label class="lbl">Technical or Spoken Languages</label>' +
+      '<input class="inp" data-p="skills.languages" value="' + esc(Sk.languages) + '" placeholder="English, Hindi, Python, Java, SQL"></div>' +
+      '<p class="hint">List the languages you are proficient in.</p>';
     if (tab === "Leadership") return sec('Achievements & extracurricular') +
       L.map(function (e, i) {
         return '<div class="entry"><button class="rmv" data-rm="leadership" data-idx="' + i + '">×</button>' +
@@ -940,14 +979,25 @@
       '<button class="addbtn" data-add="certifications">+ Add certification</button>';
     return '';
   }
-  function buls(arr) { if (!arr || !arr.length) return ''; return '<ul class="rbl">' + arr.filter(Boolean).map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul>'; }
+  function buls(arr) { if (!arr || !arr.length) return ''; return '<ul class="rbl">' + arr.filter(Boolean).map(function (b) { return '<li>' + linkify(esc(b)) + '</li>'; }).join('') + '</ul>'; }
   function dr(s, e) { return [s, e].filter(Boolean).join(' – '); }
   function resumeHTML() {
     var P = S.personal, E = S.education, C = S.coursework, X = S.experience, Pr = S.projects, Sk = S.skills, L = S.leadership, Ct = S.certifications;
+    var t = S.template || "classic";
     var h = '';
-    h += '<div class="rn">' + esc(P.firstName) + (P.lastName ? ' ' + esc(P.lastName) : '') + '</div>';
-    if (S.headline) h += '<div class="rtitle">' + esc(S.headline) + '</div>';
-    if (P.address) h += '<div class="ra">' + esc(P.address) + '</div>';
+    
+    // Template styles
+    var st = {
+      classic: { font: "Georgia, serif", align: "center", sectionLine: "1.5px solid #000", bg: "#fff", col: "#000" },
+      modern: { font: "Inter, system-ui, sans-serif", align: "left", sectionLine: "2px solid #4F46E5", bg: "#fff", col: "#1F2937" },
+      minimal: { font: "Roboto, sans-serif", align: "left", sectionLine: "0.5px solid #64748b", bg: "#fff", col: "#334155" }
+    }[t];
+
+    h += '<div style="font-family:' + st.font + ';color:' + st.col + '">';
+    h += '<div class="rn" style="text-align:' + st.align + '">' + esc(P.firstName) + (P.lastName ? ' ' + esc(P.lastName) : '') + '</div>';
+    if (S.headline) h += '<div class="rtitle" style="text-align:' + st.align + '">' + esc(S.headline) + '</div>';
+    if (P.address) h += '<div class="ra" style="text-align:' + st.align + '">' + esc(P.address) + '</div>';
+    
     var ctItems = [];
     SOCIAL_DEFS.forEach(function (sd) {
       if (!S.socialEnabled[sd.key]) return;
@@ -956,15 +1006,53 @@
       var ico = '<span style="font-size:9px;font-weight:700;margin-right:2px">' + sd.icon + '</span>';
       ctItems.push('<span style="display:flex;align-items:center;gap:1px">' + ico + (href ? '<a href="' + esc(href) + '" target="_blank" rel="noopener" style="color:#1a0dab;text-decoration:none">' + esc(val) + '</a>' : esc(val)) + '</span>');
     });
-    if (ctItems.length) h += '<div class="rc">' + ctItems.join('<span style="color:#999;padding:0 2px">|</span>') + '</div>';
-    if (E.length) { h += '<div class="rsh">Education</div>'; E.forEach(function (e) { h += '<div class="rent"><div class="rrow"><span class="rb">' + esc(e.university) + '</span><span>' + esc(dr(e.start, e.end)) + '</span></div><div class="rrow"><span class="ri">' + esc(e.degree) + '</span><span class="ri">' + esc(e.loc) + '</span></div></div>'; }); }
-    var crs = C.filter(Boolean);
-    if (crs.length) { h += '<div class="rsh">Relevant Coursework</div><div class="rcrs">'; var pc = Math.ceil(crs.length / 4); for (var c = 0; c < 4; c++) { var sl = crs.slice(c * pc, (c + 1) * pc); if (sl.length) h += '<ul>' + sl.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>'; } h += '</div>'; }
-    if (X.length) { h += '<div class="rsh">Work Experience</div>'; X.forEach(function (e) { h += '<div class="rent"><div class="rrow"><span class="rb">' + esc(e.company) + '</span><span>' + esc(dr(e.start, e.end)) + '</span></div><div class="rrow"><span class="ri">' + esc(e.role) + '</span><span class="ri">' + esc(e.loc) + '</span></div>' + buls(e.bullets) + '</div>'; }); }
-    if (Pr.length) { h += '<div class="rsh">Technical Projects</div>'; Pr.forEach(function (p) { h += '<div class="rent"><div class="rrow"><span><span class="rb">' + esc(p.name) + '</span>' + (p.tech ? ' <span class="ri">| ' + esc(p.tech) + '</span>' : '') + '</span><span>' + esc(p.date) + '</span></div>' + buls(p.bullets) + '</div>'; }); }
-    if (Sk.languages || Sk.tools || Sk.tech) { h += '<div class="rsh">Technical Skills</div>'; if (Sk.languages) h += '<div><span class="rb">Hard Skills</span>: ' + esc(Sk.languages) + '</div>'; if (Sk.tools) h += '<div><span class="rb">Developer Tools</span>: ' + esc(Sk.tools) + '</div>'; if (Sk.tech) h += '<div><span class="rb">Technologies/Frameworks</span>: ' + esc(Sk.tech) + '</div>'; }
-    if (Ct && Ct.length) { h += '<div class="rsh">Certifications</div><div class="rcert"><ul>'; Ct.forEach(function (c) { var np = c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.name) + '</a>' : '<span class="rb">' + esc(c.name) + '</span>'; var meta = (c.provider ? esc(c.provider) : '') + (dr(c.start, c.end) ? ' (' + esc(dr(c.start, c.end)) + ')' : ''); h += '<li>• ' + np + (meta ? ' - ' + meta : ''); if (c.skills) h += '<br><span class="rb">Skills learned:</span> ' + esc(c.skills); h += '</li>'; }); h += '</ul></div>'; }
-    if (L.length) { L.forEach(function (e) { if (!e.org && !e.bullets.length) return; h += '<div class="rsh">' + esc(e.org) + '</div>'; if (e.role || dr(e.start, e.end)) { h += '<div class="rrow" style="margin-bottom:3px">'; if (e.role) h += '<span class="ri">' + esc(e.role) + '</span>'; if (dr(e.start, e.end)) h += '<span>' + esc(dr(e.start, e.end)) + '</span>'; h += '</div>'; } if (e.loc) h += '<div class="ri" style="margin-bottom:2px">' + esc(e.loc) + '</div>'; h += '<div class="rach"><ul>' + e.bullets.filter(Boolean).map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul></div>'; }); }
+    
+    if (ctItems.length) h += '<div class="rc" style="justify-content:' + (st.align === 'center' ? 'center' : 'flex-start') + '">' + ctItems.join('<span style="color:#999;padding:0 2px">|</span>') + '</div>';
+    
+    var sh = function(label) { return '<div class="rsh" style="border-bottom:' + st.sectionLine + '">' + label + '</div>'; };
+
+    if (P.summary && S.socialEnabled.summary) {
+      h += sh('Professional Summary');
+      h += '<div style="margin-bottom:8px;font-size:10.5px;text-align:justify">' + linkify(esc(P.summary)) + '</div>';
+    }
+
+    S.sectionOrder.forEach(function(secName) {
+      if (secName === "Education" && E.length) {
+        h += sh('Education'); E.forEach(function (e) { h += '<div class="rent"><div class="rrow"><span class="rb">' + esc(e.university) + '</span><span>' + esc(dr(e.start, e.end)) + '</span></div><div class="rrow"><span class="ri">' + esc(e.degree) + '</span><span class="ri">' + esc(e.loc) + '</span></div></div>'; });
+      } else if (secName === "Coursework") {
+        var crs = C.filter(Boolean);
+        if (crs.length) { h += sh('Relevant Coursework'); h += '<div class="rcrs">'; var pc = Math.ceil(crs.length / 4); for (var c = 0; c < 4; c++) { var sl = crs.slice(c * pc, (c + 1) * pc); if (sl.length) h += '<ul>' + sl.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>'; } h += '</div>'; }
+      } else if (secName === "Experience" && X.length) {
+        h += sh('Work Experience'); X.forEach(function (e) { h += '<div class="rent"><div class="rrow"><span class="rb">' + esc(e.company) + '</span><span>' + esc(dr(e.start, e.end)) + '</span></div><div class="rrow"><span class="ri">' + esc(e.role) + '</span><span class="ri">' + esc(e.loc) + '</span></div>' + buls(e.bullets) + '</div>'; });
+      } else if (secName === "Projects" && Pr.length) {
+        h += sh('Technical Projects'); Pr.forEach(function (p) { 
+          h += '<div class="rent"><div class="rrow"><span><span class="rb">' + esc(p.name) + '</span>' + (p.tech ? ' <span class="ri">| ' + esc(p.tech) + '</span>' : '') + '</span><span>' + esc(p.date) + '</span></div>';
+          var links = [];
+          if (p.github) {
+            var ghUrl = p.github.startsWith('http') ? p.github : 'https://' + p.github;
+            links.push('<a href="' + ghUrl + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:3px;color:#1a0dab;text-decoration:none;font-size:9.5px;margin-top:2px">' +
+              '<svg style="width:10px;height:10px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>GitHub Repository</a>');
+          }
+          if (p.demo) {
+            var demoUrl = p.demo.startsWith('http') ? p.demo : 'https://' + p.demo;
+            links.push('<a href="' + demoUrl + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:3px;color:#1a0dab;text-decoration:none;font-size:9.5px;margin-top:2px">' +
+              '<svg style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>Live Demo</a>');
+          }
+          if (links.length) h += '<div style="display:flex;gap:12px;margin-bottom:3px">' + links.join('') + '</div>';
+          h += buls(p.bullets) + '</div>'; 
+        });
+      } else if (secName === "Skills" && (Sk.tools || Sk.tech)) {
+        h += sh('Technical Skills'); if (Sk.tools) h += '<div><span class="rb">Developer Tools</span>: ' + esc(Sk.tools) + '</div>'; if (Sk.tech) h += '<div><span class="rb">Technologies/Frameworks</span>: ' + esc(Sk.tech) + '</div>';
+      } else if (secName === "Languages" && Sk.languages) {
+        h += sh('Languages'); h += '<div>' + esc(Sk.languages) + '</div>';
+      } else if (secName === "Certifications" && Ct && Ct.length) {
+        h += sh('Certifications'); h += '<div class="rcert"><ul>'; Ct.forEach(function (c) { var np = c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.name) + '</a>' : '<span class="rb">' + esc(c.name) + '</span>'; var meta = (c.provider ? esc(c.provider) : '') + (dr(c.start, c.end) ? ' (' + esc(dr(c.start, c.end)) + ')' : ''); h += '<li>• ' + np + (meta ? ' - ' + meta : ''); if (c.skills) h += '<br><span class="rb">Skills learned:</span> ' + esc(c.skills); h += '</li>'; }); h += '</ul></div>';
+      } else if (secName === "Leadership" && L.length) {
+        L.forEach(function (e) { if (!e.org && !e.bullets.length) return; h += sh(esc(e.org)); if (e.role || dr(e.start, e.end)) { h += '<div class="rrow" style="margin-bottom:3px">'; if (e.role) h += '<span class="ri">' + esc(e.role) + '</span>'; if (dr(e.start, e.end)) h += '<span>' + esc(dr(e.start, e.end)) + '</span>'; h += '</div>'; } if (e.loc) h += '<div class="ri" style="margin-bottom:2px">' + esc(e.loc) + '</div>'; h += '<div class="rach"><ul>' + e.bullets.filter(Boolean).map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul></div>'; });
+      }
+    });
+    
+    h += '</div>';
     return h;
   }
   function renderTabs() { document.getElementById('tabs').innerHTML = TABS.map(function (t) { return '<button class="tab' + (t === activeTab ? ' on' : '') + '" data-tab="' + t + '">' + t + '</button>'; }).join(''); }
@@ -989,6 +1077,130 @@
     else cur[last] = t.value;
     renderResume();
   });
+  async function getAISummary() {
+    const skills = [S.skills.languages, S.skills.tools, S.skills.tech].filter(Boolean).join(', ');
+    const experience = S.experience.map(e => e.role + " at " + e.company + " (" + e.bullets.join('; ') + ")").join(' | ');
+
+    if (!skills && !experience) {
+      alert("Please fill in some skills or experience first so AI can generate a summary!");
+      return;
+    }
+
+    const btn = document.getElementById('aiPolishBtn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin" style="width:10px;height:10px"></span> Polishing...';
+
+    try {
+      const response = await fetch('http://localhost:5000/api/generate-summary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ skills, experience })
+      });
+
+      if (!response.ok) throw new Error("Backend server error");
+      const data = await response.json();
+      
+      S.personal.summary = data.summary;
+      const field = document.getElementById('summary-field');
+      if (field) field.value = data.summary;
+      renderResume();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to generate summary. Make sure the backend server is running on port 5000.");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  }
+
+  document.getElementById('fc').addEventListener('click', function (e) {
+    if (e.target.id === 'aiPolishBtn') {
+      getAISummary();
+    }
+  });
+
+  async function scoreResume() {
+    const btn = document.getElementById('scoreBtn');
+    const resDiv = document.getElementById('scoreResult');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin"></span> Analyzing...';
+    resDiv.innerHTML = '';
+
+    try {
+      const response = await fetch('http://localhost:5000/api/score-resume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resume: JSON.stringify(S) })
+      });
+      if (!response.ok) throw new Error("Backend error");
+      const data = await response.json();
+      resDiv.innerHTML = '<div style="background:#F0FDF4;border:1px solid #BBF7D0;padding:10px;border-radius:8px;font-size:12px">' +
+        '<div style="font-weight:700;color:#166534;margin-bottom:4px">ATS Score: ' + data.score + '/100</div>' +
+        '<div style="color:#15803D">' + data.feedback + '</div></div>';
+    } catch (e) {
+      resDiv.innerHTML = '<div class="ai-err">Failed to score resume. Is server running?</div>';
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '📊 Score My Resume (ATS Check)';
+    }
+  }
+
+  document.getElementById('fc').addEventListener('click', function(e) {
+    if (e.target.id === 'scoreBtn') scoreResume();
+  });
+
+  // Drag and Drop Logic
+  var dragIdx = null;
+  document.getElementById('fc').addEventListener('dragstart', function(e) {
+    var item = e.target.closest('[draggable]');
+    if (!item) return;
+    dragIdx = +item.dataset.idx;
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  document.getElementById('fc').addEventListener('dragover', function(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  });
+  document.getElementById('fc').addEventListener('drop', function(e) {
+    e.preventDefault();
+    var item = e.target.closest('[draggable]');
+    if (!item || dragIdx === null) return;
+    var dropIdx = +item.dataset.idx;
+    if (dragIdx !== dropIdx) {
+      var moving = S.sectionOrder.splice(dragIdx, 1)[0];
+      S.sectionOrder.splice(dropIdx, 0, moving);
+      renderForm(); renderResume();
+    }
+    dragIdx = null;
+  });
+
+  function saveToLocal() { localStorage.setItem('resume_data', JSON.stringify(S)); }
+  function loadFromLocal() {
+    var saved = localStorage.getItem('resume_data');
+    if (saved) {
+      try {
+        var p = JSON.parse(saved);
+        Object.keys(p).forEach(function (k) { S[k] = p[k]; });
+        // Migration for new sections
+        if (S.sectionOrder && !S.sectionOrder.includes("Languages")) {
+          S.sectionOrder.push("Languages");
+        }
+        renderTabs(); renderForm(); renderResume();
+      } catch (e) { console.error("Load failed", e); }
+    }
+  }
+
   document.getElementById('dlbtn').addEventListener('click', function () { window.print(); });
+  
+  // Initialize
+  loadFromLocal();
   renderTabs(); renderForm(); renderResume();
+
+  // Watch for changes to save
+  var originalRenderForm = renderForm;
+  renderForm = function() { originalRenderForm(); saveToLocal(); }
+  var originalRenderResume = renderResume;
+  renderResume = function() { originalRenderResume(); saveToLocal(); }
+
 </script>
