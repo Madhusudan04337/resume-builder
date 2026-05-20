@@ -23,31 +23,45 @@ This project was built to **maintain and reuse my own resume template** while al
 
 ---
 
-## 🤖 AI Smart Import (Important)
+## 🤖 AI Smart Import (Google Gemini API)
 
-This project integrates **Anthropic Claude API** to automatically:
+This project integrates the **Google Gemini API** via the official Node.js SDK (`@google/genai`) to automatically:
 
-- Parse resume text  
-- Extract structured data  
-- Auto-fill all sections  
+- **AI Smart Import / Parsing**: Automatically parses raw resume text and extracts formatted structured JSON to auto-fill all form fields.
+- **AI Summary Generator**: Creates a professional, customized 3-line resume summary based on your skills and experience.
+- **ATS Resume Evaluator**: Analyzes and evaluates your resume to assign an ATS score (0-100) and provides tailored, actionable advice for optimization.
 
-⚠️ **Note:**  
-The AI feature requires a **backend server** to work.
-
-- Direct frontend API calls will NOT work due to:
-  - API key security restrictions  
-  - CORS limitations  
-
-👉 Current version includes **UI + integration logic**, but backend setup is required to enable AI functionality.
+### 🛡️ Robust Failover & Retry Engineering
+To ensure high availability and bypass standard Free Tier rate limits:
+- **Model Fallback**: If the primary model `gemini-2.5-flash` experiences quota exhaustion (429), the backend instantly failovers to the highly-optimized `gemini-2.5-flash-lite`.
+- **Transient Error Recovery**: Built-in exponential backoff retries (up to 2 attempts) for transient `503 Service Unavailable` spikes, ensuring smooth operations.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- HTML5  
-- CSS3  
-- Vanilla JavaScript  
-- Claude API (AI parsing via backend)
+- **Frontend**: HTML5, CSS3, Vanilla JavaScript (Print-ready, A4-optimized layout)
+- **Backend**: Node.js, Express, Cors, Dotenv
+- **AI Engine**: Google Gemini API via official `@google/genai` SDK (running on `gemini-2.5-flash` and `gemini-2.5-flash-lite`)
+
+---
+
+## ⚙️ Quick Backend Setup
+
+1. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+2. **Environment Configuration**:
+   Create a `.env` file in the root directory and add your Gemini API Key:
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+3. **Start the Backend**:
+   ```bash
+   node server.js
+   ```
+   The backend will start running on port `5000`.
 
 ---
 
