@@ -130,10 +130,13 @@ app.post('/api/score-resume', async (req, res) => {
 
     try {
         const response = await generateContentWithFallback({
-            contents: `Analyze this resume data and return ONLY raw JSON in this format: {"score": 85, "feedback": "Detailed 2-line advice..."}
+            contents: `Analyze the following resume data for ATS (Applicant Tracking System) optimization.
+Provide a score from 0 to 100 based on keyword density, clarity of impact in experience bullets (using Action Verbs), structural completeness, and professional terminology.
 
 Data:
-${resume}`,
+${resume}
+
+Return ONLY a JSON object: {"score": 85, "feedback": "Detailed advice..."}`,
             config: {
                 systemInstruction: "You are an ATS (Applicant Tracking System) expert. Analyze the resume and provide a score (0-100) and brief feedback.",
                 responseMimeType: "application/json",
