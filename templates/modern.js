@@ -4,17 +4,16 @@
     var P = S.personal, E = S.education, C = S.coursework, X = S.experience, Pr = S.projects, Sk = S.skills, L = S.leadership, Ct = S.certifications;
     
     // Custom branding colors
-    var iconCol = "#361d76";
-    var brandCol = "#32166f";
+    var iconCol = S.accentColor || "#361d76";
+    var brandCol = S.accentColor || "#32166f";
     
     var st = { font: "'Inter', sans-serif", align: "left", sectionLine: "2px solid " + brandCol, bg: "#fff", col: "#1F2937", brand: brandCol };
     var esc = window.RT.esc, linkify = window.RT.linkify, dr = window.RT.dr, buls = window.RT.buls, sh = window.RT.sh;
 
     var h = '<div style="font-family:' + st.font + ';color:' + st.col + '">';
     h += '<div style="margin-bottom:15px">';
-    // Title made bold as requested
-    h += '<div style="font-size:24px;font-weight:800;color:' + st.brand + ';line-height:1.2;text-transform:uppercase">' + esc(P.firstName) + (P.lastName ? ' ' + esc(P.lastName) : '') + '</div>';
-    if (S.headline) h += '<div style="font-style:italic;font-size:13px;color:' + st.brand + ';margin-top:2px;margin-bottom:8px;font-weight:600">' + esc(S.headline) + '</div>';
+    h += '<div class="rn" style="font-size:24px;font-weight:800;color:' + st.brand + ';line-height:1.2;text-transform:uppercase">' + esc(P.firstName) + (P.lastName ? ' ' + esc(P.lastName) : '') + '</div>';
+    if (S.headline) h += '<div style="font-style:italic;font-size:11px;color:' + st.brand + ';margin-top:4px;font-weight:500;opacity:0.85;text-transform:none">' + esc(S.headline) + '</div>';
     
     var rows = [[], []];
     // Custom Icon color and link color applied
@@ -54,6 +53,27 @@
         if (Sk.languages) h += '<div style="margin-bottom:2px"><span class="rb" style="color:'+st.brand+'">Languages</span>: ' + esc(Sk.languages) + '</div>';
         if (Sk.tools) h += '<div style="margin-bottom:2px"><span class="rb" style="color:'+st.brand+'">Developer Tools</span>: ' + esc(Sk.tools) + '</div>'; 
         if (Sk.tech) h += '<div><span class="rb" style="color:'+st.brand+'">Technologies</span>: ' + esc(Sk.tech) + '</div>';
+      } else if (secName === "Coursework") {
+        var crs = C.filter(Boolean);
+        if (crs.length) {
+          h += sh('Relevant Coursework', st);
+          h += '<div class="rcrs">';
+          var pc = Math.ceil(crs.length / 4);
+          for (var c = 0; c < 4; c++) {
+            var sl = crs.slice(c * pc, (c + 1) * pc);
+            if (sl.length) h += '<ul>' + sl.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>';
+          }
+          h += '</div>';
+        }
+      } else if (secName === "Languages" && S.spokenLanguages) {
+        h += sh('Languages', st); h += '<div>' + esc(S.spokenLanguages) + '</div>';
+      } else if (secName === "Certifications" && Ct && Ct.length) {
+        h += sh('Certifications', st); h += '<div class="rcert"><ul>'; Ct.forEach(function (c) { var np = '<span class="rb" style="color:' + st.brand + ';font-weight:700">' + esc(c.name) + '</span>'; var meta = (c.provider ? esc(c.provider) : '') + (dr(c.start, c.end) ? ' (' + esc(dr(c.start, c.end)) + ')' : ''); h += '<li>• ' + np + (meta ? ' - ' + meta : '') + '</li>'; }); h += '</ul></div>';
+      } else if (secName === "Leadership" && L && L.length) {
+        h += sh('Achievements & Extracurricular', st);
+        L.forEach(function (e) {
+          h += '<div class="rent"><div class="rrow"><span class="rb" style="color:' + st.brand + ';font-weight:700">' + esc(e.org) + '</span><span style="font-weight:600">' + esc(dr(e.start, e.end)) + '</span></div><div class="rrow"><span class="ri" style="color:' + st.brand + ';font-style:italic">' + esc(e.role) + '</span><span class="ri">' + esc(e.loc) + '</span></div>' + buls(e.bullets) + '</div>';
+        });
       }
     });
     h += '</div>';

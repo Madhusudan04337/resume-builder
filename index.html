@@ -3,802 +3,142 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MDK | AI Resume Builder</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0
-  }
-
-  .builder {
-    display: flex;
-    height: 760px;
-    border: .5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-lg);
-    overflow: hidden;
-    font-family: var(--font-sans)
-  }
-
-  .fp {
-    width: 440px;
-    min-width: 440px;
-    background: var(--color-background-primary);
-    display: flex;
-    flex-direction: column;
-    border-right: .5px solid var(--color-border-tertiary)
-  }
-
-  .fh {
-    padding: 14px 16px 12px;
-    border-bottom: .5px solid var(--color-border-tertiary);
-    background: var(--color-background-primary);
-    display: flex;
-    align-items: center;
-    gap: 10px
-  }
-
-  .fh-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    background: #EEF2FF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0
-  }
-
-  .fh-icon svg {
-    width: 15px;
-    height: 15px;
-    stroke: #4F46E5
-  }
-
-  .fh-text h2 {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--color-text-primary);
-    letter-spacing: -.1px
-  }
-
-  .fh-text p {
-    font-size: 11px;
-    color: var(--color-text-secondary);
-    margin-top: 1px
-  }
-
-  .import-panel {
-    padding: 12px 14px;
-    border-bottom: .5px solid var(--color-border-tertiary);
-    background: var(--color-background-secondary)
-  }
-
-  .import-header {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    margin-bottom: 6px
-  }
-
-  .import-badge {
-    font-size: 10px;
-    font-weight: 500;
-    padding: 2px 8px;
-    border-radius: 20px;
-    background: #EEF2FF;
-    color: #4338CA;
-    letter-spacing: .2px;
-    display: flex;
-    align-items: center;
-    gap: 4px
-  }
-
-  .import-badge svg {
-    width: 9px;
-    height: 9px;
-    fill: #4338CA
-  }
-
-  .import-ta {
-    width: 100%;
-    font-size: 11.5px;
-    padding: 8px 10px;
-    border: 1px solid #C7D2FE;
-    border-radius: var(--border-radius-md);
-    background: var(--color-background-primary);
-    color: var(--color-text-primary);
-    font-family: var(--font-sans);
-    resize: none;
-    height: 72px;
-    line-height: 1.55;
-    transition: border-color .15s
-  }
-
-  .import-ta:focus {
-    outline: none;
-    border-color: #6366F1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, .1)
-  }
-
-  .import-ta::placeholder {
-    color: var(--color-text-tertiary);
-    font-size: 11px
-  }
-
-  .import-actions {
-    display: flex;
-    gap: 6px;
-    margin-top: 8px;
-    align-items: center
-  }
-
-  .ai-btn {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 6px 13px;
-    border-radius: var(--border-radius-md);
-    border: none;
-    cursor: pointer;
-    font-size: 11.5px;
-    font-weight: 500;
-    font-family: var(--font-sans);
-    background: #4F46E5;
-    color: #fff;
-    flex-shrink: 0;
-    transition: background .15s
-  }
-
-  .ai-btn:hover {
-    background: #4338CA
-  }
-
-  .ai-btn:disabled {
-    background: #A5B4FC;
-    cursor: not-allowed
-  }
-
-  .ai-btn svg {
-    width: 11px;
-    height: 11px;
-    stroke: #fff
-  }
-
-  .clr-btn {
-    padding: 6px 10px;
-    border-radius: var(--border-radius-md);
-    border: 1px solid #C7C7C7;
-    cursor: pointer;
-    font-size: 11.5px;
-    font-family: var(--font-sans);
-    background: transparent;
-    color: var(--color-text-secondary);
-    transition: background .15s
-  }
-
-  .clr-btn:hover {
-    background: var(--color-background-primary)
-  }
-
-  .ai-status {
-    font-size: 11px;
-    color: var(--color-text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 5px
-  }
-
-  .spin {
-    display: inline-block;
-    width: 11px;
-    height: 11px;
-    border: 1.5px solid #C7D2FE;
-    border-top-color: #4F46E5;
-    border-radius: 50%;
-    animation: spin .7s linear infinite
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg)
-    }
-  }
-
-  .ai-ok {
-    color: #16a34a;
-    font-size: 11px;
-    font-weight: 500
-  }
-
-  .ai-err {
-    color: #dc2626;
-    font-size: 11px
-  }
-
-  .tabs {
-    display: flex;
-    gap: 2px;
-    padding: 10px 14px;
-    border-bottom: .5px solid var(--color-border-tertiary);
-    flex-wrap: wrap;
-    background: var(--color-background-secondary)
-  }
-
-  .tab {
-    font-size: 11px;
-    padding: 4px 9px;
-    border-radius: 6px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    color: var(--color-text-secondary);
-    font-family: var(--font-sans);
-    font-weight: 400;
-    transition: all .15s;
-    white-space: nowrap
-  }
-
-  .tab:hover {
-    background: var(--color-background-primary);
-    color: var(--color-text-primary)
-  }
-
-  .tab.on {
-    background: var(--color-background-primary);
-    color: #4338CA;
-    font-weight: 500;
-    box-shadow: 0 0 0 .5px #C7D2FE
-  }
-
-  .fc {
-    flex: 1;
-    overflow-y: auto;
-    padding: 14px 14px 8px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-border-secondary) transparent
-  }
-
-  .ff {
-    padding: 10px 14px;
-    border-top: .5px solid var(--color-border-tertiary);
-    background: var(--color-background-primary)
-  }
-
-  .dlbtn {
-    width: 100%;
-    padding: 9px;
-    background: #4F46E5;
-    color: #fff;
-    border: none;
-    border-radius: var(--border-radius-md);
-    cursor: pointer;
-    font-size: 12.5px;
-    font-weight: 500;
-    font-family: var(--font-sans);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition: background .15s
-  }
-
-  .dlbtn:hover {
-    background: #4338CA
-  }
-
-  .dlbtn svg {
-    width: 13px;
-    height: 13px;
-    stroke: #fff
-  }
-
-  .lbl {
-    display: block;
-    font-size: 11px;
-    color: var(--color-text-secondary);
-    margin-bottom: 4px;
-    font-weight: 500;
-    letter-spacing: .1px
-  }
-
-  .inp {
-    width: 100%;
-    font-size: 12px;
-    padding: 7px 10px;
-    border: 1px solid #CBD5E1;
-    border-radius: var(--border-radius-md);
-    background: var(--color-background-primary);
-    color: var(--color-text-primary);
-    font-family: var(--font-sans);
-    transition: border-color .15s, box-shadow .15s;
-    height: 32px
-  }
-
-  .inp:focus {
-    outline: none;
-    border-color: #6366F1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, .08)
-  }
-
-  .inp:hover:not(:focus) {
-    border-color: #94A3B8
-  }
-
-  .ta {
-    width: 100%;
-    font-size: 12px;
-    padding: 7px 10px;
-    border: 1px solid #CBD5E1;
-    border-radius: var(--border-radius-md);
-    background: var(--color-background-primary);
-    color: var(--color-text-primary);
-    font-family: var(--font-sans);
-    resize: vertical;
-    min-height: 60px;
-    line-height: 1.55;
-    transition: border-color .15s, box-shadow .15s
-  }
-
-  .ta:focus {
-    outline: none;
-    border-color: #6366F1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, .08)
-  }
-
-  .ta:hover:not(:focus) {
-    border-color: #94A3B8
-  }
-
-  .sinp {
-    width: 100%;
-    font-size: 11px;
-    padding: 4px 8px;
-    border: 1px solid #CBD5E1;
-    border-radius: 6px;
-    background: var(--color-background-primary);
-    color: var(--color-text-primary);
-    font-family: var(--font-sans);
-    height: 26px;
-    transition: border-color .15s
-  }
-
-  .sinp:focus {
-    outline: none;
-    border-color: #6366F1
-  }
-
-  .sinp:hover:not(:focus) {
-    border-color: #94A3B8
-  }
-
-  .fld {
-    margin-bottom: 9px
-  }
-
-  .row2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px
-  }
-
-  .sec-label {
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    letter-spacing: .6px;
-    text-transform: uppercase;
-    margin: 0 0 10px;
-    display: flex;
-    align-items: center;
-    gap: 6px
-  }
-
-  .sec-label::after {
-    content: '';
-    flex: 1;
-    height: .5px;
-    background: var(--color-border-tertiary)
-  }
-
-  .entry {
-    background: var(--color-background-secondary);
-    border: 1px solid #E2E8F0;
-    border-radius: var(--border-radius-md);
-    padding: 10px 32px 10px 10px;
-    margin-bottom: 8px;
-    position: relative;
-    transition: border-color .15s
-  }
-
-  .entry:hover {
-    border-color: #CBD5E1
-  }
-
-  .entry[draggable="true"]:active {
-    opacity: 0.5;
-    background: #EEF2FF;
-  }
-
-  .rmv {
-    position: absolute;
-    top: 8px;
-    right: 9px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 18px;
-    height: 18px;
-    border-radius: 4px;
-    color: var(--color-text-secondary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 15px;
-    line-height: 1;
-    padding: 0;
-    transition: background .15s, color .15s
-  }
-
-  .rmv:hover {
-    background: #FEE2E2;
-    color: #DC2626
-  }
-
-  .addbtn {
-    width: 100%;
-    padding: 7px;
-    background: transparent;
-    border: 1px dashed #CBD5E1;
-    border-radius: var(--border-radius-md);
-    cursor: pointer;
-    font-size: 11.5px;
-    color: var(--color-text-secondary);
-    font-family: var(--font-sans);
-    margin-top: 4px;
-    transition: all .15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px
-  }
-
-  .addbtn:hover {
-    background: var(--color-background-secondary);
-    border-color: #6366F1;
-    color: #4F46E5
-  }
-
-  .hint {
-    font-size: 11px;
-    color: var(--color-text-tertiary);
-    margin-top: 3px;
-    line-height: 1.4
-  }
-
-  .srow {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 7px;
-    padding: 7px 8px;
-    border-radius: var(--border-radius-md);
-    border: .5px solid transparent;
-    transition: all .15s
-  }
-
-  .srow:hover {
-    background: var(--color-background-secondary);
-    border-color: var(--color-border-tertiary)
-  }
-
-  .sico {
-    width: 26px;
-    height: 26px;
-    border-radius: 7px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 10px;
-    font-weight: 700;
-    transition: all .15s
-  }
-
-  .stog {
-    width: 34px;
-    height: 19px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    position: relative;
-    flex-shrink: 0;
-    transition: background .2s
-  }
-
-  .stog::after {
-    content: '';
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background: #fff;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    transition: transform .2s;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, .15)
-  }
-
-  .stog.on {
-    background: #4F46E5
-  }
-
-  .stog.on::after {
-    transform: translateX(15px)
-  }
-
-  .stog.off {
-    background: #D1D5DB
-  }
-
-  .sinfo {
-    flex: 1;
-    min-width: 0
-  }
-
-  .sinfo .lbl {
-    margin-bottom: 2px;
-    font-size: 11px
-  }
-
-  .pp {
-    flex: 1;
-    background: #E8E4DE;
-    overflow: auto;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 20px; /* Outer page margin */
-  }
-
-  .rp {
-    background: #fff;
-    color: #000;
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 10.5px;
-    line-height: 1.35;
-    width: 210mm;
-    min-height: 297mm;
-    padding: 10.6mm 11.9mm; /* Top: 40px, L/R: 45px */
-    margin: auto;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, .12);
-  }
-
-  .rn {
-    font-size: 25px;
-    font-variant: small-caps;
-    text-align: center;
-    font-weight: 700;
-    letter-spacing: 2px;
-    margin-bottom: 3px;
-    font-family: Georgia, serif
-  }
-
-  .rtitle {
-    text-align: center;
-    font-size: 10.5px;
-    margin-bottom: 3px;
-    font-style: italic;
-    color: #333
-  }
-
-  .ra {
-    text-align: center;
-    font-size: 10px;
-    margin-bottom: 3px
-  }
-
-  .rc {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    font-size: 10px;
-    margin-bottom: 9px;
-    flex-wrap: wrap
-  }
-
-  .rc a {
-    color: #1a0dab;
-    text-decoration: none
-  }
-
-  .rsh {
-    font-size: 12px;
-    font-weight: 700;
-    border-bottom: 1.5px solid #000;
-    padding-bottom: 1px;
-    margin: 8px 0 4px;
-    font-family: Georgia, serif
-  }
-
-  .rrow {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline
-  }
-
-  .rb {
-    font-weight: 700
-  }
-
-  .ri {
-    font-style: italic
-  }
-
-  .rbl {
-    list-style: none;
-    padding: 0;
-    margin: 2px 0
-  }
-
-  .rbl li {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 2px;
-    font-size: 10.5px
-  }
-
-  .rbl li::before {
-    content: "•";
-    flex-shrink: 0
-  }
-
-  .rent {
-    margin-bottom: 5px
-  }
-
-  .rcrs {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr)
-  }
-
-  .rcrs ul {
-    list-style: disc;
-    padding-left: 14px;
-    margin: 0;
-    font-size: 10.5px
-  }
-
-  .rcert ul {
-    list-style: none;
-    padding: 0;
-    margin: 0
-  }
-
-  .rcert li {
-    margin-bottom: 4px;
-    font-size: 10.5px
-  }
-
-  .rcert a {
-    color: #1a0dab;
-    text-decoration: underline
-  }
-
-  .rach ul {
-    list-style: none;
-    padding: 0;
-    margin: 0
-  }
-
-  .rach li {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 2px;
-    font-size: 10.5px
-  }
-
-  .rach li::before {
-    content: "•";
-    flex-shrink: 0
-  }
-
-  @page {
-    size: A4;
-    margin: 0;
-  }
-
-  @media print {
-      body{
-        margin:0;
-      }
-
-    .fp,
-    .tabs,
-    .ff,
-    .import-panel {
-      display: none !important
-    }
-
-    .builder {
-      height: auto !important;
-      border: none !important;
-      border-radius: 0 !important
-    }
-
-    .pp {
-      background: white !important;
-      padding: 0 !important;
-      display: block !important
-    }
-
-    .rp {
-      width: 210mm !important;
-      min-height: 297mm !important;
-      padding: 10.6mm 11.9mm !important;
-      box-shadow: none !important;
-    }
-  }
-</style>
+  <title>MDK | AI Resume Workspace</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="builder">
-  <div class="fp">
-    <div class="fh">
-      <div class="fh-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="18" height="18" rx="2" />
-          <line x1="8" y1="10" x2="16" y2="10" />
-          <line x1="8" y1="14" x2="14" y2="14" />
+<div class="app-shell">
+  <!-- Top Workspace Header -->
+  <header class="app-header">
+    <div class="logo-container">
+      <div class="logo-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
         </svg>
       </div>
-      <div class="fh-text">
-        <h2>Resume Builder</h2>
-        <p>Fill in your details or use AI Smart Import</p>
-      </div>
+      <span class="logo-text">MDK Resume AI</span>
+      <span class="app-mode-badge">WORKSPACE PRO</span>
     </div>
-    <div class="import-panel">
-      <div class="import-header">
-        <span class="import-badge">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-          </svg>
-          AI Smart Import
-        </span>
-        <span style="font-size:12px;font-weight:500;color:var(--color-text-primary)">Data Warehouse</span>
-      </div>
-      <textarea class="import-ta" id="importTa"
-        placeholder="Paste your full resume text here to auto-fill all sections..."></textarea>
-      <div class="import-actions">
-        <button class="ai-btn" id="aiBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path
-              d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-          </svg>
-          Auto-fill with AI
-        </button>
-        <button class="clr-btn" id="clrBtn">Clear</button>
-        <span class="ai-status" id="aiStatus"></span>
-      </div>
+
+    <!-- Active Document Title (Double click to rename) -->
+    <div class="document-title-container" id="titleContainer" title="Double click to rename">
+      <span class="document-title-text" id="docTitle">my_resume</span>
+      <span class="document-title-ext">.pdf</span>
+      <span class="document-edit-icon">✏️</span>
     </div>
-    <div class="tabs" id="tabs"></div>
-    <div class="fc" id="fc"></div>
-    <div class="ff">
+
+    <div class="header-controls">
+      <!-- Quick Action: Export PDF -->
       <button class="dlbtn" id="dlbtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
           <polyline points="7 10 12 15 17 10" />
           <line x1="12" y1="15" x2="12" y2="3" />
         </svg>
-        Download as PDF
+        Export PDF
+      </button>
+
+      <!-- Theme Switcher -->
+      <button class="control-btn" id="themeToggleBtn" title="Toggle Theme" style="padding: 6px; border-radius: 50%; width: 32px; height: 32px; background:var(--bg-input); border:1px solid var(--border-color); box-shadow:var(--shadow-sm);">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px; height:14px; color:var(--text-primary)"></svg>
       </button>
     </div>
+  </header>
+
+  <!-- Split Pane Shell -->
+  <div class="app-main">
+    <!-- Leftmost Vertical Activity Bar -->
+    <nav class="activity-bar">
+      <div class="activity-tabs">
+        <button class="activity-tab active" data-view="editor" title="Document Editor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span class="tab-label">Editor</span>
+        </button>
+        <button class="activity-tab" data-view="ai" title="Gemini AI Co-pilot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span class="tab-label">AI Co-pilot</span>
+        </button>
+        <button class="activity-tab" data-view="ats" title="ATS Score Auditor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+          <span class="tab-label">ATS score</span>
+        </button>
+        <button class="activity-tab" data-view="design" title="Design settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="9" y1="9" x2="21" y2="9"/></svg>
+          <span class="tab-label">Design Lab</span>
+        </button>
+        <button class="activity-tab" data-view="file" title="Workspace Files">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <span class="tab-label">Files</span>
+        </button>
+      </div>
+      
+      <!-- System Heartbeat indicator -->
+      <div class="activity-footer" title="System Connected">
+        <div class="api-pulse-dot"></div>
+      </div>
+    </nav>
+
+    <!-- Primary Dynamic Sidebar -->
+    <aside class="primary-sidebar">
+      <div class="sidebar-header">
+        <h3 id="sidebarTitle">Document Editor</h3>
+        <p id="sidebarSubtitle">Modify sections and build details</p>
+      </div>
+      
+      <div class="sidebar-scrollable-content" id="sidebarContent">
+        <!-- Renders dynamically -->
+      </div>
+    </aside>
+
+    <!-- Main Workspace Area -->
+    <main class="app-editor-area">
+      <!-- Toolbar above the preview page -->
+      <div class="workspace-toolbar">
+        <div class="toolbar-left">
+          <span class="toolbar-status-badge">A4 Standard Preview</span>
+        </div>
+        <div class="toolbar-center">
+          <span class="control-label">Scale:</span>
+          <button class="control-btn" id="zoomOutBtn" title="Zoom Out">−</button>
+          <span id="zoomLabel" style="font-size:11px; font-weight:700; min-width:36px; text-align:center; color:var(--text-primary)">100%</span>
+          <button class="control-btn" id="zoomInBtn" title="Zoom In">+</button>
+          <button class="control-btn" id="zoomFitBtn" title="Fit Screen">Fit</button>
+        </div>
+        <div class="toolbar-right">
+          <span id="wordCountLabel" class="toolbar-stat">0 words</span>
+        </div>
+      </div>
+
+      <!-- Canvas container -->
+      <div class="pp">
+        <div class="resume-zoom-container" id="resumeZoomContainer">
+          <div class="rp" id="rp"></div>
+        </div>
+      </div>
+    </main>
   </div>
-  <div class="pp">
-    <div class="rp" id="rp"></div>
-  </div>
+
+  <!-- Bottom Diagnostics Status Bar -->
+  <footer class="status-bar">
+    <div class="status-left">
+      <span class="status-indicator ready"><span class="pulse-dot"></span> Gemini API Online</span>
+      <span class="status-sep">|</span>
+      <span class="status-item">Model: <strong style="color:var(--color-indigo)">gemini-2.5-flash-lite</strong></span>
+      <span class="status-sep">|</span>
+      <span class="status-item">Mode: <strong>Workspace Pro</strong></span>
+    </div>
+    <div class="status-right">
+      <span class="status-item" id="statusTemplate">Template: <strong>Classic</strong></span>
+      <span class="status-sep">|</span>
+      <span class="status-item" id="statusAccent">Accent: <strong style="color:var(--resume-brand)">#32166f</strong></span>
+      <span class="status-sep">|</span>
+      <span class="status-item" id="statusSections">Sections: <strong>8</strong></span>
+    </div>
+  </footer>
 </div>
 
 <script src="templates/utils.js"></script>
@@ -829,19 +169,40 @@
     hackerrank: { bg: "#F0FDF4", col: "#15803D" }, codechef: { bg: "#FFF7ED", col: "#C2410C" }
   };
   var S = {
-    personal: { firstName: "", lastName: "", address: "", phone: "", email: "", linkedin: "", github: "", portfolio: "", leetcode: "", gfg: "", twitter: "", hackerrank: "", codechef: "", summary: "" },
+    personal: { firstName: "", lastName: "", address: "", phone: "", email: "", linkedin: "", github: "", portfolio: "", leetcode: "", gfg: "", twitter: "", hackerrank: "", codechef: "", summary: "", photo: "" },
     headline: "",
     socialEnabled: { phone: true, email: true, linkedin: true, github: true, portfolio: false, leetcode: false, gfg: false, twitter: false, hackerrank: false, codechef: false, summary: true },
     template: "classic",
+    accentColor: "#32166f",
     education: [], coursework: [], experience: [], projects: [],
     skills: { languages: "", tools: "", tech: "" },
     spokenLanguages: "",
     leadership: [], certifications: [],
-    sectionOrder: ["Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Certifications", "Leadership"]
+    sectionOrder: ["Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Certifications", "Leadership"],
+    activeView: "editor",
+    fileName: "my_resume",
+    atsScore: null,
+    atsFeedback: ""
   };
   var TABS = ["Personal", "Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Leadership", "Certifications"];
+  
+  var TAB_ICONS = {
+    Personal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+    Education: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>',
+    Coursework: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg>',
+    Experience: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+    Projects: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>',
+    Skills: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    Languages: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
+    Leadership: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    Certifications: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 11 2 2 4-4"/></svg>'
+  };
+
   var activeTab = "Personal";
+  var aiParserInputCache = ""; // Retain text pasted inside parser between view shifts
+  
   function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  
   function linkify(text) {
     if (!text) return "";
     var urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
@@ -850,49 +211,75 @@
       return '<a href="' + href + '" target="_blank" rel="noopener" style="color:#1a0dab;text-decoration:underline">' + url + '</a>';
     });
   }
+  
   var DEFS = {
     education: { university: "", degree: "", start: "", end: "", loc: "" },
     experience: { company: "", role: "", start: "", end: "", loc: "", bullets: [] },
-    projects: { name: "", tech: "", date: "", github: "", demo: "", bullets: [] },
+    projects: { name: "", tech: "", date: "", bullets: [] },
     leadership: { org: "", role: "", start: "", end: "", loc: "", bullets: [] },
     certifications: { name: "", url: "", provider: "", start: "", end: "", skills: "" }
   };
+  
   async function parseResumeWithAI(text) {
     const response = await fetch('http://localhost:5000/api/parse-resume', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text })
     });
-
     if (!response.ok) throw new Error("Backend server error");
     return await response.json();
   }
+  
   function applyParsed(p) {
-    if (p.personal) { Object.keys(p.personal).forEach(function (k) { if (k in S.personal && p.personal[k]) S.personal[k] = p.personal[k]; }); SOCIAL_DEFS.forEach(function (sd) { if (S.personal[sd.key]) S.socialEnabled[sd.key] = true; }); }
+    if (p.personal) { 
+      Object.keys(p.personal).forEach(function (k) { 
+        if (k in S.personal && p.personal[k]) S.personal[k] = p.personal[k]; 
+      }); 
+      SOCIAL_DEFS.forEach(function (sd) { 
+        if (S.personal[sd.key]) S.socialEnabled[sd.key] = true; 
+      }); 
+    }
     if (p.headline) S.headline = p.headline;
     if (Array.isArray(p.education) && p.education.length) S.education = p.education;
     if (Array.isArray(p.coursework) && p.coursework.length) S.coursework = p.coursework;
     if (Array.isArray(p.experience) && p.experience.length) S.experience = p.experience;
     if (Array.isArray(p.projects) && p.projects.length) S.projects = p.projects;
-    if (p.skills) { if (p.skills.languages) S.skills.languages = p.skills.languages; if (p.skills.tools) S.skills.tools = p.skills.tools; if (p.skills.tech) S.skills.tech = p.skills.tech; }
+    if (p.skills) { 
+      if (p.skills.languages) S.skills.languages = p.skills.languages; 
+      if (p.skills.tools) S.skills.tools = p.skills.tools; 
+      if (p.skills.tech) S.skills.tech = p.skills.tech; 
+    }
     if (p.spokenLanguages) S.spokenLanguages = p.spokenLanguages;
     if (Array.isArray(p.leadership) && p.leadership.length) S.leadership = p.leadership;
     if (Array.isArray(p.certifications) && p.certifications.length) S.certifications = p.certifications;
   }
-  document.getElementById('aiBtn').addEventListener('click', async function () {
-    var txt = document.getElementById('importTa').value.trim();
-    if (!txt) { document.getElementById('aiStatus').innerHTML = '<span class="ai-err">Paste resume text first.</span>'; return; }
-    var btn = this; btn.disabled = true;
-    document.getElementById('aiStatus').innerHTML = '<span class="spin"></span> Analyzing…';
-    try { var parsed = await parseResumeWithAI(txt); applyParsed(parsed); renderTabs(); renderForm(); renderResume(); document.getElementById('aiStatus').innerHTML = '<span class="ai-ok">✓ Done!</span>'; }
-    catch (err) { document.getElementById('aiStatus').innerHTML = '<span class="ai-err">' + esc(err.message) + '</span>'; }
-    finally { btn.disabled = false; }
-  });
-  document.getElementById('clrBtn').addEventListener('click', function () { document.getElementById('importTa').value = ''; document.getElementById('aiStatus').innerHTML = ''; });
-  function sec(label) { return '<div class="sec-label">' + label + '</div>'; }
+  
   function personalForm() {
     var P = S.personal;
-    return sec('Basic info') +
+    var photoHTML = '';
+    if (P.photo) {
+      photoHTML = '<div class="photo-upload-active" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;background:var(--bg-card);border:1px solid var(--border-color);padding:10px;border-radius:10px;box-shadow:var(--shadow-sm)">' +
+        '<img src="' + P.photo + '" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--color-indigo);box-shadow:var(--shadow-sm)">' +
+        '<div style="flex:1">' +
+          '<div style="font-size:11px;font-weight:700;color:var(--text-primary)">Profile Picture</div>' +
+          '<div style="display:flex;gap:6px;margin-top:4px">' +
+            '<button type="button" class="clr-btn" id="uploadPhotoBtn" style="padding:2px 8px;font-size:10px;height:24px">Change</button>' +
+            '<button type="button" class="clr-btn" id="removePhotoBtn" style="padding:2px 8px;font-size:10px;height:24px;color:#ef4444;border-color:rgba(239, 68, 68, 0.2)">Remove</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    } else {
+      photoHTML = '<div class="photo-upload-placeholder" id="photoPlaceholder" style="border:2px dashed var(--border-color);border-radius:10px;padding:16px;text-align:center;cursor:pointer;margin-bottom:14px;background:rgba(0,0,0,0.01);transition:all 0.15s ease" onmouseover="this.style.borderColor=\'var(--color-indigo)\';this.style.background=\'rgba(99,102,241,0.02)\'" onmouseout="this.style.borderColor=\'var(--border-color)\';this.style.background=\'rgba(0,0,0,0.01)\'">' +
+        '<div style="font-size:20px;margin-bottom:4px">📷</div>' +
+        '<strong style="font-size:11px;color:var(--text-primary);display:block">Upload Profile Photo</strong>' +
+        '<span style="font-size:9px;color:var(--text-tertiary)">JPG, PNG up to 1MB</span>' +
+      '</div>';
+    }
+
+    return sec('Profile Image') +
+      '<input type="file" id="photoUpload" accept="image/*" style="display:none">' +
+      photoHTML +
+      sec('Basic info') +
       '<div class="row2"><div class="fld"><label class="lbl">First name</label><input class="inp" data-p="personal.firstName" value="' + esc(P.firstName) + '" placeholder="John"></div>' +
       '<div class="fld"><label class="lbl">Last name</label><input class="inp" data-p="personal.lastName" value="' + esc(P.lastName) + '" placeholder="Doe"></div></div>' +
       '<div class="fld"><label class="lbl">Headline / title</label><input class="inp" data-p="headline" value="' + esc(S.headline) + '" placeholder="Software Engineer | Python | React"></div>' +
@@ -902,42 +289,25 @@
       '<div style="display:flex;align-items:center;gap:8px"><button class="stog ' + (S.socialEnabled.summary ? 'on' : 'off') + '" data-tog="summary"></button>' +
       '<label class="lbl" style="margin-bottom:0">Show on resume</label></div>' +
       '<button class="ai-btn" id="aiPolishBtn" style="padding:4px 10px;font-size:10.5px">✨ AI Polish</button></div>' +
-      '<textarea class="ta" id="summary-field" data-p="personal.summary" placeholder="Experienced Software Engineer with a focus on..." style="min-height:80px;' + (S.socialEnabled.summary ? '' : 'opacity:0.6') + '">' + esc(P.summary) + '</textarea></div>' +
+      '<textarea class="ta" id="summary-field" data-p="personal.summary" placeholder="Experienced Software Engineer..." style="min-height:80px;' + (S.socialEnabled.summary ? '' : 'opacity:0.6') + '">' + esc(P.summary) + '</textarea></div>' +
       sec('Social & contact links') +
-      '<p class="hint" style="margin-bottom:10px">Toggle which links appear on your resume header.</p>' +
+      '<p class="hint" style="margin-bottom:10px">Toggle links to display on header.</p>' +
       SOCIAL_DEFS.map(function (sd) {
         var on = S.socialEnabled[sd.key], val = P[sd.key] || '', ic = ICON_COLORS[sd.key] || { bg: '#F3F4F6', col: '#374151' };
-        return '<div class="srow"><div class="sico" style="background:' + (on ? ic.bg : 'var(--color-background-secondary)') + ';color:' + (on ? ic.col : 'var(--color-text-tertiary)') + '">' + sd.icon + '</div>' +
+        return '<div class="srow"><div class="sico" style="background:' + (on ? ic.bg : 'var(--bg-panel)') + ';color:' + (on ? ic.col : 'var(--text-tertiary)') + '">' + sd.icon + '</div>' +
           '<button class="stog ' + (on ? 'on' : 'off') + '" data-tog="' + sd.key + '"></button>' +
           '<div class="sinfo"><label class="lbl">' + sd.label + '</label>' +
           '<input class="sinp" placeholder="' + esc(sd.placeholder) + '" data-p="personal.' + sd.key + '" value="' + esc(val) + '"></div></div>';
       }).join('') +
-      sec('Resume Settings') +
-      '<div class="fld"><label class="lbl">Resume Template</label>' +
-      '<select class="inp" data-p="template" style="height:34px;cursor:pointer">' +
-      '<option value="classic"' + (S.template === 'classic' ? ' selected' : '') + '>Classic (Serif, Centered)</option>' +
-      '<option value="modern"' + (S.template === 'modern' ? ' selected' : '') + '>Modern (Sans, Left-aligned)</option>' +
-      '<option value="professional"' + (S.template === 'professional' ? ' selected' : '') + '>Professional (Playfair, Elegant)</option>' +
-      '<option value="signature"' + (S.template === 'signature' ? ' selected' : '') + '>Signature (Match PDF Style)</option>' +
-      '<option value="executive"' + (S.template === 'executive' ? ' selected' : '') + '>Executive (Sidebar Layout)</option>' +
-      '<option value="minimal"' + (S.template === 'minimal' ? ' selected' : '') + '>Minimal (Condensed)</option>' +
-      '</select></div>' +
-      sec('Data Management') +
-      '<div style="display:flex;gap:8px;margin-bottom:12px">' +
-      '<button class="clr-btn" id="exportBtn" style="flex:1;font-size:10.5px">💾 Export JSON</button>' +
-      '<button class="clr-btn" id="importBtn" style="flex:1;font-size:10.5px">📂 Import JSON</button>' +
-      '<input type="file" id="fileInput" style="display:none" accept=".json">' +
-      '</div>' +
-      '<div style="margin-top:12px"><button class="ai-btn" id="scoreBtn" style="width:100%;justify-content:center;background:#059669">📊 Score My Resume (ATS Check)</button>' +
-      '<div id="scoreResult" style="margin-top:8px"></div></div>' +
       sec('Section Order (Drag to reorder)') +
       '<div id="orderList" style="display:flex;flex-direction:column;gap:4px">' +
       S.sectionOrder.map(function(name, i) {
-        return '<div class="entry" draggable="true" data-idx="' + i + '" style="cursor:grab;margin-bottom:0;padding:6px 10px;display:flex;align-items:center;gap:8px">' +
-          '<span style="color:#94A3B8">☰</span><span style="font-size:11.5px">' + name + '</span></div>';
+        return '<div class="entry" draggable="true" data-idx="' + i + '" style="cursor:grab;margin-bottom:6px;padding:8px 10px;display:flex;align-items:center;gap:10px">' +
+          '<span class="entry-drag-handle">☰</span><span style="font-size:12px;font-weight:600">' + name + '</span></div>';
       }).join('') +
       '</div>';
   }
+  
   function formHTML(tab) {
     if (tab === "Personal") return personalForm();
     var E = S.education, C = S.coursework, X = S.experience, Pr = S.projects, Sk = S.skills, L = S.leadership, Ct = S.certifications;
@@ -964,15 +334,13 @@
           '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="experience.' + i + '.end" value="' + esc(e.end) + '" placeholder="Present"></div></div>' +
           '<div class="fld"><label class="lbl">Location</label><input class="inp" data-p="experience.' + i + '.loc" value="' + esc(e.loc) + '" placeholder="Remote"></div>' +
           '<div class="fld"><label class="lbl">Bullets (one per line)</label>' +
-          '<textarea class="ta" data-p="experience.' + i + '.bullets" placeholder="Describe your responsibilities...">' + e.bullets.join('\n') + '</textarea></div></div>';
+          '<textarea class="ta" data-p="experience.' + i + '.bullets" placeholder="Describe responsibilities...">' + e.bullets.join('\n') + '</textarea></div></div>';
       }).join('') +
       '<button class="addbtn" data-add="experience">+ Add experience</button>';
     if (tab === "Projects") return sec('Projects') +
       Pr.map(function (p, i) {
         return '<div class="entry"><button class="rmv" data-rm="projects" data-idx="' + i + '">×</button>' +
           '<div class="fld"><label class="lbl">Project name</label><input class="inp" data-p="projects.' + i + '.name" value="' + esc(p.name) + '" placeholder="My Portfolio"></div>' +
-          '<div class="row2"><div class="fld"><label class="lbl">GitHub Repository</label><input class="inp" data-p="projects.' + i + '.github" value="' + esc(p.github) + '" placeholder="https://github.com/..."></div>' +
-          '<div class="fld"><label class="lbl">Live Demo</label><input class="inp" data-p="projects.' + i + '.demo" value="' + esc(p.demo) + '" placeholder="https://..."></div></div>' +
           '<div class="fld"><label class="lbl">Tech stack</label><input class="inp" data-p="projects.' + i + '.tech" value="' + esc(p.tech) + '" placeholder="React, Node.js, MongoDB"></div>' +
           '<div class="fld"><label class="lbl">Date</label><input class="inp" data-p="projects.' + i + '.date" value="' + esc(p.date) + '" placeholder="2025"></div>' +
           '<div class="fld"><label class="lbl">Bullets (one per line)</label>' +
@@ -981,12 +349,12 @@
       '<button class="addbtn" data-add="projects">+ Add project</button>';
     if (tab === "Skills") return sec('Technical skills') +
       '<div class="fld"><label class="lbl">Programming Languages</label><input class="inp" data-p="skills.languages" value="' + esc(Sk.languages) + '" placeholder="Python, Java, JavaScript, C++"></div>' +
-      '<div class="fld"><label class="lbl">Developer tools</label><input class="inp" data-p="skills.tools" value="' + esc(Sk.tools) + '" placeholder="VS Code, Git, Postman, Docker"></div>' +
+      '<div class="fld"><label class="lbl">Developer tools</label><input class="inp" data-p="skills.tools" value="' + esc(Sk.tools) + '" placeholder="VS Code, Git, Docker"></div>' +
       '<div class="fld"><label class="lbl">Technologies / frameworks</label><input class="inp" data-p="skills.tech" value="' + esc(Sk.tech) + '" placeholder="React, Node.js, Django, REST APIs"></div>';
     if (tab === "Languages") return sec('Spoken Languages') +
       '<div class="fld"><label class="lbl">Languages (Spoken/Written)</label>' +
       '<input class="inp" data-p="spokenLanguages" value="' + esc(S.spokenLanguages) + '" placeholder="Tamil, Hindi, English"></div>' +
-      '<p class="hint">List the spoken languages you are proficient in.</p>';
+      '<p class="hint">List spoken languages you are proficient in.</p>';
     if (tab === "Leadership") return sec('Achievements & extracurricular') +
       L.map(function (e, i) {
         return '<div class="entry"><button class="rmv" data-rm="leadership" data-idx="' + i + '">×</button>' +
@@ -996,7 +364,7 @@
           '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="leadership.' + i + '.end" value="' + esc(e.end) + '"></div></div>' +
           '<div class="fld"><label class="lbl">Location (optional)</label><input class="inp" data-p="leadership.' + i + '.loc" value="' + esc(e.loc) + '"></div>' +
           '<div class="fld"><label class="lbl">Bullets (one per line)</label>' +
-          '<textarea class="ta" style="min-height:80px" data-p="leadership.' + i + '.bullets" placeholder="Describe your achievement...">' + e.bullets.join('\n') + '</textarea></div></div>';
+          '<textarea class="ta" style="min-height:80px" data-p="leadership.' + i + '.bullets" placeholder="Describe achievements...">' + e.bullets.join('\n') + '</textarea></div></div>';
       }).join('') +
       '<button class="addbtn" data-add="leadership">+ Add section</button>';
     if (tab === "Certifications") return sec('Certifications') +
@@ -1007,11 +375,12 @@
           '<div class="fld"><label class="lbl">Provider</label><input class="inp" data-p="certifications.' + i + '.provider" value="' + esc(c.provider) + '" placeholder="Amazon Web Services"></div>' +
           '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="certifications.' + i + '.start" value="' + esc(c.start) + '"></div>' +
           '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="certifications.' + i + '.end" value="' + esc(c.end) + '"></div></div>' +
-          '<div class="fld"><label class="lbl">Skills learned</label><input class="inp" data-p="certifications.' + i + '.skills" value="' + esc(c.skills) + '" placeholder="EC2, S3, Lambda, IAM"></div></div>';
+          '<div class="fld"><label class="lbl">Skills learned</label><input class="inp" data-p="certifications.' + i + '.skills" value="' + esc(c.skills) + '" placeholder="EC2, S3, IAM"></div></div>';
       }).join('') +
       '<button class="addbtn" data-add="certifications">+ Add certification</button>';
     return '';
   }
+  
   function resumeHTML() {
     var t = S.template || "classic";
     if (window.templates && window.templates[t]) {
@@ -1019,114 +388,652 @@
     }
     return window.templates.classic(S, SOCIAL_DEFS);
   }
-  function renderTabs() { document.getElementById('tabs').innerHTML = TABS.map(function (t) { return '<button class="tab' + (t === activeTab ? ' on' : '') + '" data-tab="' + t + '">' + t + '</button>'; }).join(''); }
-  function renderForm() { document.getElementById('fc').innerHTML = formHTML(activeTab); }
-  function renderResume() { document.getElementById('rp').innerHTML = resumeHTML(); }
-  document.getElementById('tabs').addEventListener('click', function (e) { var btn = e.target.closest('[data-tab]'); if (!btn) return; activeTab = btn.dataset.tab; renderTabs(); renderForm(); });
-  document.getElementById('fc').addEventListener('click', function (e) {
-    var tog = e.target.closest('[data-tog]');
-    if (tog) { var k = tog.dataset.tog; S.socialEnabled[k] = !S.socialEnabled[k]; renderForm(); renderResume(); return; }
-    var btn = e.target.closest('[data-add],[data-rm]'); if (!btn) return;
-    if (btn.dataset.add) { var key = btn.dataset.add; S[key].push(JSON.parse(JSON.stringify(DEFS[key]))); renderForm(); renderResume(); }
-    if (btn.dataset.rm) { var key = btn.dataset.rm, idx = +btn.dataset.idx; S[key].splice(idx, 1); renderForm(); renderResume(); }
-  });
-  document.getElementById('fc').addEventListener('input', function (e) {
-    var t = e.target, p = t.dataset.p; if (!p) return;
-    if (p === 'coursework') { S.coursework = t.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean); renderResume(); return; }
-    if (p === 'headline') { S.headline = t.value; renderResume(); return; }
-    var keys = p.split('.'); var cur = S;
-    for (var i = 0; i < keys.length - 1; i++) { cur = cur[isNaN(keys[i]) ? keys[i] : +keys[i]]; }
-    var last = keys[keys.length - 1];
-    if (last === 'bullets') cur[last] = t.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
-    else cur[last] = t.value;
-    renderResume();
-  });
-  async function getAISummary() {
-    const skills = [S.skills.languages, S.skills.tools, S.skills.tech, S.spokenLanguages].filter(Boolean).join(', ');
-    const experience = S.experience.map(e => e.role + " at " + e.company + " (" + e.bullets.join('; ') + ")").join(' | ');
+  
+  function sec(label) { return '<div class="sec-label">' + label + '</div>'; }
 
-    if (!skills && !experience) {
-      alert("Please fill in some skills or experience first so AI can generate a summary!");
+  /* ----------------------------------
+     Sidebars Panel Rendering Router
+  ---------------------------------- */
+
+  function renderPrimarySidebar() {
+    var view = S.activeView || "editor";
+    var title = document.getElementById('sidebarTitle');
+    var subtitle = document.getElementById('sidebarSubtitle');
+    var content = document.getElementById('sidebarContent');
+    
+    // Sync active activity tab styling
+    document.querySelectorAll('.activity-tab').forEach(function(t) {
+      if (t.dataset.view === view) t.classList.add('active');
+      else t.classList.remove('active');
+    });
+
+    if (view === "editor") {
+      title.textContent = "Document Editor";
+      subtitle.textContent = "Modify resume content sections";
+      content.innerHTML = `<div class="tabs" id="tabs"></div><div class="fc" id="fc"></div>`;
+      renderTabs();
+      renderForm();
+    } 
+    else if (view === "ai") {
+      title.textContent = "Gemini AI Co-pilot";
+      subtitle.textContent = "Intelligent extraction and summary tools";
+      content.innerHTML = `
+        <div class="sec-label">Intelligent Resume Parser</div>
+        <p class="hint" style="margin-bottom:12px">Paste your plain text resume below and let Gemini extract and populate all workspace fields instantly.</p>
+        <textarea class="import-ta" id="importTa" style="height: 160px; margin-bottom:12px"
+          placeholder="Paste plain resume text here...">${esc(aiParserInputCache)}</textarea>
+        <div class="import-actions" style="margin-top:0; margin-bottom:16px; display:flex; gap:8px">
+          <button class="ai-btn" id="aiBtn" style="flex:1">Auto-fill with AI</button>
+          <button class="clr-btn" id="clrBtn">Clear</button>
+        </div>
+        <div style="margin-bottom:20px"><span class="ai-status" id="aiStatus"></span></div>
+        
+        <div class="sec-label">AI Writing Shortcuts</div>
+        <p class="hint" style="margin-bottom:12px">Automate writing tasks based on current resume details.</p>
+        <button class="clr-btn" id="aiPolishSummaryShortcutBtn" style="width:100%; text-align:left; font-size:11.5px; padding:10px; display:flex; align-items:center; gap:8px; border-radius:10px">
+          <span style="font-size:14px">✨</span>
+          <div style="flex:1">
+            <strong>Polish Professional Summary</strong>
+            <div style="font-size:10px; opacity:0.8; font-weight:normal; margin-top:2px">Re-writes summary based on your experience and skills.</div>
+          </div>
+        </button>
+      `;
+    } 
+    else if (view === "ats") {
+      title.textContent = "ATS score Auditor";
+      subtitle.textContent = "Applicant tracking system optimization";
+      
+      var dashboardHTML = `<div class="ats-placeholder-info">
+        <div style="font-size:32px; margin-bottom:8px">📊</div>
+        <strong>Ready for ATS Audit</strong>
+        <p class="hint" style="text-align:center; max-width:240px; margin:4px auto 0">Click the button below to audit content keywords, terminology, and clarity with Gemini.</p>
+      </div>`;
+
+      if (S.atsScore !== null) {
+        var gaugeClass = "ats-gauge-emerald";
+        if (S.atsScore < 50) gaugeClass = "ats-gauge-red";
+        else if (S.atsScore < 70) gaugeClass = "ats-gauge-orange";
+        else if (S.atsScore < 85) gaugeClass = "ats-gauge-yellow";
+        
+        dashboardHTML = `
+          <div class="ats-dashboard" style="margin-top:0">
+            <div class="ats-header">
+              <div class="ats-score-display">
+                <div class="ats-gauge ${gaugeClass}">
+                  <span>${S.atsScore}</span>
+                </div>
+                <div class="ats-details">
+                  <div><strong>ATS Strength Score</strong></div>
+                  <div style="font-size:10px; opacity:0.8">Optimization Metric</div>
+                </div>
+              </div>
+            </div>
+            <div style="font-size:12px; line-height:1.5; color:var(--text-secondary); background:var(--bg-input); padding:10px; border-radius:10px; border:1px solid var(--border-color); max-height:220px; overflow-y:auto">
+              ${S.atsFeedback}
+            </div>
+          </div>
+        `;
+      }
+
+      content.innerHTML = `
+        <div class="sec-label">Auditor Engine</div>
+        <button class="ai-btn" id="scoreBtn" style="width:100%; justify-content:center; background:#059669; padding:10px; margin-bottom:16px">
+          📊 Audit & Score Resume
+        </button>
+        <div id="scoreResult">${dashboardHTML}</div>
+      `;
+    } 
+    else if (view === "design") {
+      title.textContent = "Design Lab";
+      subtitle.textContent = "Templates and accent customizations";
+      content.innerHTML = `
+        <div class="sec-label">Accent Brand Color</div>
+        <p class="hint" style="margin-bottom:10px">Select an accent color. It updates all headers and links dynamically.</p>
+        <div class="header-accent-picker" id="accentPicker" style="background:var(--bg-card); padding:8px 10px; border-radius:10px; border:1px solid var(--border-color); display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px">
+          <span class="accent-dot" data-color="#32166f" style="background:#32166f" title="Indigo Deep"></span>
+          <span class="accent-dot" data-color="#000000" style="background:#000000" title="Classic Black"></span>
+        </div>
+        
+        <div class="sec-label">Layout Templates</div>
+        <p class="hint" style="margin-bottom:12px">Choose a formatting layout. Your document details are preserved.</p>
+        <div class="template-grid" id="templateGrid">
+          <div class="template-card" data-template="classic">
+            <div class="tmpl-preview-box serif">Aa</div>
+            <div class="tmpl-title">Classic</div>
+            <p class="hint">Traditional serif</p>
+          </div>
+          <div class="template-card" data-template="modern">
+            <div class="tmpl-preview-box sans">Aa</div>
+            <div class="tmpl-title">Modern</div>
+            <p class="hint">Clean sans-serif</p>
+          </div>
+          <div class="template-card" data-template="professional">
+            <div class="tmpl-preview-box elegant">Aa</div>
+            <div class="tmpl-title">Professional</div>
+            <p class="hint">Compact business</p>
+          </div>
+          <div class="template-card" data-template="signature">
+            <div class="tmpl-preview-box signature">Aa</div>
+            <div class="tmpl-title">Signature</div>
+            <p class="hint">Header italic line</p>
+          </div>
+          <div class="template-card" data-template="executive">
+            <div class="tmpl-preview-box sidebar-tmpl">Aa</div>
+            <div class="tmpl-title">Executive</div>
+            <p class="hint">Dual column structure</p>
+          </div>
+          <div class="template-card" data-template="minimal">
+            <div class="tmpl-preview-box minimal">Aa</div>
+            <div class="tmpl-title">Minimalist</div>
+            <p class="hint">Ultra light style</p>
+          </div>
+        </div>
+      `;
+      syncDesignViewStates();
+    } 
+    else if (view === "file") {
+      title.textContent = "Document Center";
+      subtitle.textContent = "Saved drafts and offline exports";
+      content.innerHTML = `
+        <div class="sec-label">Saved Drafts</div>
+        <p class="hint" style="margin-bottom:10px">Save copies of your resumes in local browser storage to swap between them instantly.</p>
+        <div style="display:flex; gap:6px; margin-bottom:12px">
+          <input class="inp" id="draftNameInput" placeholder="Draft name..." style="height:32px; font-size:12px; flex:1">
+          <button class="ai-btn" id="saveDraftBtn" style="padding:4px 12px; font-size:11.5px; height:32px; flex-shrink:0">Save Draft</button>
+        </div>
+        <div class="drafts-list" id="draftsList" style="margin-bottom:20px"></div>
+        
+        <div class="sec-label">Export / Import Backup</div>
+        <p class="hint" style="margin-bottom:10px">Save your full workspace JSON to your desktop or load previous data.</p>
+        <div style="display:flex; gap:8px">
+          <button class="clr-btn" id="exportBtn" style="flex:1; font-size:11px; padding:6px 0; display:flex; align-items:center; justify-content:center; gap:4px">
+            <span>💾</span> Export JSON
+          </button>
+          <button class="clr-btn" id="importBtn" style="flex:1; font-size:11px; padding:6px 0; display:flex; align-items:center; justify-content:center; gap:4px">
+            <span>📂</span> Import JSON
+          </button>
+          <input type="file" id="fileInput" style="display:none" accept=".json">
+        </div>
+      `;
+      renderDraftsList();
+    }
+  }
+
+  function syncDesignViewStates() {
+    var picker = document.getElementById('accentPicker');
+    if (picker && S.accentColor) {
+      picker.querySelectorAll('.accent-dot').forEach(function(dot) {
+        if (dot.dataset.color === S.accentColor) dot.classList.add('active');
+        else dot.classList.remove('active');
+      });
+    }
+    var grid = document.getElementById('templateGrid');
+    if (grid && S.template) {
+      grid.querySelectorAll('.template-card').forEach(function(card) {
+        if (card.dataset.template === S.template) card.classList.add('active');
+        else card.classList.remove('active');
+      });
+    }
+  }
+
+  function renderTabs() { 
+    var container = document.getElementById('tabs');
+    if (!container) return;
+    container.innerHTML = TABS.map(function (t) { 
+      var ico = TAB_ICONS[t] || '';
+      return '<button class="tab' + (t === activeTab ? ' on' : '') + '" data-tab="' + t + '">' + ico + t + '</button>'; 
+    }).join(''); 
+  }
+  
+  function renderForm() { 
+    var container = document.getElementById('fc');
+    if (!container) return;
+    container.innerHTML = formHTML(activeTab); 
+  }
+  
+  function renderResume() { 
+    document.getElementById('rp').innerHTML = resumeHTML();
+    updateWorkspaceDiagnostics();
+  }
+
+  /* ----------------------------------
+     Diagnostics & Analytics
+  ---------------------------------- */
+
+  function updateWorkspaceDiagnostics() {
+    // 1. Set dynamic CSS Brand properties
+    if (S.accentColor) {
+      document.documentElement.style.setProperty('--resume-brand', S.accentColor);
+    }
+    
+    // 2. Count preview words
+    var rpText = document.getElementById('rp').textContent || "";
+    var words = rpText.trim().split(/\s+/).filter(Boolean).length;
+    document.getElementById('wordCountLabel').textContent = words + ' words';
+    
+    // 3. Update Status footer values
+    document.getElementById('statusTemplate').innerHTML = 'Template: <strong>' + S.template.charAt(0).toUpperCase() + S.template.slice(1) + '</strong>';
+    document.getElementById('statusAccent').innerHTML = 'Accent: <strong style="color:' + S.accentColor + '">' + S.accentColor + '</strong>';
+    
+    var activeSectionsCount = S.sectionOrder.filter(function(name) {
+      if (name === "Education" && S.education.length) return true;
+      if (name === "Coursework" && S.coursework.length) return true;
+      if (name === "Experience" && S.experience.length) return true;
+      if (name === "Projects" && S.projects.length) return true;
+      if (name === "Skills" && (S.skills.languages || S.skills.tools || S.skills.tech)) return true;
+      if (name === "Languages" && S.spokenLanguages) return true;
+      if (name === "Certifications" && S.certifications.length) return true;
+      if (name === "Leadership" && S.leadership.length) return true;
+      return false;
+    }).length;
+    
+    document.getElementById('statusSections').innerHTML = 'Sections: <strong>' + activeSectionsCount + '</strong>';
+  }
+
+  /* ----------------------------------
+     Draft Manager LocalStorage Logic
+  ---------------------------------- */
+
+  function renderDraftsList() {
+    var drafts = JSON.parse(localStorage.getItem('mdk_resume_drafts') || '[]');
+    var container = document.getElementById('draftsList');
+    if (!container) return;
+    if (drafts.length === 0) {
+      container.innerHTML = '<p class="hint" style="text-align:center; padding:12px; border:1px dashed var(--border-color); border-radius:10px">No drafts saved in local workspace.</p>';
+      return;
+    }
+    container.innerHTML = drafts.map(function(d) {
+      var dateStr = new Date(d.timestamp).toLocaleDateString() + ' ' + new Date(d.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      return `
+        <div class="draft-card" data-id="${d.id}" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:10px; padding:10px; display:flex; align-items:center; justify-content:space-between; transition:all 0.15s ease">
+          <div style="min-width:0; flex:1">
+            <div style="font-size:12px; font-weight:700; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; color:var(--text-primary)">${esc(d.name)}</div>
+            <div style="font-size:10px; color:var(--text-tertiary); margin-top:2px">${dateStr}</div>
+          </div>
+          <div style="display:flex; gap:4px">
+            <button class="clr-btn load-draft-btn" data-id="${d.id}" style="padding:4px 8px; font-size:10px; border-color:var(--color-indigo); color:var(--color-indigo)">Load</button>
+            <button class="clr-btn delete-draft-btn" data-id="${d.id}" style="padding:4px 8px; font-size:10px; border-color:#ef4444; color:#ef4444">×</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function saveNewDraft() {
+    var input = document.getElementById('draftNameInput');
+    if (!input) return;
+    var name = input.value.trim();
+    if (!name) {
+      name = "Draft_" + new Date().toISOString().slice(0, 10) + "_" + new Date().toTimeString().slice(0,5).replace(':', '');
+    }
+    
+    var drafts = JSON.parse(localStorage.getItem('mdk_resume_drafts') || '[]');
+    var newDraft = {
+      id: "dr_" + Date.now(),
+      name: name,
+      timestamp: Date.now(),
+      data: JSON.parse(JSON.stringify(S))
+    };
+    drafts.push(newDraft);
+    localStorage.setItem('mdk_resume_drafts', JSON.stringify(drafts));
+    
+    input.value = "";
+    renderDraftsList();
+  }
+
+  function loadDraft(id) {
+    var drafts = JSON.parse(localStorage.getItem('mdk_resume_drafts') || '[]');
+    var found = drafts.find(function(d) { return d.id === id; });
+    if (!found) return;
+    
+    // Copy content
+    Object.keys(found.data).forEach(function(k) {
+      S[k] = found.data[k];
+    });
+
+    // Handle migrations
+    if (S.sectionOrder && !S.sectionOrder.includes("Languages")) S.sectionOrder.push("Languages");
+    if (S.spokenLanguages === undefined) S.spokenLanguages = "";
+    if (S.fileName === undefined) S.fileName = found.name.replace(/[^a-zA-Z0-9_\-]/g, '_');
+    
+    // Update Title element
+    document.getElementById('docTitle').textContent = S.fileName;
+    
+    // Recompile
+    renderPrimarySidebar();
+    renderResume();
+    saveToLocal();
+  }
+
+  function deleteDraft(id) {
+    var drafts = JSON.parse(localStorage.getItem('mdk_resume_drafts') || '[]');
+    drafts = drafts.filter(function(d) { return d.id !== id; });
+    localStorage.setItem('mdk_resume_drafts', JSON.stringify(drafts));
+    renderDraftsList();
+  }
+
+  /* ----------------------------------
+     Global Event Listeners & Router
+  ---------------------------------- */
+
+  // 1. Navigation Tab Switching in vertical Activity Bar
+  document.querySelectorAll('.activity-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      // If we are currently typing in parser textarea, save its input state
+      var importTa = document.getElementById('importTa');
+      if (importTa) aiParserInputCache = importTa.value;
+      
+      S.activeView = this.dataset.view;
+      renderPrimarySidebar();
+      saveToLocal();
+    });
+  });
+
+  // 2. Persistent Event Delegation on Dynamic Primary Sidebar Content
+  var sidebarContent = document.getElementById('sidebarContent');
+  
+  sidebarContent.addEventListener('click', async function(e) {
+    // Trigger Profile Photo hidden input click
+    if (e.target.closest('#uploadPhotoBtn') || e.target.closest('.photo-upload-placeholder')) {
+      var inp = document.getElementById('photoUpload');
+      if (inp) inp.click();
+      return;
+    }
+    
+    // Remove Profile Photo
+    if (e.target.id === 'removePhotoBtn') {
+      S.personal.photo = '';
+      renderPrimarySidebar();
+      renderResume();
       return;
     }
 
-    const btn = document.getElementById('aiPolishBtn');
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spin" style="width:10px;height:10px"></span> Polishing...';
-
-    try {
-      const response = await fetch('http://localhost:5000/api/generate-summary', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ skills, experience })
-      });
-
-      if (!response.ok) throw new Error("Backend server error");
-      const data = await response.json();
-      
-      S.personal.summary = data.summary;
-      const field = document.getElementById('summary-field');
-      if (field) field.value = data.summary;
+    // Category tabs clicking inside Editor
+    var tabBtn = e.target.closest('[data-tab]');
+    if (tabBtn) {
+      activeTab = tabBtn.dataset.tab;
+      renderTabs();
+      renderForm();
+      return;
+    }
+    
+    // Social enable switches inside Editor
+    var togBtn = e.target.closest('[data-tog]');
+    if (togBtn) {
+      var k = togBtn.dataset.tog;
+      S.socialEnabled[k] = !S.socialEnabled[k];
+      renderForm();
       renderResume();
-    } catch (error) {
-      console.error(error);
-      alert("Failed to generate summary. Make sure the backend server is running on port 5000.");
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = originalText;
+      return;
     }
-  }
+    
+    // Add arrays entries
+    var addBtn = e.target.closest('[data-add]');
+    if (addBtn) {
+      var key = addBtn.dataset.add;
+      S[key].push(JSON.parse(JSON.stringify(DEFS[key])));
+      renderForm();
+      renderResume();
+      return;
+    }
+    
+    // Remove array entries
+    var rmBtn = e.target.closest('[data-rm]');
+    if (rmBtn) {
+      var key = rmBtn.dataset.rm, idx = +rmBtn.dataset.idx;
+      S[key].splice(idx, 1);
+      renderForm();
+      renderResume();
+      return;
+    }
+    
+    // AI Auto-fill Parse Parser button click
+    if (e.target.id === "aiBtn") {
+      var txt = document.getElementById('importTa').value.trim();
+      var aiStatus = document.getElementById('aiStatus');
+      if (!txt) { aiStatus.innerHTML = '<span class="ai-err">Please paste plain text first.</span>'; return; }
+      
+      e.target.disabled = true;
+      aiStatus.innerHTML = '<span class="spin"></span> Gemini parsing data...';
+      
+      try {
+        var parsed = await parseResumeWithAI(txt);
+        applyParsed(parsed);
+        aiParserInputCache = "";
+        
+        // Return to editor view on success
+        S.activeView = "editor";
+        renderPrimarySidebar();
+        renderResume();
+      } catch (err) {
+        aiStatus.innerHTML = '<span class="ai-err">' + esc(err.message) + '</span>';
+      } finally {
+        e.target.disabled = false;
+      }
+      return;
+    }
+    
+    // Parser text clear button
+    if (e.target.id === "clrBtn") {
+      document.getElementById('importTa').value = '';
+      aiParserInputCache = "";
+      document.getElementById('aiStatus').innerHTML = '';
+      return;
+    }
+    
+    // ATS Audit rating button click
+    if (e.target.id === "scoreBtn") {
+      var scoreBtn = e.target;
+      var resDiv = document.getElementById('scoreResult');
+      scoreBtn.disabled = true;
+      scoreBtn.innerHTML = '<span class="spin"></span> Analyzing...';
+      
+      try {
+        const response = await fetch('http://localhost:5000/api/score-resume', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ resume: JSON.stringify(S) })
+        });
+        if (!response.ok) throw new Error("Backend error");
+        const data = await response.json();
+        
+        S.atsScore = data.score;
+        S.atsFeedback = data.feedback;
+        
+        renderPrimarySidebar(); // Re-renders showing the dashboard
+      } catch (err) {
+        resDiv.innerHTML = '<div class="ai-err" style="margin-top:10px;text-align:center">Audit failed. Make sure backend is running.</div>';
+      } finally {
+        scoreBtn.disabled = false;
+        scoreBtn.innerHTML = '📊 Audit & Score Resume';
+      }
+      return;
+    }
+    
+    // Accent Color Dot clicking
+    var accentDot = e.target.closest('.accent-dot');
+    if (accentDot) {
+      document.querySelectorAll('.accent-dot').forEach(d => d.classList.remove('active'));
+      accentDot.classList.add('active');
+      S.accentColor = accentDot.dataset.color;
+      renderResume();
+      return;
+    }
+    
+    // Template Cards Grid clicking
+    var tmplCard = e.target.closest('.template-card');
+    if (tmplCard) {
+      document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active'));
+      tmplCard.classList.add('active');
+      S.template = tmplCard.dataset.template;
+      renderResume();
+      return;
+    }
 
-  document.getElementById('fc').addEventListener('click', function (e) {
-    if (e.target.id === 'aiPolishBtn') {
-      getAISummary();
+    // AI summary polish shortcut
+    if (e.target.closest('#aiPolishSummaryShortcutBtn') || e.target.id === 'aiPolishBtn') {
+      const skills = [S.skills.languages, S.skills.tools, S.skills.tech, S.spokenLanguages].filter(Boolean).join(', ');
+      const experience = S.experience.map(e => e.role + " at " + e.company + " (" + e.bullets.join('; ') + ")").join(' | ');
+
+      if (!skills && !experience) {
+        alert("Please enter some skills or work experience details first so Gemini can construct a summary!");
+        return;
+      }
+      
+      var btn = e.target.closest('#aiPolishSummaryShortcutBtn') || e.target;
+      var original = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spin"></span> Building summary...';
+      
+      try {
+        const response = await fetch('http://localhost:5000/api/generate-summary', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ skills, experience })
+        });
+        if (!response.ok) throw new Error("Backend server error");
+        const data = await response.json();
+        
+        S.personal.summary = data.summary;
+        var summaryField = document.getElementById('summary-field');
+        if (summaryField) summaryField.value = data.summary;
+        renderResume();
+        
+        if (btn.id === 'aiPolishSummaryShortcutBtn') {
+          alert("Gemini updated your resume summary successfully! Check details inside the Document Editor.");
+        }
+      } catch (err) {
+        alert("Failed to connect to backend server on port 5000.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
+      return;
+    }
+
+    // Saved drafts: Save draft button
+    if (e.target.id === "saveDraftBtn") {
+      saveNewDraft();
+      return;
+    }
+
+    // Saved drafts: Load draft button
+    var loadBtn = e.target.closest('.load-draft-btn');
+    if (loadBtn) {
+      loadDraft(loadBtn.dataset.id);
+      return;
+    }
+
+    // Saved drafts: Delete draft button
+    var deleteBtn = e.target.closest('.delete-draft-btn');
+    if (deleteBtn) {
+      deleteDraft(deleteBtn.dataset.id);
+      return;
+    }
+
+    // JSON export backups
+    if (e.target.id === "exportBtn") {
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S, null, 2));
+      var dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", S.fileName + "_backup.json");
+      dlAnchor.click();
+      return;
+    }
+
+    // JSON import trigger
+    if (e.target.id === "importBtn") {
+      document.getElementById('fileInput').click();
+      return;
     }
   });
 
-  async function scoreResume() {
-    const btn = document.getElementById('scoreBtn');
-    const resDiv = document.getElementById('scoreResult');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spin"></span> Analyzing...';
-    resDiv.innerHTML = '';
-
-    try {
-      const response = await fetch('http://localhost:5000/api/score-resume', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ resume: JSON.stringify(S) })
-      });
-      if (!response.ok) throw new Error("Backend error");
-      const data = await response.json();
-      resDiv.innerHTML = '<div style="background:#F0FDF4;border:1px solid #BBF7D0;padding:10px;border-radius:8px;font-size:12px">' +
-        '<div style="font-weight:700;color:#166534;margin-bottom:4px">ATS Score: ' + data.score + '/100</div>' +
-        '<div style="color:#15803D">' + data.feedback + '</div></div>';
-    } catch (e) {
-      resDiv.innerHTML = '<div class="ai-err">Failed to score resume. Is server running?</div>';
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '📊 Score My Resume (ATS Check)';
+  // 3. Primary Sidebar Input Sync Event Delegation
+  sidebarContent.addEventListener('input', function (e) {
+    var t = e.target, p = t.dataset.p; 
+    if (!p) return;
+    
+    if (p === 'coursework') { 
+      S.coursework = t.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean); 
+      renderResume(); 
+      return; 
     }
-  }
-
-  document.getElementById('fc').addEventListener('click', function(e) {
-    if (e.target.id === 'scoreBtn') scoreResume();
+    if (p === 'headline') { 
+      S.headline = t.value; 
+      renderResume(); 
+      return; 
+    }
+    
+    var keys = p.split('.'); 
+    var cur = S;
+    for (var i = 0; i < keys.length - 1; i++) { 
+      cur = cur[isNaN(keys[i]) ? keys[i] : +keys[i]]; 
+    }
+    
+    var last = keys[keys.length - 1];
+    if (last === 'bullets') {
+      cur[last] = t.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+    } else {
+      cur[last] = t.value;
+    }
+    renderResume();
   });
 
-  // Drag and Drop Logic
+  // JSON Import & Photo Upload change handlers
+  sidebarContent.addEventListener('change', function(e) {
+    if (e.target.id === 'fileInput') {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        try {
+          var p = JSON.parse(ev.target.result);
+          Object.keys(p).forEach(function (k) { S[k] = p[k]; });
+          
+          document.getElementById('docTitle').textContent = S.fileName || "my_resume";
+          renderPrimarySidebar();
+          renderResume();
+          alert("JSON backup loaded successfully!");
+        } catch (err) {
+          alert("Invalid JSON file formatting.");
+        }
+      };
+      reader.readAsText(file);
+    }
+    else if (e.target.id === 'photoUpload') {
+      var file = e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        alert("Please upload a valid image file (PNG, JPG, JPEG, WebP).");
+        return;
+      }
+      if (file.size > 1.2 * 1024 * 1024) {
+        alert("Image size should be less than 1.2MB for optimal performance.");
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        S.personal.photo = ev.target.result;
+        renderPrimarySidebar();
+        renderResume();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // 4. Drag & Drop Reordering for Editor Entries
   var dragIdx = null;
-  document.getElementById('fc').addEventListener('dragstart', function(e) {
+  sidebarContent.addEventListener('dragstart', function(e) {
     var item = e.target.closest('[draggable]');
     if (!item) return;
     dragIdx = +item.dataset.idx;
     e.dataTransfer.effectAllowed = 'move';
   });
-  document.getElementById('fc').addEventListener('dragover', function(e) {
+  sidebarContent.addEventListener('dragover', function(e) {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
   });
-  document.getElementById('fc').addEventListener('drop', function(e) {
+  sidebarContent.addEventListener('drop', function(e) {
     e.preventDefault();
     var item = e.target.closest('[draggable]');
     if (!item || dragIdx === null) return;
@@ -1134,79 +1041,176 @@
     if (dragIdx !== dropIdx) {
       var moving = S.sectionOrder.splice(dragIdx, 1)[0];
       S.sectionOrder.splice(dropIdx, 0, moving);
-      renderForm(); renderResume();
+      renderForm(); 
+      renderResume();
     }
     dragIdx = null;
   });
 
-  function saveToLocal() { localStorage.setItem('resume_data', JSON.stringify(S)); }
+  /* ----------------------------------
+     Document Title Inline Editor
+  ---------------------------------- */
+
+  document.getElementById('titleContainer').addEventListener('dblclick', function(e) {
+    if (document.getElementById('titleInput')) return; // Already editing
+    
+    var current = S.fileName || "my_resume";
+    var container = this;
+    container.innerHTML = `<input type="text" id="titleInput" value="${current}" style="font-size:12px; font-weight:700; color:var(--text-primary); background:var(--bg-input); border:1px solid var(--border-focus); border-radius:6px; padding:2px 6px; width:160px; outline:none; height:22px">`;
+    
+    var input = document.getElementById('titleInput');
+    input.focus();
+    input.select();
+    
+    function saveTitle() {
+      var val = input.value.trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
+      if (!val) val = "my_resume";
+      S.fileName = val;
+      container.innerHTML = `<span class="document-title-text" id="docTitle">${val}</span><span class="document-title-ext">.pdf</span><span class="document-edit-icon">✏️</span>`;
+      saveToLocal();
+    }
+    
+    input.addEventListener('keydown', function(evt) {
+      if (evt.key === 'Enter') saveTitle();
+      if (evt.key === 'Escape') {
+        container.innerHTML = `<span class="document-title-text" id="docTitle">${S.fileName}</span><span class="document-title-ext">.pdf</span><span class="document-edit-icon">✏️</span>`;
+      }
+    });
+    
+    input.addEventListener('blur', saveTitle);
+  });
+
+  /* ----------------------------------
+     Print PDF Download Override
+  ---------------------------------- */
+
+  document.getElementById('dlbtn').addEventListener('click', function () { 
+    var originalTitle = document.title;
+    // Set webpage document title, which browsers use as the default PDF download filename
+    document.title = S.fileName || "my_resume";
+    window.print(); 
+    document.title = originalTitle; 
+  });
+
+  /* ----------------------------------
+     Zooming Canvas Controls
+  ---------------------------------- */
+
+  var zoomLevel = 1.0;
+  var zoomLabel = document.getElementById('zoomLabel');
+  
+  function updateZoom(level) {
+    zoomLevel = Math.max(0.5, Math.min(1.5, level));
+    zoomLabel.textContent = Math.round(zoomLevel * 100) + '%';
+    document.documentElement.style.setProperty('--resume-scale', zoomLevel);
+  }
+  
+  document.getElementById('zoomOutBtn').addEventListener('click', function() {
+    updateZoom(zoomLevel - 0.1);
+  });
+  
+  document.getElementById('zoomInBtn').addEventListener('click', function() {
+    updateZoom(zoomLevel + 0.1);
+  });
+  
+  document.getElementById('zoomFitBtn').addEventListener('click', function() {
+    var wrapper = document.querySelector('.pp');
+    var fitScale = (wrapper.clientWidth - 40) / 800; // standard approx container width
+    updateZoom(Math.min(1.0, fitScale));
+  });
+
+  /* ----------------------------------
+     Dark / Light Theme Toggler
+  ---------------------------------- */
+
+  var themeToggleBtn = document.getElementById('themeToggleBtn');
+  var themeIcon = document.getElementById('themeIcon');
+  
+  function updateThemeIcon() {
+    var isDark = document.body.classList.contains('dark-mode');
+    if (isDark) {
+      themeIcon.innerHTML = `<circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
+    } else {
+      themeIcon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+    }
+  }
+
+  themeToggleBtn.addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    var isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('editor_dark_mode', isDark);
+    updateThemeIcon();
+  });
+
+  function initTheme() {
+    var isDark = localStorage.getItem('editor_dark_mode') === 'true';
+    if (isDark) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+    updateThemeIcon();
+  }
+
+  /* ----------------------------------
+     Local Workspace Persistence (localStorage)
+  ---------------------------------- */
+
+  function saveToLocal() { 
+    localStorage.setItem('resume_data', JSON.stringify(S)); 
+  }
+  
   function loadFromLocal() {
     var saved = localStorage.getItem('resume_data');
     if (saved) {
       try {
         var p = JSON.parse(saved);
         Object.keys(p).forEach(function (k) { S[k] = p[k]; });
-        // Migration for new sections
+        
+        // Add migrations
         if (S.sectionOrder && !S.sectionOrder.includes("Languages")) {
           S.sectionOrder.push("Languages");
         }
-        // Migration for spoken languages
-        if (S.spokenLanguages === undefined && S.skills && S.skills.languages) {
-           S.spokenLanguages = S.skills.languages;
-           S.skills.languages = ""; // Clear it so it can be used for programming
-        } else if (S.spokenLanguages === undefined) {
-           S.spokenLanguages = "";
+        if (S.spokenLanguages === undefined) {
+          S.spokenLanguages = "";
         }
-        renderTabs(); renderForm(); renderResume();
-      } catch (e) { console.error("Load failed", e); }
+        if (S.activeView === undefined) {
+          S.activeView = "editor";
+        }
+        if (S.fileName === undefined) {
+          S.fileName = "my_resume";
+        }
+        
+        // Sync document title in header
+        document.getElementById('docTitle').textContent = S.fileName;
+        
+      } catch (e) { console.error("Workspace load failed", e); }
     }
   }
 
-  document.getElementById('dlbtn').addEventListener('click', function () { window.print(); });
-
-  function exportJSON() {
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S, null, 2));
-    var dlAnchorElem = document.createElement('a');
-    dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", (S.personal.firstName || "resume") + "_data.json");
-    dlAnchorElem.click();
-  }
-
-  function handleImport(e) {
-    var file = e.target.files[0];
-    if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function(ev) {
-      try {
-        var p = JSON.parse(ev.target.result);
-        Object.keys(p).forEach(function (k) { S[k] = p[k]; });
-        renderTabs(); renderForm(); renderResume();
-        alert("Data imported successfully!");
-      } catch (err) {
-        alert("Invalid JSON file.");
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  document.getElementById('fc').addEventListener('click', function (e) {
-    if (e.target.id === 'exportBtn') exportJSON();
-    if (e.target.id === 'importBtn') document.getElementById('fileInput').click();
-  });
-  document.getElementById('fc').addEventListener('change', function(e) {
-    if (e.target.id === 'fileInput') handleImport(e);
-  });
-  
-  // Initialize
-  loadFromLocal();
-  renderTabs(); renderForm(); renderResume();
-
-  // Watch for changes to save
+  // Auto-save hooking into render triggers
   var originalRenderForm = renderForm;
   renderForm = function() { originalRenderForm(); saveToLocal(); }
   var originalRenderResume = renderResume;
   renderResume = function() { originalRenderResume(); saveToLocal(); }
 
+  /* ----------------------------------
+     Initialization
+  ---------------------------------- */
+
+  initTheme();
+  loadFromLocal();
+  renderPrimarySidebar();
+  renderResume();
+
 </script>
 </body>
-</html>
+</html>

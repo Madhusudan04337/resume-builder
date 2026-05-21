@@ -2,12 +2,13 @@
   window.templates = window.templates || {};
   window.templates.classic = function(S, SOCIAL_DEFS) {
     var P = S.personal, E = S.education, C = S.coursework, X = S.experience, Pr = S.projects, Sk = S.skills, L = S.leadership, Ct = S.certifications;
-    var st = { font: "'Georgia', serif", align: "center", sectionLine: "1.5px solid #000", bg: "#fff", col: "#000", brand: "#000" };
+    var brandColor = S.accentColor || "#000";
+    var st = { font: "'Georgia', serif", align: "center", sectionLine: "1.5px solid " + brandColor, bg: "#fff", col: "#000", brand: brandColor };
     var esc = window.RT.esc, linkify = window.RT.linkify, dr = window.RT.dr, buls = window.RT.buls, sh = window.RT.sh;
     
     var h = '<div style="font-family:' + st.font + ';color:' + st.col + '">';
-    h += '<div class="rn" style="text-align:' + st.align + '">' + esc(P.firstName) + (P.lastName ? ' ' + esc(P.lastName) : '') + '</div>';
-    if (S.headline) h += '<div class="rtitle" style="text-align:' + st.align + '">' + esc(S.headline) + '</div>';
+    h += '<div class="rn" style="text-align:' + st.align + ';color:' + st.brand + '">' + esc(P.firstName) + (P.lastName ? ' ' + esc(P.lastName) : '') + '</div>';
+    if (S.headline) h += '<div class="rtitle" style="text-align:' + st.align + ';font-style:italic;font-size:11px;color:#555;margin-top:4px;text-transform:none">' + esc(S.headline) + '</div>';
     if (P.address) h += '<div class="ra" style="text-align:' + st.align + '">' + esc(P.address) + '</div>';
     
     var ctItems = [];
@@ -49,7 +50,16 @@
       } else if (secName === "Languages" && S.spokenLanguages) {
         h += sh('Languages', st); h += '<div>' + esc(S.spokenLanguages) + '</div>';
       } else if (secName === "Certifications" && Ct && Ct.length) {
-        h += sh('Certifications', st); h += '<div class="rcert"><ul>'; Ct.forEach(function (c) { var np = '<span class="rb" style="color:' + st.brand + '">' + esc(c.name) + '</span>'; var meta = (c.provider ? esc(c.provider) : '') + (dr(c.start, c.end) ? ' (' + esc(dr(c.start, e.end)) + ')' : ''); h += '<li>• ' + np + (meta ? ' - ' + meta : ''); h += '</li>'; }); h += '</ul></div>';
+        h += sh('Certifications', st); h += '<div class="rcert"><ul>'; Ct.forEach(function (c) { var np = '<span class="rb" style="color:' + st.brand + '">' + esc(c.name) + '</span>'; var meta = (c.provider ? esc(c.provider) : '') + (dr(c.start, c.end) ? ' (' + esc(dr(c.start, c.end)) + ')' : ''); h += '<li>• ' + np + (meta ? ' - ' + meta : ''); h += '</li>'; }); h += '</ul></div>';
+      } else if (secName === "Leadership" && L && L.length) {
+        h += sh('Achievements & Extracurricular', st);
+        L.forEach(function (e) {
+          h += '<div class="rent">' +
+            '<div class="rrow"><span class="rb" style="color:' + st.brand + ';font-weight:700">' + esc(e.org) + '</span><span style="font-weight:500">' + esc(dr(e.start, e.end)) + '</span></div>' +
+            '<div class="rrow"><span class="ri" style="color:' + st.brand + ';font-style:italic">' + esc(e.role) + '</span><span class="ri">' + esc(e.loc) + '</span></div>' +
+            buls(e.bullets) +
+          '</div>';
+        });
       }
     });
     h += '</div>';

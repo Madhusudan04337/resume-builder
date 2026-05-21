@@ -82,6 +82,59 @@ app.post('/api/generate-summary', async (req, res) => {
     }
 });
 
+// Robust JSON parser that handles markdown backticks, unescaped newlines/tabs inside strings, and trailing commas
+function safeParseJSON(text) {
+    let cleanText = text.trim();
+    
+    // 1. Remove markdown code blocks if present
+    if (cleanText.startsWith("```")) {
+        cleanText = cleanText.replace(/^```(?:json)?\s*\n?/i, "");
+        cleanText = cleanText.replace(/\n?\s*```$/, "");
+    }
+    cleanText = cleanText.trim();
+    
+    try {
+        return JSON.parse(cleanText);
+    } catch (error) {
+        console.warn("Standard JSON.parse failed. Attempting advanced parsing and cleanup...", error.message);
+        
+        try {
+            // 2. Escape literal newlines and control characters inside double-quoted string values
+            let inString = false;
+            let escaped = false;
+            let result = "";
+            
+            for (let i = 0; i < cleanText.length; i++) {
+                let char = cleanText[i];
+                if (escaped) {
+                    result += char;
+                    escaped = false;
+                } else if (char === '\\') {
+                    result += char;
+                    escaped = true;
+                } else if (char === '"') {
+                    result += char;
+                    inString = !inString;
+                } else if (inString && (char === '\n' || char === '\r')) {
+                    result += '\\n'; // escape the literal newline
+                } else if (inString && char === '\t') {
+                    result += '\\t'; // escape literal tabs
+                } else {
+                    result += char;
+                }
+            }
+            
+            // 3. Remove trailing commas before closing braces/brackets
+            let fixedText = result.replace(/,\s*([\]}])/g, '$1');
+            
+            return JSON.parse(fixedText);
+        } catch (innerError) {
+            console.error("Advanced JSON parsing and cleanup failed:", innerError);
+            throw new Error(`JSON parse error: ${error.message} (Advanced recovery error: ${innerError.message}). Raw response text: ${text}`);
+        }
+    }
+}
+
 // Endpoint to parse full resume text into JSON
 app.post('/api/parse-resume', async (req, res) => {
     const { text } = req.body;
@@ -111,13 +164,13 @@ Resume:
 ${text}
 """`,
             config: {
-                systemInstruction: "You are a resume parser. Extract all information and return ONLY raw JSON.",
+                systemInstruction: "You are a highly precise resume parser. Extract all information and return ONLY valid, raw JSON matching the requested structure. CRITICAL: Ensure all internal quotes and newlines inside string values are properly escaped so that the response parses perfectly using standard JSON.parse(). Do not truncate the JSON output.",
                 responseMimeType: "application/json",
-                maxOutputTokens: 2000
+                maxOutputTokens: 8000
             }
         });
 
-        res.json(JSON.parse(response.text));
+        res.json(safeParseJSON(response.text));
     } catch (error) {
         console.error("Gemini Error:", error);
         res.status(500).json({ error: "Failed to parse resume", message: error.message, stack: error.stack });
@@ -138,13 +191,13 @@ ${resume}
 
 Return ONLY a JSON object: {"score": 85, "feedback": "Detailed advice..."}`,
             config: {
-                systemInstruction: "You are an ATS (Applicant Tracking System) expert. Analyze the resume and provide a score (0-100) and brief feedback.",
+                systemInstruction: "You are an ATS (Applicant Tracking System) expert. Analyze the resume and provide a score (0-100) and brief feedback. CRITICAL: The output MUST be valid JSON. Escaping all control characters properly.",
                 responseMimeType: "application/json",
-                maxOutputTokens: 500
+                maxOutputTokens: 2000
             }
         });
 
-        res.json(JSON.parse(response.text));
+        res.json(safeParseJSON(response.text));
     } catch (error) {
         console.error("Gemini Error:", error);
         res.status(500).json({ error: "Failed to score resume", message: error.message, stack: error.stack });

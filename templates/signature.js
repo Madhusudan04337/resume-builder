@@ -2,13 +2,15 @@
   window.templates = window.templates || {};
   window.templates.signature = function(S, SOCIAL_DEFS) {
     var P = S.personal, E = S.education, C = S.coursework, X = S.experience, Pr = S.projects, Sk = S.skills, L = S.leadership, Ct = S.certifications;
-    var st = { font: "'Inter', sans-serif", align: "center", sectionLine: "1.2px solid #111", bg: "#fff", col: "#111", brand: "#111", accent: "#2563eb" };
+    var brandColor = S.accentColor || "#111";
+    var accentColor = S.accentColor || "#2563eb";
+    var st = { font: "'Inter', sans-serif", align: "center", sectionLine: "1.2px solid " + brandColor, bg: "#fff", col: "#111", brand: brandColor, accent: accentColor };
     var esc = window.RT.esc, linkify = window.RT.linkify, dr = window.RT.dr, buls = window.RT.buls, sh = window.RT.sh;
 
     var h = '<div style="font-family:' + st.font + ';color:' + st.col + '">';
     h += '<div style="text-align:center;margin-bottom:18px">';
-    h += '<div style="font-size:32px;font-weight:800;color:#000;letter-spacing:-0.5px">' + esc(P.firstName) + ' ' + esc(P.lastName) + '</div>';
-    if (S.headline) h += '<div style="font-size:13px;font-weight:600;margin-top:4px">' + esc(S.headline) + '</div>';
+    h += '<div class="rn" style="font-size:32px;font-weight:800;color:' + st.brand + ';letter-spacing:-0.5px;margin-bottom:0px">' + esc(P.firstName) + ' ' + esc(P.lastName) + '</div>';
+    if (S.headline) h += '<div style="font-style:italic;font-size:11px;font-weight:500;color:#555;margin-top:4px;text-transform:none">' + esc(S.headline) + '</div>';
     
     var ct = [];
     if (P.email && S.socialEnabled.email) ct.push('<span style="display:inline-flex;align-items:center;gap:4px"><svg style="width:11px;height:11px;fill:'+st.accent+'" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><a href="mailto:'+esc(P.email)+'" style="color:inherit;text-decoration:none">'+esc(P.email)+'</a></span>');
@@ -51,8 +53,42 @@
         });
       } else if (secName === "Skills" && (Sk.languages || Sk.tools || Sk.tech)) {
         h += sh('Skills', st); 
-        if (Sk.languages) h += '<div style="margin-bottom:4px"><span class="rb">Hard Skills</span>: ' + esc(Sk.languages) + (Sk.tech ? ', ' + esc(Sk.tech) : '') + '</div>';
+        var hardItems = [];
+        if (Sk.languages) hardItems.push(esc(Sk.languages));
+        if (Sk.tech) hardItems.push(esc(Sk.tech));
+        if (hardItems.length) h += '<div style="margin-bottom:4px"><span class="rb">Hard Skills</span>: ' + hardItems.join(', ') + '</div>';
         if (Sk.tools) h += '<div><span class="rb">Soft Skills</span>: ' + esc(Sk.tools) + '</div>'; 
+      } else if (secName === "Coursework") {
+        var crs = C.filter(Boolean);
+        if (crs.length) {
+          h += sh('Relevant Coursework', st);
+          h += '<div class="rcrs">';
+          var pc = Math.ceil(crs.length / 4);
+          for (var c = 0; c < 4; c++) {
+            var sl = crs.slice(c * pc, (c + 1) * pc);
+            if (sl.length) h += '<ul>' + sl.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>';
+          }
+          h += '</div>';
+        }
+      } else if (secName === "Languages" && S.spokenLanguages) {
+        h += sh('Languages', st);
+        h += '<div>' + esc(S.spokenLanguages) + '</div>';
+      } else if (secName === "Certifications" && Ct && Ct.length) {
+        h += sh('Certifications', st);
+        h += '<div class="rcert"><ul>';
+        Ct.forEach(function (c) {
+          var np = '<span class="rb" style="font-weight:700">' + esc(c.name) + '</span>';
+          var meta = (c.provider ? esc(c.provider) : '') + (dr(c.start, c.end) ? ' (' + esc(dr(c.start, c.end)) + ')' : '');
+          h += '<li>• ' + np + (meta ? ' - ' + meta : '') + '</li>';
+        });
+        h += '</ul></div>';
+      } else if (secName === "Leadership" && L && L.length) {
+        h += sh('Achievements & Extracurricular', st);
+        L.forEach(function (e) {
+          h += '<div class="rent"><div class="rrow"><span class="rb" style="font-size:11px">' + esc(e.org) + '</span><span class="ri">' + esc(dr(e.start, e.end)) + '</span></div>' +
+               (e.role || e.loc ? '<div class="ri" style="font-size:9.5px;margin-bottom:2px">' + esc(e.role) + (e.loc ? ' | ' + esc(e.loc) : '') + '</div>' : '') +
+               buls(e.bullets) + '</div>';
+        });
       }
     });
     h += '</div>';
