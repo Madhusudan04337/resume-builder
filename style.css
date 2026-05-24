@@ -967,8 +967,8 @@ body.dark-mode .tmpl-preview-box {
 .tmpl-preview-box.signature { font-family: 'Outfit', sans-serif; font-style: italic; }
 .tmpl-preview-box.sidebar-tmpl { border-left: 10px solid #cbd5e1; }
 body.dark-mode .tmpl-preview-box.sidebar-tmpl { border-left-color: #334155; }
-.tmpl-preview-box.minimal { border: 1px dashed #cbd5e1; font-weight: 300; }
-body.dark-mode .tmpl-preview-box.minimal { border-color: #334155; }
+.tmpl-preview-box.jakes { font-family: Georgia, serif; border-bottom: 2px solid #cbd5e1; padding-bottom: 2px; }
+body.dark-mode .tmpl-preview-box.jakes { border-bottom-color: #334155; }
 
 .tmpl-title {
   font-size: 11.5px;

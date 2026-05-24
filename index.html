@@ -54,13 +54,13 @@
     <!-- Leftmost Vertical Activity Bar -->
     <nav class="activity-bar">
       <div class="activity-tabs">
-        <button class="activity-tab active" data-view="editor" title="Document Editor">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          <span class="tab-label">Editor</span>
-        </button>
-        <button class="activity-tab" data-view="ai" title="Gemini AI Co-pilot">
+        <button class="activity-tab active" data-view="ai" title="Gemini AI Co-pilot">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           <span class="tab-label">AI Co-pilot</span>
+        </button>
+        <button class="activity-tab" data-view="editor" title="Document Editor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span class="tab-label">Editor</span>
         </button>
         <button class="activity-tab" data-view="ats" title="ATS Score Auditor">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
@@ -147,7 +147,7 @@
 <script src="templates/professional.js"></script>
 <script src="templates/signature.js"></script>
 <script src="templates/executive.js"></script>
-<script src="templates/minimal.js"></script>
+<script src="templates/jakes.js"></script>
 <script>
   var SOCIAL_DEFS = [
     { key: "phone", label: "Phone", icon: "☎", placeholder: "Your phone number", isLink: false },
@@ -179,7 +179,7 @@
     spokenLanguages: "",
     leadership: [], certifications: [],
     sectionOrder: ["Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Certifications", "Leadership"],
-    activeView: "editor",
+    activeView: "ai",
     fileName: "my_resume",
     atsScore: null,
     atsFeedback: ""
@@ -215,7 +215,7 @@
   var DEFS = {
     education: { university: "", degree: "", start: "", end: "", loc: "" },
     experience: { company: "", role: "", start: "", end: "", loc: "", bullets: [] },
-    projects: { name: "", tech: "", date: "", bullets: [] },
+    projects: { name: "", tech: "", date: "", github: "", demo: "", bullets: [] },
     leadership: { org: "", role: "", start: "", end: "", loc: "", bullets: [] },
     certifications: { name: "", url: "", provider: "", start: "", end: "", skills: "" }
   };
@@ -343,6 +343,8 @@
           '<div class="fld"><label class="lbl">Project name</label><input class="inp" data-p="projects.' + i + '.name" value="' + esc(p.name) + '" placeholder="My Portfolio"></div>' +
           '<div class="fld"><label class="lbl">Tech stack</label><input class="inp" data-p="projects.' + i + '.tech" value="' + esc(p.tech) + '" placeholder="React, Node.js, MongoDB"></div>' +
           '<div class="fld"><label class="lbl">Date</label><input class="inp" data-p="projects.' + i + '.date" value="' + esc(p.date) + '" placeholder="2025"></div>' +
+          '<div class="row2"><div class="fld"><label class="lbl">GitHub Repository Link</label><input class="inp" data-p="projects.' + i + '.github" value="' + esc(p.github || '') + '" placeholder="https://github.com/user/repo"></div>' +
+          '<div class="fld"><label class="lbl">Live Demo Link</label><input class="inp" data-p="projects.' + i + '.demo" value="' + esc(p.demo || '') + '" placeholder="https://my-demo.com"></div></div>' +
           '<div class="fld"><label class="lbl">Bullets (one per line)</label>' +
           '<textarea class="ta" data-p="projects.' + i + '.bullets" placeholder="Describe what you built...">' + p.bullets.join('\n') + '</textarea></div></div>';
       }).join('') +
@@ -391,6 +393,33 @@
   
   function sec(label) { return '<div class="sec-label">' + label + '</div>'; }
 
+  function handleClearResume() {
+    if (!confirm("Are you sure you want to clear all current resume data? This action cannot be undone.")) {
+      return;
+    }
+    S.personal = { firstName: "", lastName: "", address: "", phone: "", email: "", linkedin: "", github: "", portfolio: "", leetcode: "", gfg: "", twitter: "", hackerrank: "", codechef: "", summary: "", photo: "" };
+    S.headline = "";
+    S.socialEnabled = { phone: true, email: true, linkedin: true, github: true, portfolio: false, leetcode: false, gfg: false, twitter: false, hackerrank: false, codechef: false, summary: true };
+    S.template = "classic";
+    S.accentColor = "#32166f";
+    S.education = [];
+    S.coursework = [];
+    S.experience = [];
+    S.projects = [];
+    S.skills = { languages: "", tools: "", tech: "" };
+    S.spokenLanguages = "";
+    S.leadership = [];
+    S.certifications = [];
+    S.sectionOrder = ["Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Certifications", "Leadership"];
+    S.atsScore = null;
+    S.atsFeedback = "";
+    
+    saveToLocal();
+    renderPrimarySidebar();
+    renderResume();
+    alert("Resume data cleared successfully!");
+  }
+
   /* ----------------------------------
      Sidebars Panel Rendering Router
   ---------------------------------- */
@@ -407,9 +436,50 @@
       else t.classList.remove('active');
     });
 
+    // Remove any existing clear button from header
+    var existingClear = document.getElementById('clearResumeBtn');
+    if (existingClear) existingClear.remove();
+
     if (view === "editor") {
       title.textContent = "Document Editor";
       subtitle.textContent = "Modify resume content sections";
+      
+      // Add clear button to the header
+      var header = document.querySelector('.sidebar-header');
+      if (header) {
+        header.style.position = 'relative';
+        var clearBtn = document.createElement('button');
+        clearBtn.id = 'clearResumeBtn';
+        clearBtn.className = 'clear-btn';
+        clearBtn.title = 'Clear all resume data';
+        clearBtn.innerHTML = '<span style="font-size:11px">🗑</span> Clear';
+        clearBtn.style.position = 'absolute';
+        clearBtn.style.top = '22px';
+        clearBtn.style.right = '20px';
+        clearBtn.style.padding = '4px 10px';
+        clearBtn.style.fontSize = '10.5px';
+        clearBtn.style.fontWeight = '700';
+        clearBtn.style.background = '#fee2e2';
+        clearBtn.style.color = '#ef4444';
+        clearBtn.style.border = '1px solid #fca5a5';
+        clearBtn.style.borderRadius = '4px';
+        clearBtn.style.cursor = 'pointer';
+        clearBtn.style.display = 'flex';
+        clearBtn.style.alignItems = 'center';
+        clearBtn.style.gap = '4px';
+        clearBtn.style.transition = 'all 0.15s ease';
+        
+        clearBtn.addEventListener('mouseenter', function() {
+          clearBtn.style.background = '#fecaca';
+        });
+        clearBtn.addEventListener('mouseleave', function() {
+          clearBtn.style.background = '#fee2e2';
+        });
+        
+        clearBtn.addEventListener('click', handleClearResume);
+        header.appendChild(clearBtn);
+      }
+
       content.innerHTML = `<div class="tabs" id="tabs"></div><div class="fc" id="fc"></div>`;
       renderTabs();
       renderForm();
@@ -522,10 +592,10 @@
             <div class="tmpl-title">Executive</div>
             <p class="hint">Dual column structure</p>
           </div>
-          <div class="template-card" data-template="minimal">
-            <div class="tmpl-preview-box minimal">Aa</div>
-            <div class="tmpl-title">Minimalist</div>
-            <p class="hint">Ultra light style</p>
+          <div class="template-card" data-template="jakes">
+            <div class="tmpl-preview-box jakes">Aa</div>
+            <div class="tmpl-title">Jake's (ATS)</div>
+            <p class="hint">LaTeX single-column</p>
           </div>
         </div>
       `;
@@ -1183,7 +1253,7 @@
           S.spokenLanguages = "";
         }
         if (S.activeView === undefined) {
-          S.activeView = "editor";
+          S.activeView = "ai";
         }
         if (S.fileName === undefined) {
           S.fileName = "my_resume";
