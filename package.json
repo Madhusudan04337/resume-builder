@@ -4,6 +4,8 @@
   "description": "A clean and interactive **Resume Builder Web App** designed to help you create, customize, and export professional resumes effortlessly.",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
