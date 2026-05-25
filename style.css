@@ -1128,15 +1128,26 @@ body.dark-mode .toolbar-status-badge {
   background: #ffffff !important;
   color: #000000 !important;
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: 10.5px;
+  font-size: 12px !important;
   line-height: 1.4;
   width: 210mm;
   min-height: 297mm;
-  padding: 14mm 16mm;
+  max-height: 297mm;
+  padding: 10mm 10mm 10mm 10mm; /* top right bottom left */
   margin: auto;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   border-radius: 4px;
   position: relative;
+  overflow: hidden;
+  page-break-after: always;
+  break-after: page;
+}
+
+/* Prevent awkward splits inside main blocks */
+.rp > * {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
 }
 
 body.dark-mode .rp {
@@ -1330,18 +1341,19 @@ body.dark-mode .rp {
     transform: none !important;
   }
   
+
   .rp {
-    width: 210mm !important;
-    min-height: 297mm !important;
-    padding: 14mm 16mm !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    margin: 0 !important;
-    overflow: visible !important;
-  }
+      width: 210mm !important;
+      min-height: 297mm !important;
+      padding: 0 !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+      overflow: visible !important;
+    }
 
   @page {
     size: A4;
-    margin: 0;
+    margin: 10mm;
   }
 }
