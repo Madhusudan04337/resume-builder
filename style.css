@@ -706,7 +706,7 @@ body.dark-mode .tabs {
   font-size: 10.5px;
   color: var(--text-tertiary);
   margin-top: 3px;
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
 /* ----------------------------------
@@ -873,7 +873,7 @@ body.dark-mode .ats-placeholder-info {
 .ats-details {
   font-size: 11px;
   color: var(--text-secondary);
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
 .ats-details strong {
@@ -1129,7 +1129,7 @@ body.dark-mode .toolbar-status-badge {
   color: #000000 !important;
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 12px !important;
-  line-height: 1.4;
+  line-height: 1.3;
   width: 210mm;
   min-height: 297mm;
   max-height: 297mm;
@@ -1167,8 +1167,8 @@ body.dark-mode .rp {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-top: 10px;
-  margin-bottom: 6px;
+  margin-top: 8px;
+  margin-bottom: 4px;
   padding-bottom: 2px;
 }
 
@@ -1181,14 +1181,14 @@ body.dark-mode .rp {
   font-size: 20px;
   font-weight: 800;
   letter-spacing: -0.5px;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .rp .rtitle {
   font-size: 12px;
   font-weight: 600;
   color: #555 !important;
-  margin-top: 2px;
+  margin-top: 1px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -1196,7 +1196,7 @@ body.dark-mode .rp {
 .rp .ra {
   font-size: 9.5px;
   color: #555 !important;
-  margin-top: 4px;
+  margin-top: 3px;
 }
 
 .rp .rc {
@@ -1204,12 +1204,12 @@ body.dark-mode .rp {
   flex-wrap: wrap;
   gap: 2px 8px;
   font-size: 9px;
-  margin-top: 4px;
+  margin-top: 3px;
   font-weight: 500;
 }
 
 .rp .rent {
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .rp .rrow {
@@ -1237,7 +1237,7 @@ body.dark-mode .rp {
 .rp .rbl,
 .rp .rbuls,
 .rp ul:not(.rcrs ul):not(.rcert ul) {
-  margin: 2px 0 4px 16px;
+  margin: 1px 0 3px 16px;
   padding: 0;
   font-size: 10px;
   list-style-type: disc;
@@ -1246,8 +1246,8 @@ body.dark-mode .rp {
 .rp .rbl li,
 .rp .rbuls li,
 .rp ul:not(.rcrs ul):not(.rcert ul) li {
-  margin-bottom: 1.5px;
-  line-height: 1.4;
+  margin-bottom: 1px;
+  line-height: 1.3;
 }
 
 .rp .rcert ul {

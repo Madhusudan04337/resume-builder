@@ -18,9 +18,9 @@
     // Mathematically perfect inline bullet list renderer with 15px indentation and breathing gaps
     var renderBullets = function(bullets) {
       if (!bullets || !bullets.length) return '';
-      var html = '<ul style="margin: 4px 0 0 0; padding-left: 15px; list-style-type: disc; font-size: 10px; color: #111111">';
+      var html = '<ul style="margin: 2px 0 0 0; padding-left: 15px; list-style-type: disc; font-size: 10px; color: #111111">';
       bullets.forEach(function(b) {
-        html += '<li style="margin-bottom: 3px; padding-left: 0px; text-align: justify; line-height: 1.4">' + esc(b) + '</li>';
+        html += '<li style="margin-bottom: 2px; padding-left: 0px; text-align: justify; line-height: 1.3">' + esc(b) + '</li>';
       });
       html += '</ul>';
       return html;
@@ -33,11 +33,11 @@
       else if (label === "Projects") displayLabel = "Technical Projects";
       else if (label === "Leadership") displayLabel = "Achievements";
       
-      return '<div style="font-size:13px;font-weight:700;color:' + st.brand + ';margin-top:14px;margin-bottom:2px;letter-spacing:-0.2px">' + esc(displayLabel) + '</div>' +
-             '<div style="border-bottom: ' + st.sectionLine + '; margin-top: 0px; margin-bottom: 6px"></div>';
+      return '<div style="font-size:13px;font-weight:700;color:' + st.brand + ';margin-top:10px;margin-bottom:2px;letter-spacing:-0.2px">' + esc(displayLabel) + '</div>' +
+             '<div style="border-bottom: ' + st.sectionLine + '; margin-top: 0px; margin-bottom: 5px"></div>';
     };
 
-    var h = '<div style="font-family:' + st.font + ';color:' + st.col + ';line-height:1.38;font-size:10px;text-align:left">';
+    var h = '<div style="font-family:' + st.font + ';color:' + st.col + ';line-height:1.3;font-size:10px;text-align:left">';
     
     // Left-aligned Header Block (Minimalist & clean - no decorative lines or images)
     h += '<div style="text-align:left;margin-bottom:12px">';
@@ -53,7 +53,7 @@
     var locIcon = '<svg style="width:10px;height:10px;fill:none;stroke:' + st.brand + ';stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1.2px)" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
     var ghIcon = '<svg style="width:10px;height:10px;fill:none;stroke:' + st.brand + ';stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1.2px)" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>';
     var liIcon = '<svg style="width:10px;height:10px;fill:none;stroke:' + st.brand + ';stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1.2px)" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>';
-    var demoIcon = '<svg style="width:10px;height:10px;fill:none;stroke:' + st.brand + ';stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1.2px)" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>';
+    var demoIcon = '<svg style="width:10px;height:10px;fill:' + st.brand + ';display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1.2px)" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/><path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/></svg>';
     
     var row1Items = [];
     var row2Items = [];

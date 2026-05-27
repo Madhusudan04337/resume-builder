@@ -51,27 +51,27 @@
     }
     sidebar += '</div>';
 
-    var main = '<div style="flex:1;padding:25px 25px 25px 20px;font-size:11px;line-height:1.5;color:' + st.col + '">';
+    var main = '<div style="flex:1;padding:25px 25px 25px 20px;font-size:11px;line-height:1.3;color:' + st.col + '">';
     main += '<div class="rn" style="font-size:28px;font-weight:800;color:'+st.brand+';margin-bottom:2px">' + esc(P.firstName) + ' ' + esc(P.lastName) + '</div>';
-    if (S.headline) main += '<div style="font-style:italic;font-size:11px;color:' + st.brand + ';opacity:0.85;font-weight:500;margin-top:4px;margin-bottom:15px;text-transform:none">' + esc(S.headline) + '</div>';
-    if (P.summary && S.socialEnabled.summary) main += '<div style="font-size:11px;line-height:1.5;margin-bottom:20px;text-align:justify">' + linkify(esc(P.summary)) + '</div>';
+    if (S.headline) main += '<div style="font-style:italic;font-size:11px;color:' + st.brand + ';opacity:0.85;font-weight:500;margin-top:2px;margin-bottom:12px;text-transform:none">' + esc(S.headline) + '</div>';
+    if (P.summary && S.socialEnabled.summary) main += '<div style="font-size:11px;line-height:1.4;margin-bottom:15px;text-align:justify">' + linkify(esc(P.summary)) + '</div>';
 
     S.sectionOrder.forEach(function(secName) {
        if (secName === "Experience" && X.length) {
-         main += '<div style="font-weight:700;color:'+st.brand+';border-bottom:2px solid '+st.brand+';margin-bottom:10px;padding-bottom:2px;text-transform:uppercase;font-size:12.5px">Experience</div>';
+         main += '<div style="font-weight:700;color:'+st.brand+';border-bottom:2px solid '+st.brand+';margin-bottom:8px;padding-bottom:2px;text-transform:uppercase;font-size:12.5px">Experience</div>';
          X.forEach(function(e){ 
-           main += '<div style="margin-bottom:12px">' +
+           main += '<div style="margin-bottom:10px">' +
              '<div style="display:flex;justify-content:space-between;font-weight:700;color:' + st.brand + ';font-size:11.5px"><span>' + esc(e.role) + '</span><span>' + esc(dr(e.start, e.end)) + '</span></div>' +
-             '<div style="font-style:italic;color:#475569;font-size:10.5px;margin-top:1px;margin-bottom:4px">' + esc(e.company) + ' | ' + esc(e.loc) + '</div>' + 
+             '<div style="font-style:italic;color:#475569;font-size:10.5px;margin-top:1px;margin-bottom:3px">' + esc(e.company) + ' | ' + esc(e.loc) + '</div>' + 
              buls(e.bullets) + 
            '</div>'; 
          });
        } else if (secName === "Projects" && Pr.length) {
-         main += '<div style="font-weight:700;color:'+st.brand+';border-bottom:2px solid '+st.brand+';margin-bottom:10px;padding-bottom:2px;text-transform:uppercase;font-size:12.5px">Projects</div>';
+         main += '<div style="font-weight:700;color:'+st.brand+';border-bottom:2px solid '+st.brand+';margin-bottom:8px;padding-bottom:2px;text-transform:uppercase;font-size:12.5px">Projects</div>';
          Pr.forEach(function(p){ 
            var links = [];
            var ghIcon = '<svg style="width:10px;height:10px;fill:none;stroke:' + st.brand + ';stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1px)" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>';
-           var demoIcon = '<svg style="width:10px;height:10px;fill:none;stroke:' + st.brand + ';stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1px)" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>';
+           var demoIcon = '<svg style="width:10px;height:10px;fill:' + st.brand + ';display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1px)" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/><path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/></svg>';
 
            if (p.github) {
              var ghUrl = p.github.startsWith('http') ? p.github : 'https://github.com/' + p.github;
@@ -83,10 +83,10 @@
            }
            var linksHTML = '';
            if (links.length) {
-             linksHTML = '<div style="font-size:10px;margin-top:4px;margin-bottom:4px;display:flex;gap:0px;justify-content:flex-start">' + links.join('<span style="color:#cccccc;margin:0 6px">|</span>') + '</div>';
+             linksHTML = '<div style="font-size:10px;margin-top:2px;margin-bottom:2px;display:flex;gap:0px;justify-content:flex-start">' + links.join('<span style="color:#cccccc;margin:0 6px">|</span>') + '</div>';
            }
 
-           main += '<div style="margin-bottom:10px">' +
+           main += '<div style="margin-bottom:8px">' +
              '<div style="font-weight:700;font-size:11.5px;color:' + st.brand + '">' + esc(p.name) + (p.tech ? ' <span style="font-weight:500;color:#475569;font-size:10.5px">| ' + esc(p.tech) + '</span>' : '') + '</div>' + 
              linksHTML +
              buls(p.bullets) + 
