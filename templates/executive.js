@@ -116,7 +116,12 @@
          main += '<div style="font-weight:700;color:'+st.brand+';border-bottom:2px solid '+st.brand+';margin-bottom:10px;padding-bottom:2px;text-transform:uppercase;font-size:12.5px">Certifications</div>';
          main += '<div class="rcert" style="margin-bottom:12px"><ul>';
          Ct.forEach(function (c) {
-           var np = '<span class="rb" style="color:' + st.brand + ';font-weight:700;font-size:11px">' + esc(c.name) + '</span>';
+           var np = '';
+           if (c.url) {
+             np = '<a href="' + esc(c.url) + '" target="_blank" style="color:' + st.brand + ';text-decoration:underline;font-weight:700;font-size:11px">' + esc(c.name) + '</a>';
+           } else {
+             np = '<span class="rb" style="color:' + st.brand + ';font-weight:700;font-size:11px">' + esc(c.name) + '</span>';
+           }
            var meta = (c.provider ? esc(c.provider) : '') + (dr(c.start, c.end) ? ' (' + esc(dr(c.start, c.end)) + ')' : '');
            main += '<li style="margin-bottom:4px">• ' + np + (meta ? ' - <span style="color:#475569;font-size:10.5px">' + meta + '</span>' : '') + '</li>';
          });

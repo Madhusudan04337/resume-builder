@@ -105,8 +105,21 @@
         if (Sk.tech) h += '<div><span class="rb" style="color:' + st.brand + '">Technologies/Frameworks</span>: ' + esc(Sk.tech) + '</div>';
       } else if (secName === "Languages" && S.spokenLanguages) {
         h += sh('Languages', st); h += '<div>' + esc(S.spokenLanguages) + '</div>';
+
       } else if (secName === "Certifications" && Ct && Ct.length) {
-        h += sh('Certifications', st); h += '<div class="rcert"><ul>'; Ct.forEach(function (c) { var np = '<span class="rb" style="color:' + st.brand + '">' + esc(c.name) + '</span>'; var meta = (c.provider ? esc(c.provider) : '') + (dr(c.start, c.end) ? ' (' + esc(dr(c.start, c.end)) + ')' : ''); h += '<li>• ' + np + (meta ? ' - ' + meta : ''); h += '</li>'; }); h += '</ul></div>';
+        h += sh('Certifications', st);
+        h += '<div class="rcert"><ul>';
+        Ct.forEach(function (c) {
+          var np = '';
+          if (c.url) {
+            np = '<a href="' + esc(c.url) + '" target="_blank" style="color:' + st.brand + ';text-decoration:underline;font-weight:600">' + esc(c.name) + '</a>';
+          } else {
+            np = '<span class="rb" style="color:' + st.brand + '">' + esc(c.name) + '</span>';
+          }
+          var meta = (c.provider ? esc(c.provider) : '') + (dr(c.start, c.end) ? ' (' + esc(dr(c.start, c.end)) + ')' : '');
+          h += '<li>• ' + np + (meta ? ' - ' + meta : '') + '</li>';
+        });
+        h += '</ul></div>';
       } else if (secName === "Leadership" && L && L.length) {
         h += sh('Achievements & Extracurricular', st);
         L.forEach(function (e) {
