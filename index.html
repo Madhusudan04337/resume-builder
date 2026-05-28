@@ -657,7 +657,106 @@
   }
   
   function renderResume() { 
-    document.getElementById('rp').innerHTML = resumeHTML();
+    var rp = document.getElementById('rp');
+    if (!rp) return;
+    
+    // Render content
+    rp.innerHTML = resumeHTML();
+    
+    // Measure exact height of 1 A4 page in pixels dynamically
+    var dummy = document.createElement('div');
+    dummy.style.height = '297mm';
+    dummy.style.visibility = 'hidden';
+    dummy.style.position = 'absolute';
+    document.body.appendChild(dummy);
+    var a4HeightPx = dummy.offsetHeight;
+    document.body.removeChild(dummy);
+    
+    // Remove existing spacers and gaps
+    var existingSpacers = rp.querySelectorAll('.page-break-spacer');
+    existingSpacers.forEach(function(el) { el.remove(); });
+    
+    // Reset height to auto to let content expand naturally
+    rp.style.height = 'auto';
+    
+    // 10mm padding equivalent in pixels
+    var marginPx = a4HeightPx * (10 / 297);
+    var gapHeight = 20; // 20px visual gap
+    
+    // Measure absolute positions of all block elements
+    var rpRect = rp.getBoundingClientRect();
+    var rpTop = rpRect.top + window.scrollY;
+    
+    // Process page breaks up to 5 pages
+    var maxPages = 5;
+    for (var pageNum = 1; pageNum < maxPages; pageNum++) {
+      var boundaryY = pageNum * a4HeightPx;
+      var bottomMarginY = boundaryY - marginPx;
+      var topMarginY = boundaryY + marginPx;
+      
+      // Query block elements that can be pushed (to prevent overlaps and preserve column/flex flows)
+      var blocks = rp.querySelectorAll('.rsh, .rent, .rcrs, .rcert, div[style*="margin-bottom"], .sinp, .srow, .rc');
+      var targetElement = null;
+      
+      for (var i = 0; i < blocks.length; i++) {
+        var el = blocks[i];
+        
+        // Skip elements that are inside/under an already created spacer
+        if (el.closest('.page-break-spacer')) continue;
+        
+        var rect = el.getBoundingClientRect();
+        var elTop = rect.top + window.scrollY - rpTop;
+        var elBottom = elTop + rect.height;
+        
+        // If element starts after bottomMarginY, or crosses it
+        if (elTop > bottomMarginY - 5) {
+          targetElement = el;
+          break;
+        } else if (elBottom > bottomMarginY) {
+          targetElement = el;
+          break;
+        }
+      }
+      
+      if (targetElement) {
+        var elRect = targetElement.getBoundingClientRect();
+        var elTop = elRect.top + window.scrollY - rpTop;
+        
+        var spacerHeight = topMarginY - elTop;
+        if (spacerHeight > 0) {
+          var spacer = document.createElement('div');
+          spacer.className = 'page-break-spacer';
+          spacer.style.height = spacerHeight + 'px';
+          
+          var gap = document.createElement('div');
+          gap.className = 'page-break-gap';
+          
+          // Position the 20px gap exactly centered at boundaryY relative to spacer top
+          var gapTop = (boundaryY - elTop) - (gapHeight / 2);
+          gap.style.top = gapTop + 'px';
+          gap.style.height = gapHeight + 'px';
+          
+          var label = document.createElement('span');
+          label.className = 'page-break-label';
+          label.textContent = 'Page ' + (pageNum + 1);
+          gap.appendChild(label);
+          
+          spacer.appendChild(gap);
+          targetElement.parentNode.insertBefore(spacer, targetElement);
+        }
+      } else {
+        break;
+      }
+    }
+    
+    // Calculate final content height after spacer insertion
+    var contentHeight = rp.scrollHeight;
+    var numPages = Math.ceil(contentHeight / a4HeightPx);
+    if (numPages < 1) numPages = 1;
+    
+    // Lock the container height to exact multiples of A4
+    rp.style.height = (numPages * a4HeightPx) + 'px';
+    
     updateWorkspaceDiagnostics();
   }
 
