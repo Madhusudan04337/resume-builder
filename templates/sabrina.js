@@ -4,7 +4,7 @@
     var P = S.personal, E = S.education, C = S.coursework, X = S.experience, Pr = S.projects, Sk = S.skills, L = S.leadership, Ct = S.certifications;
     
     // Luxury gold accent color requested by user
-    var brandColor = S.accentColor || "#c8986b";
+    var brandColor = S.accentColor || "#c8986b"; // Luxury Gold for Sabrina
     
     var st = { 
       font: "'Garamond', 'Georgia', serif", 

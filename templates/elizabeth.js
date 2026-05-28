@@ -4,7 +4,7 @@
     var P = S.personal, E = S.education, C = S.coursework, X = S.experience, Pr = S.projects, Sk = S.skills, L = S.leadership, Ct = S.certifications;
     
     // Sleek charcoal/slate accent color requested by user
-    var brandColor = S.accentColor || "#2d3748";
+    var brandColor = S.accentColor || "#2d3748"; // Slate Charcoal for Elizabeth
     
     var st = { 
       // Premium uppercase geometric Montserrat font family

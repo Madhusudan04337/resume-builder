@@ -3,7 +3,7 @@
   window.templates.jakes = function(S, SOCIAL_DEFS) {
     var P = S.personal, E = S.education, C = S.coursework, X = S.experience, Pr = S.projects, Sk = S.skills, L = S.leadership, Ct = S.certifications;
     
-    var brandColor = S.accentColor || "#32166f";
+    var brandColor = S.accentColor || "#32166f"; // Indigo Deep for Jake's
     
     var st = { 
       font: "'Georgia', 'Garamond', serif", 

@@ -2,7 +2,7 @@
   window.templates = window.templates || {};
   window.templates.classic = function(S, SOCIAL_DEFS) {
     var P = S.personal, E = S.education, C = S.coursework, X = S.experience, Pr = S.projects, Sk = S.skills, L = S.leadership, Ct = S.certifications;
-    var brandColor = S.accentColor || "#000";
+    var brandColor = S.accentColor || "#000"; // Black for Classic
     var st = { font: "'Georgia', serif", align: "center", sectionLine: "1.5px solid " + brandColor, bg: "#fff", col: "#000", brand: brandColor };
     var esc = window.RT.esc, linkify = window.RT.linkify, dr = window.RT.dr, buls = window.RT.buls, sh = window.RT.sh;
     
