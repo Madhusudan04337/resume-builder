@@ -147,6 +147,7 @@
 <script src="templates/executive.js"></script>
 <script src="templates/jakes.js"></script>
 <script src="templates/sabrina.js"></script>
+<script src="templates/elizabeth.js"></script>
 <script>
   var SOCIAL_DEFS = [
     { key: "phone", label: "Phone", icon: "☎", placeholder: "Your phone number", isLink: false },
@@ -580,6 +581,7 @@
           <span class="accent-dot" data-color="#32166f" style="background:#32166f" title="Indigo Deep"></span>
           <span class="accent-dot" data-color="#000000" style="background:#000000" title="Classic Black"></span>
           <span class="accent-dot" data-color="#c8986b" style="background:#c8986b" title="Luxury Gold"></span>
+          <span class="accent-dot" data-color="#2d3748" style="background:#2d3748" title="Slate Charcoal"></span>
         </div>
         
         <div class="sec-label">Layout Templates</div>
@@ -591,11 +593,6 @@
             <p class="hint">Traditional serif</p>
           </div>
 <!-- Removed Modern, Professional, Signature template cards -->
-          <div class="template-card" data-template="executive">
-            <div class="tmpl-preview-box sidebar-tmpl">Aa</div>
-            <div class="tmpl-title">Executive</div>
-            <p class="hint">Dual column structure</p>
-          </div>
           <div class="template-card" data-template="jakes">
             <div class="tmpl-preview-box jakes">Aa</div>
             <div class="tmpl-title">Jake's (ATS)</div>
@@ -605,6 +602,11 @@
             <div class="tmpl-preview-box elegant">Aa</div>
             <div class="tmpl-title">Sabrina (Luxury Gold)</div>
             <p class="hint">Elegant serif layout</p>
+          </div>
+          <div class="template-card" data-template="elizabeth">
+            <div class="tmpl-preview-box sans">Aa</div>
+            <div class="tmpl-title">Elizabeth (Modern Box)</div>
+            <p class="hint">Minimalist boxed header</p>
           </div>
         </div>
       `;
@@ -710,7 +712,7 @@
       
       // Query block elements that can be pushed (to prevent overlaps and preserve column/flex flows)
       var selector = '.rsh, .rent, .rcrs, .rcert, div[style*="margin-bottom"], .sinp, .srow, .rc';
-      if (S.template === 'executive') {
+      if (S.template === 'executive' || S.template === 'elizabeth') {
         selector = '.r-main-col .rsh, .r-main-col .rent, .r-main-col .rcrs, .r-main-col .rcert, .r-main-col div[style*="margin-bottom"], .r-main-col .sinp, .r-main-col .srow, .r-main-col .rc';
       }
       var blocks = rp.querySelectorAll(selector);
@@ -1051,6 +1053,9 @@
       S.template = tmplCard.dataset.template;
       if (S.template === 'sabrina') {
         S.accentColor = '#c8986b';
+        saveToLocal();
+      } else if (S.template === 'elizabeth') {
+        S.accentColor = '#2d3748';
         saveToLocal();
       }
       renderResume();
