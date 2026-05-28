@@ -146,6 +146,7 @@
 <!-- Removed Modern, Professional, Signature templates -->
 <script src="templates/executive.js"></script>
 <script src="templates/jakes.js"></script>
+<script src="templates/sabrina.js"></script>
 <script>
   var SOCIAL_DEFS = [
     { key: "phone", label: "Phone", icon: "☎", placeholder: "Your phone number", isLink: false },
@@ -176,13 +177,14 @@
     skills: { languages: "", tools: "", tech: "" },
     spokenLanguages: "",
     leadership: [], certifications: [],
-    sectionOrder: ["Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Certifications", "Leadership"],
+    references: "",
+    sectionOrder: ["Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Certifications", "Leadership", "References"],
     activeView: "ai",
     fileName: "my_resume",
     atsScore: null,
     atsFeedback: ""
   };
-  var TABS = ["Personal", "Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Leadership", "Certifications"];
+  var TABS = ["Personal", "Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Leadership", "Certifications", "References"];
   
   var TAB_ICONS = {
     Personal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
@@ -193,7 +195,8 @@
     Skills: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
     Languages: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
     Leadership: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-    Certifications: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 11 2 2 4-4"/></svg>'
+    Certifications: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 11 2 2 4-4"/></svg>',
+    References: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>'
   };
 
   var activeTab = "Personal";
@@ -389,6 +392,10 @@
           '<div class="fld"><label class="lbl">Skills learned</label><input class="inp" data-p="certifications.' + i + '.skills" value="' + esc(c.skills) + '" placeholder="EC2, S3, IAM"></div></div>';
       }).join('') +
       '<button class="addbtn" data-add="certifications">+ Add certification</button>';
+    if (tab === "References") return sec('References') +
+      '<div class="fld"><label class="lbl">References Text</label>' +
+      '<textarea class="ta" style="min-height:100px" data-p="references" placeholder="Available upon request.">' + esc(S.references || '') + '</textarea></div>' +
+      '<p class="hint">Specify your professional references or enter "Available upon request."</p>';
     return '';
   }
   
@@ -419,7 +426,8 @@
     S.spokenLanguages = "";
     S.leadership = [];
     S.certifications = [];
-    S.sectionOrder = ["Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Certifications", "Leadership"];
+    S.references = "";
+    S.sectionOrder = ["Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Certifications", "Leadership", "References"];
     S.atsScore = null;
     S.atsFeedback = "";
     
@@ -571,6 +579,7 @@
         <div class="header-accent-picker" id="accentPicker" style="background:var(--bg-card); padding:8px 10px; border-radius:10px; border:1px solid var(--border-color); display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px">
           <span class="accent-dot" data-color="#32166f" style="background:#32166f" title="Indigo Deep"></span>
           <span class="accent-dot" data-color="#000000" style="background:#000000" title="Classic Black"></span>
+          <span class="accent-dot" data-color="#c8986b" style="background:#c8986b" title="Luxury Gold"></span>
         </div>
         
         <div class="sec-label">Layout Templates</div>
@@ -591,6 +600,11 @@
             <div class="tmpl-preview-box jakes">Aa</div>
             <div class="tmpl-title">Jake's (ATS)</div>
             <p class="hint">LaTeX single-column</p>
+          </div>
+          <div class="template-card" data-template="sabrina">
+            <div class="tmpl-preview-box elegant">Aa</div>
+            <div class="tmpl-title">Sabrina (Luxury Gold)</div>
+            <p class="hint">Elegant serif layout</p>
           </div>
         </div>
       `;
@@ -695,7 +709,11 @@
       var topMarginY = boundaryY + marginPx;
       
       // Query block elements that can be pushed (to prevent overlaps and preserve column/flex flows)
-      var blocks = rp.querySelectorAll('.rsh, .rent, .rcrs, .rcert, div[style*="margin-bottom"], .sinp, .srow, .rc');
+      var selector = '.rsh, .rent, .rcrs, .rcert, div[style*="margin-bottom"], .sinp, .srow, .rc';
+      if (S.template === 'executive') {
+        selector = '.r-main-col .rsh, .r-main-col .rent, .r-main-col .rcrs, .r-main-col .rcert, .r-main-col div[style*="margin-bottom"], .r-main-col .sinp, .r-main-col .srow, .r-main-col .rc';
+      }
+      var blocks = rp.querySelectorAll(selector);
       var targetElement = null;
       
       for (var i = 0; i < blocks.length; i++) {
@@ -788,6 +806,7 @@
       if (name === "Languages" && S.spokenLanguages) return true;
       if (name === "Certifications" && S.certifications.length) return true;
       if (name === "Leadership" && S.leadership.length) return true;
+      if (name === "References" && S.references) return true;
       return false;
     }).length;
     
@@ -1030,6 +1049,10 @@
       document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active'));
       tmplCard.classList.add('active');
       S.template = tmplCard.dataset.template;
+      if (S.template === 'sabrina') {
+        S.accentColor = '#c8986b';
+        saveToLocal();
+      }
       renderResume();
       return;
     }
@@ -1342,6 +1365,12 @@
         // Add migrations
         if (S.sectionOrder && !S.sectionOrder.includes("Languages")) {
           S.sectionOrder.push("Languages");
+        }
+        if (S.sectionOrder && !S.sectionOrder.includes("References")) {
+          S.sectionOrder.push("References");
+        }
+        if (S.references === undefined) {
+          S.references = "";
         }
         if (S.spokenLanguages === undefined) {
           S.spokenLanguages = "";

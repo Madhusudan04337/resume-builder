@@ -51,7 +51,7 @@
     }
     sidebar += '</div>';
 
-    var main = '<div style="flex:1;padding:25px 25px 25px 20px;font-size:11px;line-height:1.3;color:' + st.col + '">';
+    var main = '<div class="r-main-col" style="flex:1;padding:25px 25px 25px 20px;font-size:11px;line-height:1.3;color:' + st.col + '">';
     main += '<div class="rn" style="font-size:28px;font-weight:800;color:'+st.brand+';margin-bottom:2px">' + esc(P.firstName) + ' ' + esc(P.lastName) + '</div>';
     if (S.headline) main += '<div style="font-style:italic;font-size:11px;color:' + st.brand + ';opacity:0.85;font-weight:500;margin-top:2px;margin-bottom:12px;text-transform:none">' + esc(S.headline) + '</div>';
     if (P.summary && S.socialEnabled.summary) main += '<div style="font-size:11px;line-height:1.4;margin-bottom:15px;text-align:justify">' + linkify(esc(P.summary)) + '</div>';
@@ -126,16 +126,19 @@
            main += '<li style="margin-bottom:4px">• ' + np + (meta ? ' - <span style="color:#475569;font-size:10.5px">' + meta + '</span>' : '') + '</li>';
          });
          main += '</ul></div>';
-       } else if (secName === "Leadership" && L && L.length) {
-         main += '<div style="font-weight:700;color:'+st.brand+';border-bottom:2px solid '+st.brand+';margin-bottom:10px;padding-bottom:2px;text-transform:uppercase;font-size:12.5px">Achievements & Extracurricular</div>';
-         L.forEach(function (e) {
-           main += '<div style="margin-bottom:12px">' +
-             '<div style="display:flex;justify-content:space-between;font-weight:700;color:' + st.brand + ';font-size:11.5px"><span>' + esc(e.org) + '</span><span>' + esc(dr(e.start, e.end)) + '</span></div>' +
-             (e.role ? '<div style="font-style:italic;color:#475569;font-size:10.5px;margin-top:1px;margin-bottom:4px">' + esc(e.role) + (e.loc ? ' | ' + esc(e.loc) : '') + '</div>' : '') +
-             buls(e.bullets) +
-           '</div>';
-         });
-       }
+        } else if (secName === "Leadership" && L && L.length) {
+          main += '<div style="font-weight:700;color:'+st.brand+';border-bottom:2px solid '+st.brand+';margin-bottom:10px;padding-bottom:2px;text-transform:uppercase;font-size:12.5px">Achievements & Extracurricular</div>';
+          L.forEach(function (e) {
+            main += '<div style="margin-bottom:12px">' +
+              '<div style="display:flex;justify-content:space-between;font-weight:700;color:' + st.brand + ';font-size:11.5px"><span>' + esc(e.org) + '</span><span>' + esc(dr(e.start, e.end)) + '</span></div>' +
+              (e.role ? '<div style="font-style:italic;color:#475569;font-size:10.5px;margin-top:1px;margin-bottom:4px">' + esc(e.role) + (e.loc ? ' | ' + esc(e.loc) : '') + '</div>' : '') +
+              buls(e.bullets) +
+            '</div>';
+          });
+        } else if (secName === "References" && S.references) {
+          main += '<div style="font-weight:700;color:'+st.brand+';border-bottom:2px solid '+st.brand+';margin-bottom:10px;padding-bottom:2px;text-transform:uppercase;font-size:12.5px">References</div>';
+          main += '<div style="font-size:10.5px;color:#475569;font-style:italic;line-height:1.5">' + linkify(esc(S.references)) + '</div>';
+        }
     });
     main += '</div>';
 

@@ -129,6 +129,9 @@
             buls(e.bullets) +
           '</div>';
         });
+      } else if (secName === "References" && S.references) {
+        h += sh('References', st);
+        h += '<div style="font-size:10px;color:#444;font-style:italic;line-height:1.5">' + linkify(esc(S.references)) + '</div>';
       }
     });
     h += '</div>';
