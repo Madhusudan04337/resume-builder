@@ -6,7 +6,7 @@
     var st = { font: "'Georgia', serif", align: "center", sectionLine: "1.5px solid " + brandColor, bg: "#fff", col: "#000", brand: brandColor };
     var esc = window.RT.esc, linkify = window.RT.linkify, dr = window.RT.dr, buls = window.RT.buls, sh = window.RT.sh;
     
-    var h = '<div style="font-family:' + st.font + ';color:' + st.col + '">';
+    var h = '<div style="font-family:' + st.font + ';color:' + st.col + ';line-height:1.5;font-size:10px">';
     h += '<div class="rn" style="text-align:' + st.align + ';color:' + st.brand + '">' + esc(P.firstName) + (P.lastName ? ' ' + esc(P.lastName) : '') + '</div>';
     if (S.headline) h += '<div class="rtitle" style="text-align:' + st.align + ';font-style:italic;font-size:11px;color:#555;margin-top:4px;text-transform:none">' + esc(S.headline) + '</div>';
     
@@ -65,7 +65,7 @@
 
     if (P.summary && S.socialEnabled.summary) {
       h += sh('Professional Summary', st);
-      h += '<div style="margin-bottom:6px;font-size:10.5px;text-align:justify;line-height:1.4">' + linkify(esc(P.summary)) + '</div>';
+      h += '<div style="margin-bottom:6px;font-size:10.5px;text-align:justify;line-height:1.55">' + linkify(esc(P.summary)) + '</div>';
     }
 
     S.sectionOrder.forEach(function(secName) {
