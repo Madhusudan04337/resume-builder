@@ -1,19 +1,67 @@
 const { Pool } = require('pg');
-require('dotenv').config();
+require('dotenv').config({ override: true });
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/resume_builder';
+let poolInstance = null;
 
-// SSL configurations (mandatory for cloud databases like Supabase, Render, neon.tech, etc.)
-const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1');
-const pool = new Pool({
-    connectionString,
-    ssl: !isLocal ? { rejectUnauthorized: false } : false
-});
+const pool = {
+    query: (...args) => {
+        if (!poolInstance) {
+            throw new Error("Database pool is not initialized yet!");
+        }
+        return poolInstance.query(...args);
+    },
+    connect: (...args) => {
+        if (!poolInstance) {
+            throw new Error("Database pool is not initialized yet!");
+        }
+        return poolInstance.connect(...args);
+    },
+    end: (...args) => {
+        if (poolInstance) {
+            return poolInstance.end(...args);
+        }
+    }
+};
 
 async function setupDatabase() {
-    console.log("Connecting to PostgreSQL at:", connectionString.replace(/:[^:@]+@/, ':****@')); // Hide credentials in log
-    
-    const client = await pool.connect();
+    let poolConfig = {};
+    let connector = null;
+
+    if (process.env.CLOUD_SQL_CONNECTION_NAME) {
+        const { Connector } = require('@google-cloud/cloud-sql-connector');
+        connector = new Connector();
+        
+        console.log("✓ Configuring Google Cloud SQL secure Language-Specific Connector...");
+        console.log(`Connecting securely to Google Cloud SQL via Connector: ${process.env.CLOUD_SQL_CONNECTION_NAME}`);
+        
+        try {
+            const clientOpts = await connector.getOptions({
+                instanceConnectionName: process.env.CLOUD_SQL_CONNECTION_NAME,
+                ipType: 'PUBLIC'
+            });
+            
+            poolConfig = {
+                ...clientOpts,
+                user: process.env.DB_USER,
+                password: process.env.DB_PASS,
+                database: process.env.DB_NAME,
+            };
+        } catch (err) {
+            console.error("❌ Failed to retrieve Cloud SQL Connector options:", err.message);
+            throw err;
+        }
+    } else {
+        const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/resume_builder';
+        const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1');
+        poolConfig = {
+            connectionString,
+            ssl: !isLocal ? { rejectUnauthorized: false } : false
+        };
+        console.log("Connecting to PostgreSQL at:", connectionString.replace(/:[^:@]+@/, ':****@'));
+    }
+
+    poolInstance = new Pool(poolConfig);
+    const client = await poolInstance.connect();
     try {
         // 1. Create Users Table
         await client.query(`

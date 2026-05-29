@@ -261,6 +261,15 @@
                     counter.parentElement.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                 }
             }, 30);
+
+            // Check query parameters to open auth modal in specific mode
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            if (action === 'login') {
+                openAuthModal('login');
+            } else if (action === 'signup') {
+                openAuthModal('signup');
+            }
         });
 
         // Open Dialog Modal Helper
@@ -323,6 +332,16 @@
         }
 
 
+        function getApiUrl(path) {
+            if (window.location.protocol === 'file:') {
+                return 'http://localhost:5000' + path;
+            }
+            if ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000') {
+                return 'http://localhost:5000' + path;
+            }
+            return path;
+        }
+
         // Handle Email Login & Signup Submission
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -348,7 +367,7 @@
             showLoading(loadingText);
             
             try {
-                const response = await fetch(endpoint, {
+                const response = await fetch(getApiUrl(endpoint), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

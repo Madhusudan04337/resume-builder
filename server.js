@@ -4,7 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-require('dotenv').config();
+require('dotenv').config({ override: true });
 
 const { setupDatabase, pool } = require('./db_setup');
 
@@ -410,6 +410,9 @@ app.get('/workspace', (req, res) => {
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
+
+// Avoid 404 for favicon.ico
+app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 const PORT = process.env.PORT || 5000;
 

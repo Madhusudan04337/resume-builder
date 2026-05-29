@@ -168,6 +168,11 @@
 <script src="templates/sabrina.js"></script>
 <script src="templates/elizabeth.js"></script>
 <script>
+  // Enforce authentication: Redirect guests immediately to landing page
+  if (!localStorage.getItem('mdk_token')) {
+    window.location.replace('/?action=login');
+  }
+
   var SOCIAL_DEFS = [
     { key: "phone", label: "Phone", icon: "☎", placeholder: "Your phone number", isLink: false },
     { key: "email", label: "Email", icon: "@", placeholder: "you@gmail.com", isLink: true, prefix: "mailto:" },

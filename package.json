@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Madhusudan04337/resume-builder#readme",
   "dependencies": {
+    "@google-cloud/cloud-sql-connector": "^1.11.0",
     "@google/genai": "^2.4.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
