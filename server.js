@@ -1,13 +1,20 @@
 const express = require('express');
 const { GoogleGenAI } = require('@google/genai');
 const cors = require('cors');
+const path = require('path');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
-const path = require('path');
+const { setupDatabase, pool } = require('./db_setup');
+
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(express.static(__dirname));
+
+// JWT Secret Key
+const JWT_SECRET = process.env.JWT_SECRET || 'mdk_resume_ai_secure_token_key_2026';
 
 const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
@@ -204,7 +211,215 @@ Return ONLY a JSON object: {"score": 85, "feedback": "Detailed advice..."}`,
     }
 });
 
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+/* ----------------------------------
+   POSTGRESQL SECURE AUTHENTICATION APIs
+---------------------------------- */
 
+// JWT Authorization Middleware
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token) {
+        return res.status(401).json({ error: "Authentication token missing" });
+    }
 
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ error: "Session invalid or expired. Please sign in again." });
+        }
+        req.user = user;
+        next();
+    });
+}
+
+// User Registration Endpoint (Secure parameterized query + bcrypt hashing)
+app.post('/api/auth/signup', async (req, res) => {
+    const { email, password, name, provider } = req.body;
+
+    if (!email || !provider) {
+        return res.status(400).json({ error: "Email and provider type are required" });
+    }
+
+    try {
+        // Check if user already exists
+        const userExists = await pool.query('SELECT * FROM users WHERE email = $1', [email.trim().toLowerCase()]);
+        
+        if (userExists.rows.length > 0) {
+            const existingUser = userExists.rows[0];
+            
+            // If social login and user exists, just log them in
+            if (provider !== 'email') {
+                const token = jwt.sign(
+                    { id: existingUser.id, email: existingUser.email, name: existingUser.name, provider: existingUser.provider },
+                    JWT_SECRET,
+                    { expiresIn: '7d' }
+                );
+                return res.json({ success: true, token, user: { id: existingUser.id, email: existingUser.email, name: existingUser.name, provider: existingUser.provider } });
+            }
+            
+            return res.status(400).json({ error: "An account with this email is already registered." });
+        }
+
+        let passwordHash = null;
+        if (provider === 'email') {
+            if (!password || password.length < 6) {
+                return res.status(400).json({ error: "Password must be at least 6 characters long" });
+            }
+            // Hashing password securely with bcrypt
+            passwordHash = await bcrypt.hash(password, 10);
+        }
+
+        // Insert new user securely
+        const newUserQuery = `
+            INSERT INTO users (email, password_hash, name, provider) 
+            VALUES ($1, $2, $3, $4) 
+            RETURNING id, email, name, provider
+        `;
+        const values = [email.trim().toLowerCase(), passwordHash, name || 'User', provider];
+        const result = await pool.query(newUserQuery, values);
+        const newUser = result.rows[0];
+
+        // Generate dynamic secure JWT token
+        const token = jwt.sign(
+            { id: newUser.id, email: newUser.email, name: newUser.name, provider: newUser.provider },
+            JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+
+        res.json({ success: true, token, user: newUser });
+    } catch (error) {
+        console.error("Registration Error:", error);
+        res.status(500).json({ error: "Server registration failed", details: error.message });
+    }
+});
+
+// User Login Endpoint (Secure parameterized query + bcrypt compare)
+app.post('/api/auth/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ error: "Email and password are required" });
+    }
+
+    try {
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email.trim().toLowerCase()]);
+        
+        if (result.rows.length === 0) {
+            return res.status(400).json({ error: "Incorrect email or password." });
+        }
+
+        const user = result.rows[0];
+
+        if (user.provider !== 'email') {
+            return res.status(400).json({ error: `This account was registered using ${user.provider}. Please log in using that method.` });
+        }
+
+        // Compare secure password hash
+        const isMatch = await bcrypt.compare(password, user.password_hash);
+        if (!isMatch) {
+            return res.status(400).json({ error: "Incorrect email or password." });
+        }
+
+        // Generate signed session JWT
+        const token = jwt.sign(
+            { id: user.id, email: user.email, name: user.name, provider: user.provider },
+            JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+
+        res.json({
+            success: true,
+            token,
+            user: { id: user.id, email: user.email, name: user.name, provider: user.provider }
+        });
+    } catch (error) {
+        console.error("Login Error:", error);
+        res.status(500).json({ error: "Server login failed", details: error.message });
+    }
+});
+
+/* ----------------------------------
+   POSTGRESQL SECURE DRAFTS SYNC APIs
+---------------------------------- */
+
+// Fetch all drafts for the authenticated user
+app.get('/api/users/me/drafts', authenticateToken, async (req, res) => {
+    try {
+        const query = 'SELECT name, resume_data, updated_at FROM drafts WHERE user_id = $1 ORDER BY updated_at DESC';
+        const result = await pool.query(query, [req.user.id]);
+        
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Fetch Drafts Error:", error);
+        res.status(500).json({ error: "Failed to fetch drafts from server", details: error.message });
+    }
+});
+
+// Sync/Save a draft to the database (Secure SQL Upsert)
+app.post('/api/users/me/drafts', authenticateToken, async (req, res) => {
+    const { name, resume_data } = req.body;
+
+    if (!name || !resume_data) {
+        return res.status(400).json({ error: "Draft name and resume data are required" });
+    }
+
+    try {
+        // Upsert draft using unique constraints
+        const syncQuery = `
+            INSERT INTO drafts (user_id, name, resume_data, updated_at) 
+            VALUES ($1, $2, $3, NOW()) 
+            ON CONFLICT ON CONSTRAINT unique_user_draft_name 
+            DO UPDATE SET resume_data = EXCLUDED.resume_data, updated_at = NOW() 
+            RETURNING name, updated_at
+        `;
+        const result = await pool.query(syncQuery, [req.user.id, name.trim(), JSON.stringify(resume_data)]);
+        
+        res.json({ success: true, draft: result.rows[0] });
+    } catch (error) {
+        console.error("Sync Draft Error:", error);
+        res.status(500).json({ error: "Failed to save draft to server", details: error.message });
+    }
+});
+
+// Delete a draft from the database
+app.delete('/api/users/me/drafts/:name', authenticateToken, async (req, res) => {
+    const draftName = req.params.name;
+
+    try {
+        const deleteQuery = 'DELETE FROM drafts WHERE user_id = $1 AND name = $2';
+        await pool.query(deleteQuery, [req.user.id, draftName]);
+        
+        res.json({ success: true });
+    } catch (error) {
+        console.error("Delete Draft Error:", error);
+        res.status(500).json({ error: "Failed to delete draft from server", details: error.message });
+    }
+});
+
+/* ----------------------------------
+   ROUTING
+---------------------------------- */
+
+// Serve static workspace
+app.get('/workspace', (req, res) => {
+    res.sendFile(path.join(__dirname, 'workspace.html'));
+});
+
+// Redirect root to index.html (the new landing page)
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+const PORT = process.env.PORT || 5000;
+
+// Initialize database tables on server start, then listen
+setupDatabase()
+    .then(() => {
+        app.listen(PORT, () => console.log(`✓ Server running on port ${PORT}`));
+    })
+    .catch(err => {
+        console.error("❌ Server startup failed due to database connection error:", err.message);
+        // Start server anyway for front-end guest accessibility if PG local server is offline
+        app.listen(PORT, () => console.log(`⚠ Server running in OFFLINE/GUEST MODE on port ${PORT} (Database connection failed)`));
+    });

@@ -1,3 +1,40 @@
+/* Remove extra space in home-footer */
+.home-footer, .footer-content, .footer-links, .footer-logo, .footer-copy {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.home-footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 0 !important;
+}
+.footer-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.footer-links {
+  display: flex;
+  gap: 24px;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.footer-logo {
+  margin-bottom: 0 !important;
+}
+.footer-copy {
+  margin-top: 8px !important;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
 /* 
  * Premium Desktop Software Design System for AI Resume Builder
  * Crafted with Vanilla CSS using modern glassmorphism, responsive grids,
@@ -1304,7 +1341,8 @@ body.dark-mode .rp {
   min-height: 24px;
   background: var(--bg-status-bar);
   border-top: 1px solid var(--border-color);
-  display: flex;
+    padding: 0 6px;
+    margin: 0 !important;
   justify-content: space-between;
   align-items: center;
   padding: 0 16px;

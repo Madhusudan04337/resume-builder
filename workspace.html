@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MDK | AI Resume Workspace</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <!-- Top Workspace Header -->
+  <header class="app-header">
+    <div class="logo-container">
+      <div class="logo-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+      </div>
+      <span class="logo-text">MDK Resume AI</span>
+      <span class="app-mode-badge">WORKSPACE PRO</span>
+    </div>
+
+    <!-- Active Document Title (Double click to rename) -->
+    <div class="document-title-container" id="titleContainer" title="Double click to rename">
+      <span class="document-title-text" id="docTitle">my_resume</span>
+      <span class="document-title-ext">.pdf</span>
+      <span class="document-edit-icon">✏️</span>
+    </div>
+
+    <div class="header-controls">
+      <!-- Quick Action: Export PDF -->
+      <button class="dlbtn" id="dlbtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+        Export PDF
+      </button>
+
+      <!-- Theme Switcher -->
+      <button class="control-btn" id="themeToggleBtn" title="Toggle Theme" style="padding: 6px; border-radius: 50%; width: 32px; height: 32px; background:var(--bg-input); border:1px solid var(--border-color); box-shadow:var(--shadow-sm); margin-right: 4px;">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px; height:14px; color:var(--text-primary)"></svg>
+      </button>
+
+      <!-- User Avatar / Dropdown Section (PostgreSQL Secure Auth) -->
+      <div class="user-avatar-container" id="userMenuContainer" style="position:relative; display:none; align-items:center; z-index: 200;">
+        <button class="control-btn" id="userMenuBtn" style="display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; border:1px solid var(--border-color); background:linear-gradient(135deg, #6366f1, #a855f7); color:#ffffff; font-weight:700; font-size:11px; cursor:pointer; box-shadow:var(--shadow-sm); outline:none;">
+          U
+        </button>
+        <div class="user-dropdown" id="userDropdown" style="display:none; position:absolute; top:38px; right:0; width:220px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:10px; box-shadow:var(--shadow-lg); z-index:1000; padding:12px; flex-direction:column; gap:8px;">
+          <div style="border-bottom:1px solid var(--border-color); padding-bottom:8px; margin-bottom:4px;">
+            <div id="dropdownName" style="font-size:12px; font-weight:700; color:var(--text-primary); text-overflow:ellipsis; overflow:hidden; white-space:nowrap; text-align:left;">User Name</div>
+            <div id="dropdownEmail" style="font-size:10px; color:var(--text-secondary); text-overflow:ellipsis; overflow:hidden; white-space:nowrap; margin-top:2px; text-align:left;">user@example.com</div>
+          </div>
+          <button class="clr-btn" id="logoutBtn" style="width:100%; border-color:#ef4444; color:#ef4444; height:28px; padding:0; display:flex; align-items:center; justify-content:center; gap:4px; font-size:11px;">
+            <span>🚪</span> Sign Out
+          </button>
+        </div>
+      </div>
+      <button class="btn-primary" id="loginHeaderBtn" style="height:32px; font-size:11px; padding:6px 12px; border-radius:8px; background:linear-gradient(135deg, #6366f1, #a855f7); border:none; color:white; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:4px;">
+        <span>🔑</span> Sign In
+      </button>
+    </div>
+  </header>
+
+  <!-- Split Pane Shell -->
+  <div class="app-main">
+    <!-- Leftmost Vertical Activity Bar -->
+    <nav class="activity-bar">
+      <div class="activity-tabs">
+        <button class="activity-tab active" data-view="ai" title="Gemini AI Co-pilot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span class="tab-label">AI Co-pilot</span>
+        </button>
+        <button class="activity-tab" data-view="editor" title="Document Editor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span class="tab-label">Editor</span>
+        </button>
+        <button class="activity-tab" data-view="ats" title="ATS Score Auditor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+          <span class="tab-label">ATS score</span>
+        </button>
+        <button class="activity-tab" data-view="design" title="Design settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="9" y1="9" x2="21" y2="9"/></svg>
+          <span class="tab-label">Design Lab</span>
+        </button>
+        <button class="activity-tab" data-view="file" title="Workspace Files">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <span class="tab-label">Files</span>
+        </button>
+      </div>
+      
+      <!-- System Heartbeat indicator -->
+      <div class="activity-footer" title="System Connected">
+        <div class="api-pulse-dot"></div>
+      </div>
+    </nav>
+
+    <!-- Primary Dynamic Sidebar -->
+    <aside class="primary-sidebar">
+      <div class="sidebar-header">
+        <h3 id="sidebarTitle">Document Editor</h3>
+        <p id="sidebarSubtitle">Modify sections and build details</p>
+      </div>
+      
+      <div class="sidebar-scrollable-content" id="sidebarContent">
+        <!-- Renders dynamically -->
+      </div>
+    </aside>
+
+    <!-- Main Workspace Area -->
+    <main class="app-editor-area">
+      <!-- Toolbar above the preview page -->
+      <div class="workspace-toolbar">
+        <div class="toolbar-left">
+          <span class="toolbar-status-badge">A4 Standard Preview</span>
+        </div>
+        <div class="toolbar-center">
+          <span class="control-label">Scale:</span>
+          <button class="control-btn" id="zoomOutBtn" title="Zoom Out">−</button>
+          <span id="zoomLabel" style="font-size:11px; font-weight:700; min-width:36px; text-align:center; color:var(--text-primary)">100%</span>
+          <button class="control-btn" id="zoomInBtn" title="Zoom In">+</button>
+          <button class="control-btn" id="zoomFitBtn" title="Fit Screen">Fit</button>
+        </div>
+        <div class="toolbar-right">
+          <span id="wordCountLabel" class="toolbar-stat">0 words</span>
+        </div>
+      </div>
+
+      <!-- Canvas container -->
+      <div class="pp">
+        <div class="resume-zoom-container" id="resumeZoomContainer">
+          <div class="rp" id="rp"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Bottom Diagnostics Status Bar -->
+  <footer class="status-bar">
+    <div class="status-left">
+      <span class="status-indicator ready"><span class="pulse-dot"></span> Gemini API Online</span>
+      <span class="status-sep">|</span>
+      <span class="status-item">Model: <strong style="color:var(--color-indigo)">gemini-2.5-flash-lite</strong></span>
+      <span class="status-sep">|</span>
+      <span class="status-item">Mode: <strong>Workspace Pro</strong></span>
+    </div>
+    <div class="status-right">
+      <span class="status-item" id="statusTemplate">Template: <strong>Classic</strong></span>
+      <span class="status-sep">|</span>
+      <span class="status-item" id="statusAccent">Accent: <strong style="color:var(--resume-brand)">#32166f</strong></span>
+      <span class="status-sep">|</span>
+      <span class="status-item" id="statusSections">Sections: <strong>8</strong></span>
+    </div>
+  </footer>
+</div>
+
+<script src="templates/utils.js"></script>
+<script src="templates/classic.js"></script>
+<!-- Removed Modern, Professional, Signature templates -->
+<script src="templates/executive.js"></script>
+<script src="templates/jakes.js"></script>
+<script src="templates/sabrina.js"></script>
+<script src="templates/elizabeth.js"></script>
+<script>
+  var SOCIAL_DEFS = [
+    { key: "phone", label: "Phone", icon: "☎", placeholder: "Your phone number", isLink: false },
+    { key: "email", label: "Email", icon: "@", placeholder: "you@gmail.com", isLink: true, prefix: "mailto:" },
+    { key: "linkedin", label: "LinkedIn", icon: "in", placeholder: "linkedin.com/in/user", isLink: true, prefix: "https://" },
+    { key: "github", label: "GitHub", icon: "GH", placeholder: "github.com/username", isLink: true, prefix: "https://" },
+    { key: "portfolio", label: "Portfolio", icon: "⬡", placeholder: "yourportfolio.com", isLink: true, prefix: "https://" },
+    { key: "leetcode", label: "LeetCode", icon: "LC", placeholder: "leetcode.com/u/username", isLink: true, prefix: "https://" },
+    { key: "gfg", label: "GeeksforGeeks", icon: "GG", placeholder: "geeksforgeeks.org/user/...", isLink: true, prefix: "https://" },
+    { key: "twitter", label: "Twitter / X", icon: "X", placeholder: "twitter.com/username", isLink: true, prefix: "https://" },
+    { key: "hackerrank", label: "HackerRank", icon: "HR", placeholder: "hackerrank.com/profile/...", isLink: true, prefix: "https://" },
+    { key: "codechef", label: "CodeChef", icon: "CC", placeholder: "codechef.com/users/...", isLink: true, prefix: "https://" }
+  ];
+  var ICON_COLORS = {
+    phone: { bg: "#EEF2FF", col: "#4338CA" }, email: { bg: "#FFF7ED", col: "#C2410C" },
+    linkedin: { bg: "#EFF6FF", col: "#1D4ED8" }, github: { bg: "#F9FAFB", col: "#374151" },
+    portfolio: { bg: "#F0FDF4", col: "#15803D" }, leetcode: { bg: "#FEF9C3", col: "#A16207" },
+    gfg: { bg: "#F0FDF4", col: "#16A34A" }, twitter: { bg: "#F0F9FF", col: "#0369A1" },
+    hackerrank: { bg: "#F0FDF4", col: "#15803D" }, codechef: { bg: "#FFF7ED", col: "#C2410C" }
+  };
+  var S = {
+    personal: { firstName: "", lastName: "", address: "", phone: "", email: "", linkedin: "", github: "", portfolio: "", leetcode: "", gfg: "", twitter: "", hackerrank: "", codechef: "", summary: "", photo: "" },
+    headline: "",
+    socialEnabled: { phone: true, email: true, linkedin: true, github: true, portfolio: false, leetcode: false, gfg: false, twitter: false, hackerrank: false, codechef: false, summary: true },
+    template: "classic",
+    accentColor: "#32166f",
+    education: [], coursework: [], experience: [], projects: [],
+    skills: { languages: "", tools: "", tech: "" },
+    spokenLanguages: "",
+    leadership: [], certifications: [],
+    references: "",
+    sectionOrder: ["Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Certifications", "Leadership", "References"],
+    activeView: "ai",
+    fileName: "my_resume",
+    atsScore: null,
+    atsFeedback: ""
+  };
+  var TABS = ["Personal", "Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Leadership", "Certifications", "References"];
+  
+  var TAB_ICONS = {
+    Personal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+    Education: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>',
+    Coursework: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg>',
+    Experience: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+    Projects: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>',
+    Skills: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    Languages: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
+    Leadership: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    Certifications: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 11 2 2 4-4"/></svg>',
+    References: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>'
+  };
+
+  var activeTab = "Personal";
+  var aiParserInputCache = ""; // Retain text pasted inside parser between view shifts
+  
+  function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  
+  function linkify(text) {
+    if (!text) return "";
+    var urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+    return text.replace(urlRegex, function(url) {
+      var href = url.startsWith("http") ? url : "https://" + url;
+      return '<a href="' + href + '" target="_blank" rel="noopener" style="color:#1a0dab;text-decoration:underline">' + url + '</a>';
+    });
+  }
+  
+  var DEFS = {
+    education: { university: "", degree: "", start: "", end: "", loc: "" },
+    experience: { company: "", role: "", start: "", end: "", loc: "", bullets: [] },
+    projects: { name: "", tech: "", date: "", github: "", demo: "", bullets: [] },
+    leadership: { org: "", role: "", start: "", end: "", loc: "", bullets: [] },
+    certifications: { name: "", url: "", provider: "", start: "", end: "", skills: "" }
+  };
+  
+  function getApiUrl(path) {
+    if (window.location.protocol === 'file:') {
+      return 'http://localhost:5000' + path;
+    }
+    // If the frontend is hosted locally on a port other than 5000, redirect requests to the backend Express server on port 5000
+    if ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000') {
+      return 'http://localhost:5000' + path;
+    }
+    return path;
+  }
+  
+  async function parseResumeWithAI(text) {
+    const response = await fetch(getApiUrl('/api/parse-resume'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+    });
+    if (!response.ok) throw new Error("Backend server error");
+    return await response.json();
+  }
+  
+  function applyParsed(p) {
+    if (p.personal) { 
+      Object.keys(p.personal).forEach(function (k) { 
+        if (k in S.personal && p.personal[k]) S.personal[k] = p.personal[k]; 
+      }); 
+      SOCIAL_DEFS.forEach(function (sd) { 
+        if (S.personal[sd.key]) S.socialEnabled[sd.key] = true; 
+      }); 
+    }
+    if (p.headline) S.headline = p.headline;
+    if (Array.isArray(p.education) && p.education.length) S.education = p.education;
+    if (Array.isArray(p.coursework) && p.coursework.length) S.coursework = p.coursework;
+    if (Array.isArray(p.experience) && p.experience.length) S.experience = p.experience;
+    if (Array.isArray(p.projects) && p.projects.length) S.projects = p.projects;
+    if (p.skills) { 
+      if (p.skills.languages) S.skills.languages = p.skills.languages; 
+      if (p.skills.tools) S.skills.tools = p.skills.tools; 
+      if (p.skills.tech) S.skills.tech = p.skills.tech; 
+    }
+    if (p.spokenLanguages) S.spokenLanguages = p.spokenLanguages;
+    if (Array.isArray(p.leadership) && p.leadership.length) S.leadership = p.leadership;
+    if (Array.isArray(p.certifications) && p.certifications.length) S.certifications = p.certifications;
+  }
+  
+  function personalForm() {
+    var P = S.personal;
+    var photoHTML = '';
+    if (P.photo) {
+      photoHTML = '<div class="photo-upload-active" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;background:var(--bg-card);border:1px solid var(--border-color);padding:10px;border-radius:10px;box-shadow:var(--shadow-sm)">' +
+        '<img src="' + P.photo + '" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--color-indigo);box-shadow:var(--shadow-sm)">' +
+        '<div style="flex:1">' +
+          '<div style="font-size:11px;font-weight:700;color:var(--text-primary)">Profile Picture</div>' +
+          '<div style="display:flex;gap:6px;margin-top:4px">' +
+            '<button type="button" class="clr-btn" id="uploadPhotoBtn" style="padding:2px 8px;font-size:10px;height:24px">Change</button>' +
+            '<button type="button" class="clr-btn" id="removePhotoBtn" style="padding:2px 8px;font-size:10px;height:24px;color:#ef4444;border-color:rgba(239, 68, 68, 0.2)">Remove</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    } else {
+      photoHTML = '<div class="photo-upload-placeholder" id="photoPlaceholder" style="border:2px dashed var(--border-color);border-radius:10px;padding:16px;text-align:center;cursor:pointer;margin-bottom:14px;background:rgba(0,0,0,0.01);transition:all 0.15s ease" onmouseover="this.style.borderColor=\'var(--color-indigo)\';this.style.background=\'rgba(99,102,241,0.02)\'" onmouseout="this.style.borderColor=\'var(--border-color)\';this.style.background=\'rgba(0,0,0,0.01)\'">' +
+        '<div style="font-size:20px;margin-bottom:4px">📷</div>' +
+        '<strong style="font-size:11px;color:var(--text-primary);display:block">Upload Profile Photo</strong>' +
+        '<span style="font-size:9px;color:var(--text-tertiary)">JPG, PNG up to 1MB</span>' +
+      '</div>';
+    }
+
+    return sec('Profile Image') +
+      '<input type="file" id="photoUpload" accept="image/*" style="display:none">' +
+      photoHTML +
+      sec('Basic info') +
+      '<div class="row2"><div class="fld"><label class="lbl">First name</label><input class="inp" data-p="personal.firstName" value="' + esc(P.firstName) + '" placeholder="John"></div>' +
+      '<div class="fld"><label class="lbl">Last name</label><input class="inp" data-p="personal.lastName" value="' + esc(P.lastName) + '" placeholder="Doe"></div></div>' +
+      '<div class="fld"><label class="lbl">Headline / title</label><input class="inp" data-p="headline" value="' + esc(S.headline) + '" placeholder="Software Engineer | Python | React"></div>' +
+      '<div class="fld" style="margin-bottom:14px"><label class="lbl">Address / location</label><input class="inp" data-p="personal.address" value="' + esc(P.address) + '" placeholder="City, State"></div>' +
+      sec('Professional Summary') +
+      '<div class="fld"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
+      '<div style="display:flex;align-items:center;gap:8px"><button class="stog ' + (S.socialEnabled.summary ? 'on' : 'off') + '" data-tog="summary"></button>' +
+      '<label class="lbl" style="margin-bottom:0">Show on resume</label></div>' +
+      '<button class="ai-btn" id="aiPolishBtn" style="padding:4px 10px;font-size:10.5px">✨ AI Polish</button></div>' +
+      '<textarea class="ta" id="summary-field" data-p="personal.summary" placeholder="Experienced Software Engineer..." style="min-height:80px;' + (S.socialEnabled.summary ? '' : 'opacity:0.6') + '">' + esc(P.summary) + '</textarea></div>' +
+      sec('Social & contact links') +
+      '<p class="hint" style="margin-bottom:10px">Toggle links to display on header.</p>' +
+      SOCIAL_DEFS.map(function (sd) {
+        var on = S.socialEnabled[sd.key], val = P[sd.key] || '', ic = ICON_COLORS[sd.key] || { bg: '#F3F4F6', col: '#374151' };
+        return '<div class="srow"><div class="sico" style="background:' + (on ? ic.bg : 'var(--bg-panel)') + ';color:' + (on ? ic.col : 'var(--text-tertiary)') + '">' + sd.icon + '</div>' +
+          '<button class="stog ' + (on ? 'on' : 'off') + '" data-tog="' + sd.key + '"></button>' +
+          '<div class="sinfo"><label class="lbl">' + sd.label + '</label>' +
+          '<input class="sinp" placeholder="' + esc(sd.placeholder) + '" data-p="personal.' + sd.key + '" value="' + esc(val) + '"></div></div>';
+      }).join('') +
+      sec('Section Order (Drag to reorder)') +
+      '<div id="orderList" style="display:flex;flex-direction:column;gap:4px">' +
+      S.sectionOrder.map(function(name, i) {
+        return '<div class="entry" draggable="true" data-idx="' + i + '" style="cursor:grab;margin-bottom:6px;padding:8px 10px;display:flex;align-items:center;gap:10px">' +
+          '<span class="entry-drag-handle">☰</span><span style="font-size:12px;font-weight:600">' + name + '</span></div>';
+      }).join('') +
+      '</div>';
+  }
+  
+  function formHTML(tab) {
+    if (tab === "Personal") return personalForm();
+    var E = S.education, C = S.coursework, X = S.experience, Pr = S.projects, Sk = S.skills, L = S.leadership, Ct = S.certifications;
+    if (tab === "Education") return sec('Education') +
+      E.map(function (e, i) {
+        return '<div class="entry"><button class="rmv" data-rm="education" data-idx="' + i + '">×</button>' +
+          '<div class="fld"><label class="lbl">Institution</label><input class="inp" data-p="education.' + i + '.university" value="' + esc(e.university) + '" placeholder="University name"></div>' +
+          '<div class="fld"><label class="lbl">Degree / class</label><input class="inp" data-p="education.' + i + '.degree" value="' + esc(e.degree) + '" placeholder="B.Tech Computer Science"></div>' +
+          '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="education.' + i + '.start" value="' + esc(e.start) + '" placeholder="2021"></div>' +
+          '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="education.' + i + '.end" value="' + esc(e.end) + '" placeholder="2025"></div></div>' +
+          '<div class="fld"><label class="lbl">Location / percentage</label><input class="inp" data-p="education.' + i + '.loc" value="' + esc(e.loc) + '" placeholder="Chennai, TN"></div></div>';
+      }).join('') +
+      '<button class="addbtn" data-add="education">+ Add education</button>';
+    if (tab === "Coursework") return sec('Relevant coursework') +
+      '<div class="fld"><label class="lbl">Courses (one per line)</label>' +
+      '<textarea class="ta" style="min-height:160px" data-p="coursework">' + C.filter(Boolean).join('\n') + '</textarea></div>' +
+      '<p class="hint">Displayed in 4 columns on the resume</p>';
+    if (tab === "Experience") return sec('Work experience') +
+      X.map(function (e, i) {
+        return '<div class="entry"><button class="rmv" data-rm="experience" data-idx="' + i + '">×</button>' +
+          '<div class="fld"><label class="lbl">Company</label><input class="inp" data-p="experience.' + i + '.company" value="' + esc(e.company) + '" placeholder="Company name"></div>' +
+          '<div class="fld"><label class="lbl">Role</label><input class="inp" data-p="experience.' + i + '.role" value="' + esc(e.role) + '" placeholder="Software Engineer"></div>' +
+          '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="experience.' + i + '.start" value="' + esc(e.start) + '" placeholder="Jun 2024"></div>' +
+          '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="experience.' + i + '.end" value="' + esc(e.end) + '" placeholder="Present"></div></div>' +
+          '<div class="fld"><label class="lbl">Location</label><input class="inp" data-p="experience.' + i + '.loc" value="' + esc(e.loc) + '" placeholder="Remote"></div>' +
+          '<div class="fld"><label class="lbl">Bullets (one per line)</label>' +
+          '<textarea class="ta" data-p="experience.' + i + '.bullets" placeholder="Describe responsibilities...">' + e.bullets.join('\n') + '</textarea></div></div>';
+      }).join('') +
+      '<button class="addbtn" data-add="experience">+ Add experience</button>';
+    if (tab === "Projects") return sec('Projects') +
+      Pr.map(function (p, i) {
+        return '<div class="entry"><button class="rmv" data-rm="projects" data-idx="' + i + '">×</button>' +
+          '<div class="fld"><label class="lbl">Project name</label><input class="inp" data-p="projects.' + i + '.name" value="' + esc(p.name) + '" placeholder="My Portfolio"></div>' +
+          '<div class="fld"><label class="lbl">Tech stack</label><input class="inp" data-p="projects.' + i + '.tech" value="' + esc(p.tech) + '" placeholder="React, Node.js, MongoDB"></div>' +
+          '<div class="fld"><label class="lbl">Date</label><input class="inp" data-p="projects.' + i + '.date" value="' + esc(p.date) + '" placeholder="2025"></div>' +
+          '<div class="row2"><div class="fld"><label class="lbl">GitHub Repository Link</label><input class="inp" data-p="projects.' + i + '.github" value="' + esc(p.github || '') + '" placeholder="https://github.com/user/repo"></div>' +
+          '<div class="fld"><label class="lbl">Live Demo Link</label><input class="inp" data-p="projects.' + i + '.demo" value="' + esc(p.demo || '') + '" placeholder="https://my-demo.com"></div></div>' +
+          '<div class="fld"><label class="lbl">Bullets (one per line)</label>' +
+          '<textarea class="ta" data-p="projects.' + i + '.bullets" placeholder="Describe what you built...">' + p.bullets.join('\n') + '</textarea></div></div>';
+      }).join('') +
+      '<button class="addbtn" data-add="projects">+ Add project</button>';
+    if (tab === "Skills") return sec('Technical skills') +
+      '<div class="fld"><label class="lbl">Programming Languages</label><input class="inp" data-p="skills.languages" value="' + esc(Sk.languages) + '" placeholder="Python, Java, JavaScript, C++"></div>' +
+      '<div class="fld"><label class="lbl">Developer tools</label><input class="inp" data-p="skills.tools" value="' + esc(Sk.tools) + '" placeholder="VS Code, Git, Docker"></div>' +
+      '<div class="fld"><label class="lbl">Technologies / frameworks</label><input class="inp" data-p="skills.tech" value="' + esc(Sk.tech) + '" placeholder="React, Node.js, Django, REST APIs"></div>';
+    if (tab === "Languages") return sec('Spoken Languages') +
+      '<div class="fld"><label class="lbl">Languages (Spoken/Written)</label>' +
+      '<input class="inp" data-p="spokenLanguages" value="' + esc(S.spokenLanguages) + '" placeholder="Tamil, Hindi, English"></div>' +
+      '<p class="hint">List spoken languages you are proficient in.</p>';
+    if (tab === "Leadership") return sec('Achievements & extracurricular') +
+      L.map(function (e, i) {
+        return '<div class="entry"><button class="rmv" data-rm="leadership" data-idx="' + i + '">×</button>' +
+          '<div class="fld"><label class="lbl">Section title</label><input class="inp" data-p="leadership.' + i + '.org" value="' + esc(e.org) + '" placeholder="Achievements"></div>' +
+          '<div class="fld"><label class="lbl">Subtitle / role (optional)</label><input class="inp" data-p="leadership.' + i + '.role" value="' + esc(e.role) + '"></div>' +
+          '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="leadership.' + i + '.start" value="' + esc(e.start) + '"></div>' +
+          '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="leadership.' + i + '.end" value="' + esc(e.end) + '"></div></div>' +
+          '<div class="fld"><label class="lbl">Location (optional)</label><input class="inp" data-p="leadership.' + i + '.loc" value="' + esc(e.loc) + '"></div>' +
+          '<div class="fld"><label class="lbl">Bullets (one per line)</label>' +
+          '<textarea class="ta" style="min-height:80px" data-p="leadership.' + i + '.bullets" placeholder="Describe achievements...">' + e.bullets.join('\n') + '</textarea></div></div>';
+      }).join('') +
+      '<button class="addbtn" data-add="leadership">+ Add section</button>';
+    if (tab === "Certifications") return sec('Certifications') +
+      Ct.map(function (c, i) {
+        return '<div class="entry"><button class="rmv" data-rm="certifications" data-idx="' + i + '">×</button>' +
+          '<div class="fld"><label class="lbl">Name</label><input class="inp" data-p="certifications.' + i + '.name" value="' + esc(c.name) + '" placeholder="AWS Solutions Architect"></div>' +
+          '<div class="fld"><label class="lbl">Certificate URL</label><input class="inp" placeholder="https://..." data-p="certifications.' + i + '.url" value="' + esc(c.url) + '"></div>' +
+          '<div class="fld"><label class="lbl">Provider</label><input class="inp" data-p="certifications.' + i + '.provider" value="' + esc(c.provider) + '" placeholder="Amazon Web Services"></div>' +
+          '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="certifications.' + i + '.start" value="' + esc(c.start) + '"></div>' +
+          '<div class="fld"><label class="lbl">End</label><input class="inp" data-p="certifications.' + i + '.end" value="' + esc(c.end) + '"></div></div>' +
+          '<div class="fld"><label class="lbl">Skills learned</label><input class="inp" data-p="certifications.' + i + '.skills" value="' + esc(c.skills) + '" placeholder="EC2, S3, IAM"></div></div>';
+      }).join('') +
+      '<button class="addbtn" data-add="certifications">+ Add certification</button>';
+    if (tab === "References") return sec('References') +
+      '<div class="fld"><label class="lbl">References Text</label>' +
+      '<textarea class="ta" style="min-height:100px" data-p="references" placeholder="Available upon request.">' + esc(S.references || '') + '</textarea></div>' +
+      '<p class="hint">Specify your professional references or enter "Available upon request."</p>';
+    return '';
+  }
+  
+  function resumeHTML() {
+    var t = S.template || "classic";
+    if (window.templates && window.templates[t]) {
+      return window.templates[t](S, SOCIAL_DEFS);
+    }
+    return window.templates.classic(S, SOCIAL_DEFS);
+  }
+  
+  function sec(label) { return '<div class="sec-label">' + label + '</div>'; }
+
+  function handleClearResume() {
+    if (!confirm("Are you sure you want to clear all current resume data? This action cannot be undone.")) {
+      return;
+    }
+    S.personal = { firstName: "", lastName: "", address: "", phone: "", email: "", linkedin: "", github: "", portfolio: "", leetcode: "", gfg: "", twitter: "", hackerrank: "", codechef: "", summary: "", photo: "" };
+    S.headline = "";
+    S.socialEnabled = { phone: true, email: true, linkedin: true, github: true, portfolio: false, leetcode: false, gfg: false, twitter: false, hackerrank: false, codechef: false, summary: true };
+    S.template = "classic";
+    S.accentColor = "#32166f";
+    S.education = [];
+    S.coursework = [];
+    S.experience = [];
+    S.projects = [];
+    S.skills = { languages: "", tools: "", tech: "" };
+    S.spokenLanguages = "";
+    S.leadership = [];
+    S.certifications = [];
+    S.references = "";
+    S.sectionOrder = ["Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Certifications", "Leadership", "References"];
+    S.atsScore = null;
+    S.atsFeedback = "";
+    
+    saveToLocal();
+    renderPrimarySidebar();
+    renderResume();
+    alert("Resume data cleared successfully!");
+  }
+
+  /* ----------------------------------
+     Sidebars Panel Rendering Router
+  ---------------------------------- */
+
+  function renderPrimarySidebar() {
+    var view = S.activeView || "editor";
+    var title = document.getElementById('sidebarTitle');
+    var subtitle = document.getElementById('sidebarSubtitle');
+    var content = document.getElementById('sidebarContent');
+    
+    // Sync active activity tab styling
+    document.querySelectorAll('.activity-tab').forEach(function(t) {
+      if (t.dataset.view === view) t.classList.add('active');
+      else t.classList.remove('active');
+    });
+
+    // Remove any existing clear button from header
+    var existingClear = document.getElementById('clearResumeBtn');
+    if (existingClear) existingClear.remove();
+
+    if (view === "editor") {
+      title.textContent = "Document Editor";
+      subtitle.textContent = "Modify resume content sections";
+      
+      // Add clear button to the header
+      var header = document.querySelector('.sidebar-header');
+      if (header) {
+        header.style.position = 'relative';
+        var clearBtn = document.createElement('button');
+        clearBtn.id = 'clearResumeBtn';
+        clearBtn.className = 'clear-btn';
+        clearBtn.title = 'Clear all resume data';
+        clearBtn.innerHTML = '<span style="font-size:11px">🗑</span> Clear';
+        clearBtn.style.position = 'absolute';
+        clearBtn.style.top = '22px';
+        clearBtn.style.right = '20px';
+        clearBtn.style.padding = '4px 10px';
+        clearBtn.style.fontSize = '10.5px';
+        clearBtn.style.fontWeight = '700';
+        clearBtn.style.background = '#fee2e2';
+        clearBtn.style.color = '#ef4444';
+        clearBtn.style.border = '1px solid #fca5a5';
+        clearBtn.style.borderRadius = '4px';
+        clearBtn.style.cursor = 'pointer';
+        clearBtn.style.display = 'flex';
+        clearBtn.style.alignItems = 'center';
+        clearBtn.style.gap = '4px';
+        clearBtn.style.transition = 'all 0.15s ease';
+        
+        clearBtn.addEventListener('mouseenter', function() {
+          clearBtn.style.background = '#fecaca';
+        });
+        clearBtn.addEventListener('mouseleave', function() {
+          clearBtn.style.background = '#fee2e2';
+        });
+        
+        clearBtn.addEventListener('click', handleClearResume);
+        header.appendChild(clearBtn);
+      }
+
+      content.innerHTML = `<div class="tabs" id="tabs"></div><div class="fc" id="fc"></div>`;
+      renderTabs();
+      renderForm();
+    } 
+    else if (view === "ai") {
+      title.textContent = "Gemini AI Co-pilot";
+      subtitle.textContent = "Intelligent extraction and summary tools";
+      content.innerHTML = `
+        <div class="sec-label">Intelligent Resume Parser</div>
+        <p class="hint" style="margin-bottom:12px">Paste your plain text resume below and let Gemini extract and populate all workspace fields instantly.</p>
+        <textarea class="import-ta" id="importTa" style="height: 160px; margin-bottom:12px"
+          placeholder="Paste plain resume text here...">${esc(aiParserInputCache)}</textarea>
+        <div class="import-actions" style="margin-top:0; margin-bottom:16px; display:flex; gap:8px">
+          <button class="ai-btn" id="aiBtn" style="flex:1">Auto-fill with AI</button>
+          <button class="clr-btn" id="clrBtn">Clear</button>
+        </div>
+        <div style="margin-bottom:20px"><span class="ai-status" id="aiStatus"></span></div>
+        
+        <div class="sec-label">AI Writing Shortcuts</div>
+        <p class="hint" style="margin-bottom:12px">Automate writing tasks based on current resume details.</p>
+        <button class="clr-btn" id="aiPolishSummaryShortcutBtn" style="width:100%; text-align:left; font-size:11.5px; padding:10px; display:flex; align-items:center; gap:8px; border-radius:10px">
+          <span style="font-size:14px">✨</span>
+          <div style="flex:1">
+            <strong>Polish Professional Summary</strong>
+            <div style="font-size:10px; opacity:0.8; font-weight:normal; margin-top:2px">Re-writes summary based on your experience and skills.</div>
+          </div>
+        </button>
+      `;
+    } 
+    else if (view === "ats") {
+      title.textContent = "ATS score Auditor";
+      subtitle.textContent = "Applicant tracking system optimization";
+      
+      var dashboardHTML = `<div class="ats-placeholder-info">
+        <div style="font-size:32px; margin-bottom:8px">📊</div>
+        <strong>Ready for ATS Audit</strong>
+        <p class="hint" style="text-align:center; max-width:240px; margin:4px auto 0">Click the button below to audit content keywords, terminology, and clarity with Gemini.</p>
+      </div>`;
+
+      if (S.atsScore !== null) {
+        var gaugeClass = "ats-gauge-emerald";
+        if (S.atsScore < 50) gaugeClass = "ats-gauge-red";
+        else if (S.atsScore < 70) gaugeClass = "ats-gauge-orange";
+        else if (S.atsScore < 85) gaugeClass = "ats-gauge-yellow";
+        
+        dashboardHTML = `
+          <div class="ats-dashboard" style="margin-top:0">
+            <div class="ats-header">
+              <div class="ats-score-display">
+                <div class="ats-gauge ${gaugeClass}">
+                  <span>${S.atsScore}</span>
+                </div>
+                <div class="ats-details">
+                  <div><strong>ATS Strength Score</strong></div>
+                  <div style="font-size:10px; opacity:0.8">Optimization Metric</div>
+                </div>
+              </div>
+            </div>
+            <div style="font-size:12px; line-height:1.5; color:var(--text-secondary); background:var(--bg-input); padding:10px; border-radius:10px; border:1px solid var(--border-color); max-height:220px; overflow-y:auto">
+              ${S.atsFeedback}
+            </div>
+          </div>
+        `;
+      }
+
+      content.innerHTML = `
+        <div class="sec-label">Auditor Engine</div>
+        <button class="ai-btn" id="scoreBtn" style="width:100%; justify-content:center; background:#059669; padding:10px; margin-bottom:16px">
+          📊 Audit & Score Resume
+        </button>
+        <div id="scoreResult">${dashboardHTML}</div>
+      `;
+    } 
+    else if (view === "design") {
+      title.textContent = "Design Lab";
+      subtitle.textContent = "Templates and accent customizations";
+      content.innerHTML = `
+        <div class="sec-label">Accent Brand Color</div>
+        <p class="hint" style="margin-bottom:10px">Select an accent color. It updates all headers and links dynamically.</p>
+        <div class="header-accent-picker" id="accentPicker" style="background:var(--bg-card); padding:8px 10px; border-radius:10px; border:1px solid var(--border-color); display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px">
+          <span class="accent-dot" data-color="#32166f" style="background:#32166f" title="Indigo Deep"></span>
+          <span class="accent-dot" data-color="#000000" style="background:#000000" title="Classic Black"></span>
+          <span class="accent-dot" data-color="#c8986b" style="background:#c8986b" title="Luxury Gold"></span>
+          <span class="accent-dot" data-color="#2d3748" style="background:#2d3748" title="Slate Charcoal"></span>
+        </div>
+        
+        <div class="sec-label">Layout Templates</div>
+        <p class="hint" style="margin-bottom:12px">Choose a formatting layout. Your document details are preserved.</p>
+        <div class="template-grid" id="templateGrid">
+          <div class="template-card" data-template="classic">
+            <div class="tmpl-preview-box serif">Aa</div>
+            <div class="tmpl-title">Classic</div>
+            <p class="hint">Traditional serif</p>
+          </div>
+<!-- Removed Modern, Professional, Signature template cards -->
+          <div class="template-card" data-template="jakes">
+            <div class="tmpl-preview-box jakes">Aa</div>
+            <div class="tmpl-title">Jake's (ATS)</div>
+            <p class="hint">LaTeX single-column</p>
+          </div>
+          <div class="template-card" data-template="sabrina">
+            <div class="tmpl-preview-box elegant">Aa</div>
+            <div class="tmpl-title">Sabrina (Luxury Gold)</div>
+            <p class="hint">Elegant serif layout</p>
+          </div>
+          <div class="template-card" data-template="elizabeth">
+            <div class="tmpl-preview-box sans">Aa</div>
+            <div class="tmpl-title">Elizabeth (Modern Box)</div>
+            <p class="hint">Minimalist boxed header</p>
+          </div>
+        </div>
+      `;
+      syncDesignViewStates();
+    } 
+    else if (view === "file") {
+      title.textContent = "Document Center";
+      subtitle.textContent = "Saved drafts and offline exports";
+      content.innerHTML = `
+        <div class="sec-label">Saved Drafts</div>
+        <p class="hint" style="margin-bottom:10px">Save copies of your resumes in local browser storage to swap between them instantly.</p>
+        <div style="display:flex; gap:6px; margin-bottom:12px">
+          <input class="inp" id="draftNameInput" placeholder="Draft name..." style="height:32px; font-size:12px; flex:1">
+          <button class="ai-btn" id="saveDraftBtn" style="padding:4px 12px; font-size:11.5px; height:32px; flex-shrink:0">Save Draft</button>
+        </div>
+        <div class="drafts-list" id="draftsList" style="margin-bottom:20px"></div>
+        
+        <div class="sec-label">Export / Import Backup</div>
+        <p class="hint" style="margin-bottom:10px">Save your full workspace JSON to your desktop or load previous data.</p>
+        <div style="display:flex; gap:8px">
+          <button class="clr-btn" id="exportBtn" style="flex:1; font-size:11px; padding:6px 0; display:flex; align-items:center; justify-content:center; gap:4px">
+            <span>💾</span> Export JSON
+          </button>
+          <button class="clr-btn" id="importBtn" style="flex:1; font-size:11px; padding:6px 0; display:flex; align-items:center; justify-content:center; gap:4px">
+            <span>📂</span> Import JSON
+          </button>
+          <input type="file" id="fileInput" style="display:none" accept=".json">
+        </div>
+      `;
+      renderDraftsList();
+    }
+  }
+
+  function syncDesignViewStates() {
+    var picker = document.getElementById('accentPicker');
+    if (picker && S.accentColor) {
+      picker.querySelectorAll('.accent-dot').forEach(function(dot) {
+        if (dot.dataset.color === S.accentColor) dot.classList.add('active');
+        else dot.classList.remove('active');
+      });
+    }
+    var grid = document.getElementById('templateGrid');
+    if (grid && S.template) {
+      grid.querySelectorAll('.template-card').forEach(function(card) {
+        if (card.dataset.template === S.template) card.classList.add('active');
+        else card.classList.remove('active');
+      });
+    }
+  }
+
+  function renderTabs() { 
+    var container = document.getElementById('tabs');
+    if (!container) return;
+    container.innerHTML = TABS.map(function (t) { 
+      var ico = TAB_ICONS[t] || '';
+      return '<button class="tab' + (t === activeTab ? ' on' : '') + '" data-tab="' + t + '">' + ico + t + '</button>'; 
+    }).join(''); 
+  }
+  
+  function renderForm() { 
+    var container = document.getElementById('fc');
+    if (!container) return;
+    container.innerHTML = formHTML(activeTab); 
+  }
+  
+  function renderResume() { 
+    var rp = document.getElementById('rp');
+    if (!rp) return;
+    
+    // Render content
+    rp.innerHTML = resumeHTML();
+    
+    // Measure exact height of 1 A4 page in pixels dynamically
+    var dummy = document.createElement('div');
+    dummy.style.height = '297mm';
+    dummy.style.visibility = 'hidden';
+    dummy.style.position = 'absolute';
+    document.body.appendChild(dummy);
+    var a4HeightPx = dummy.offsetHeight;
+    document.body.removeChild(dummy);
+    
+    // Remove existing spacers and gaps
+    var existingSpacers = rp.querySelectorAll('.page-break-spacer');
+    existingSpacers.forEach(function(el) { el.remove(); });
+    
+    // Reset height to auto to let content expand naturally
+    rp.style.height = 'auto';
+    
+    // 10mm padding equivalent in pixels
+    var marginPx = a4HeightPx * (10 / 297);
+    var gapHeight = 20; // 20px visual gap
+    
+    // Measure absolute positions of all block elements
+    var rpRect = rp.getBoundingClientRect();
+    var rpTop = rpRect.top + window.scrollY;
+    
+    // Process page breaks up to 5 pages
+    var maxPages = 5;
+    for (var pageNum = 1; pageNum < maxPages; pageNum++) {
+      var boundaryY = pageNum * a4HeightPx;
+      var bottomMarginY = boundaryY - marginPx;
+      var topMarginY = boundaryY + marginPx;
+      
+      // Query block elements that can be pushed (to prevent overlaps and preserve column/flex flows)
+      var selector = '.rsh, .rent, .rcrs, .rcert, div[style*="margin-bottom"], .sinp, .srow, .rc';
+      if (S.template === 'executive' || S.template === 'elizabeth') {
+        selector = '.r-main-col .rsh, .r-main-col .rent, .r-main-col .rcrs, .r-main-col .rcert, .r-main-col div[style*="margin-bottom"], .r-main-col .sinp, .r-main-col .srow, .r-main-col .rc';
+      }
+      var blocks = rp.querySelectorAll(selector);
+      var targetElement = null;
+      
+      for (var i = 0; i < blocks.length; i++) {
+        var el = blocks[i];
+        
+        // Skip elements that are inside/under an already created spacer
+        if (el.closest('.page-break-spacer')) continue;
+        
+        var rect = el.getBoundingClientRect();
+        var elTop = rect.top + window.scrollY - rpTop;
+        var elBottom = elTop + rect.height;
+        
+        // If element starts after bottomMarginY, or crosses it
+        if (elTop > bottomMarginY - 5) {
+          targetElement = el;
+          break;
+        } else if (elBottom > bottomMarginY) {
+          targetElement = el;
+          break;
+        }
+      }
+      
+      if (targetElement) {
+        var elRect = targetElement.getBoundingClientRect();
+        var elTop = elRect.top + window.scrollY - rpTop;
+        
+        var spacerHeight = topMarginY - elTop;
+        if (spacerHeight > 0) {
+          var spacer = document.createElement('div');
+          spacer.className = 'page-break-spacer';
+          spacer.style.height = spacerHeight + 'px';
+          
+          var gap = document.createElement('div');
+          gap.className = 'page-break-gap';
+          
+          // Position the 20px gap exactly centered at boundaryY relative to spacer top
+          var gapTop = (boundaryY - elTop) - (gapHeight / 2);
+          gap.style.top = gapTop + 'px';
+          gap.style.height = gapHeight + 'px';
+          
+          var label = document.createElement('span');
+          label.className = 'page-break-label';
+          label.textContent = 'Page ' + (pageNum + 1);
+          gap.appendChild(label);
+          
+          spacer.appendChild(gap);
+          targetElement.parentNode.insertBefore(spacer, targetElement);
+        }
+      } else {
+        break;
+      }
+    }
+    
+    // Calculate final content height after spacer insertion
+    var contentHeight = rp.scrollHeight;
+    var numPages = Math.ceil(contentHeight / a4HeightPx);
+    if (numPages < 1) numPages = 1;
+    
+    // Lock the container height to exact multiples of A4
+    rp.style.height = (numPages * a4HeightPx) + 'px';
+    
+    updateWorkspaceDiagnostics();
+  }
+
+  /* ----------------------------------
+     Diagnostics & Analytics
+  ---------------------------------- */
+
+  function updateWorkspaceDiagnostics() {
+    // 1. Set dynamic CSS Brand properties
+    if (S.accentColor) {
+      document.documentElement.style.setProperty('--resume-brand', S.accentColor);
+    }
+    
+    // 2. Count preview words
+    var rpText = document.getElementById('rp').textContent || "";
+    var words = rpText.trim().split(/\s+/).filter(Boolean).length;
+    document.getElementById('wordCountLabel').textContent = words + ' words';
+    
+    // 3. Update Status footer values
+    document.getElementById('statusTemplate').innerHTML = 'Template: <strong>' + S.template.charAt(0).toUpperCase() + S.template.slice(1) + '</strong>';
+    document.getElementById('statusAccent').innerHTML = 'Accent: <strong style="color:' + S.accentColor + '">' + S.accentColor + '</strong>';
+    
+    var activeSectionsCount = S.sectionOrder.filter(function(name) {
+      if (name === "Education" && S.education.length) return true;
+      if (name === "Coursework" && S.coursework.length) return true;
+      if (name === "Experience" && S.experience.length) return true;
+      if (name === "Projects" && S.projects.length) return true;
+      if (name === "Skills" && (S.skills.languages || S.skills.tools || S.skills.tech)) return true;
+      if (name === "Languages" && S.spokenLanguages) return true;
+      if (name === "Certifications" && S.certifications.length) return true;
+      if (name === "Leadership" && S.leadership.length) return true;
+      if (name === "References" && S.references) return true;
+      return false;
+    }).length;
+    
+    document.getElementById('statusSections').innerHTML = 'Sections: <strong>' + activeSectionsCount + '</strong>';
+  }
+
+  /* ----------------------------------
+     Draft Manager (LocalStorage + Secure PostgreSQL Sync)
+  ---------------------------------- */
+
+  var SERVER_DRAFTS = [];
+
+  // Parse JWT token from storage
+  var token = localStorage.getItem('mdk_token');
+  var userJson = localStorage.getItem('mdk_user');
+  var currentUser = null;
+
+  if (token && userJson) {
+    try {
+      currentUser = JSON.parse(userJson);
+    } catch(e) {
+      console.error("Failed to parse cached user", e);
+    }
+  }
+
+  // Update workspace welcome header states
+  function initHeaderUserUI() {
+    var container = document.getElementById('userMenuContainer');
+    var loginBtn = document.getElementById('loginHeaderBtn');
+    var menuBtn = document.getElementById('userMenuBtn');
+    var dropdownName = document.getElementById('dropdownName');
+    var dropdownEmail = document.getElementById('dropdownEmail');
+    var modeBadge = document.querySelector('.app-mode-badge');
+
+    if (currentUser) {
+      container.style.display = 'flex';
+      loginBtn.style.display = 'none';
+
+      // initials indicator
+      var name = currentUser.name || "User";
+      var initials = name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+      menuBtn.textContent = initials;
+      dropdownName.textContent = name;
+      dropdownEmail.textContent = currentUser.email;
+
+      if (modeBadge) {
+        modeBadge.textContent = currentUser.provider === 'email' ? 'CLOUD PRO' : `${currentUser.provider.toUpperCase()} PRO`;
+        modeBadge.style.background = 'rgba(16, 185, 129, 0.1)';
+        modeBadge.style.color = 'var(--color-emerald)';
+        modeBadge.style.borderColor = 'rgba(16, 185, 129, 0.2)';
+      }
+    } else {
+      container.style.display = 'none';
+      loginBtn.style.display = 'flex';
+
+      if (modeBadge) {
+        modeBadge.textContent = 'GUEST MODE';
+        modeBadge.style.background = 'rgba(245, 158, 11, 0.1)';
+        modeBadge.style.color = '#d97706';
+        modeBadge.style.borderColor = 'rgba(245, 158, 11, 0.2)';
+      }
+    }
+  }
+
+  // Toggle drop down
+  document.getElementById('userMenuBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    var dd = document.getElementById('userDropdown');
+    dd.style.display = dd.style.display === 'flex' ? 'none' : 'flex';
+  });
+
+  document.addEventListener('click', function() {
+    var dd = document.getElementById('userDropdown');
+    if (dd) dd.style.display = 'none';
+  });
+
+  document.getElementById('userDropdown').addEventListener('click', function(e) {
+    e.stopPropagation();
+  });
+
+  // Auth Button actions
+  document.getElementById('logoutBtn').addEventListener('click', function() {
+    localStorage.removeItem('mdk_token');
+    localStorage.removeItem('mdk_user');
+    window.location.href = '/';
+  });
+
+  document.getElementById('loginHeaderBtn').addEventListener('click', function() {
+    window.location.href = '/?action=login';
+  });
+
+  // Cloud draft fetching from PostgreSQL
+  async function fetchDraftsFromServer() {
+    if (!currentUser || !token) return;
+    try {
+      const response = await fetch(getApiUrl('/api/users/me/drafts'), {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (!response.ok) throw new Error("Cloud fetch failed");
+      SERVER_DRAFTS = await response.json();
+      renderDraftsList();
+    } catch(err) {
+      console.warn("Could not sync cloud drafts:", err.message);
+    }
+  }
+
+  function renderDraftsList() {
+    var container = document.getElementById('draftsList');
+    if (!container) return;
+
+    if (!currentUser) {
+      var drafts = JSON.parse(localStorage.getItem('mdk_resume_drafts') || '[]');
+      if (drafts.length === 0) {
+        container.innerHTML = '<p class="hint" style="text-align:center; padding:12px; border:1px dashed var(--border-color); border-radius:10px">No drafts saved in local workspace.</p>';
+        return;
+      }
+      container.innerHTML = drafts.map(function(d) {
+        var dateStr = new Date(d.timestamp).toLocaleDateString() + ' ' + new Date(d.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        return `
+          <div class="draft-card" data-id="${d.id}" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:10px; padding:10px; display:flex; align-items:center; justify-content:space-between; transition:all 0.15s ease; margin-bottom:6px">
+            <div style="min-width:0; flex:1">
+              <div style="font-size:12px; font-weight:700; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; color:var(--text-primary)">${esc(d.name)}</div>
+              <div style="font-size:10px; color:var(--text-tertiary); margin-top:2px">${dateStr}</div>
+            </div>
+            <div style="display:flex; gap:4px">
+              <button class="clr-btn load-draft-btn" data-id="${d.id}" style="padding:4px 8px; font-size:10px; border-color:var(--color-indigo); color:var(--color-indigo)">Load</button>
+              <button class="clr-btn delete-draft-btn" data-id="${d.id}" style="padding:4px 8px; font-size:10px; border-color:#ef4444; color:#ef4444">×</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    } else {
+      if (SERVER_DRAFTS.length === 0) {
+        container.innerHTML = '<p class="hint" style="text-align:center; padding:12px; border:1px dashed var(--border-color); border-radius:10px">No drafts saved on secure cloud database.</p>';
+        return;
+      }
+      container.innerHTML = SERVER_DRAFTS.map(function(d) {
+        var dateStr = new Date(d.updated_at).toLocaleDateString() + ' ' + new Date(d.updated_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        return `
+          <div class="draft-card" data-name="${esc(d.name)}" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:10px; padding:10px; display:flex; align-items:center; justify-content:space-between; transition:all 0.15s ease; margin-bottom:6px">
+            <div style="min-width:0; flex:1">
+              <div style="font-size:12px; font-weight:700; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; color:var(--text-primary)">☁️ ${esc(d.name)}</div>
+              <div style="font-size:10px; color:var(--text-tertiary); margin-top:2px">${dateStr}</div>
+            </div>
+            <div style="display:flex; gap:4px">
+              <button class="clr-btn load-server-draft-btn" data-name="${esc(d.name)}" style="padding:4px 8px; font-size:10px; border-color:var(--color-indigo); color:var(--color-indigo)">Load</button>
+              <button class="clr-btn delete-server-draft-btn" data-name="${esc(d.name)}" style="padding:4px 8px; font-size:10px; border-color:#ef4444; color:#ef4444">×</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  async function saveNewDraft() {
+    var input = document.getElementById('draftNameInput');
+    if (!input) return;
+    var name = input.value.trim();
+    if (!name) {
+      name = "Draft_" + new Date().toISOString().slice(0, 10) + "_" + new Date().toTimeString().slice(0,5).replace(':', '');
+    }
+    
+    if (!currentUser) {
+      var drafts = JSON.parse(localStorage.getItem('mdk_resume_drafts') || '[]');
+      var newDraft = {
+        id: "dr_" + Date.now(),
+        name: name,
+        timestamp: Date.now(),
+        data: JSON.parse(JSON.stringify(S))
+      };
+      drafts.push(newDraft);
+      localStorage.setItem('mdk_resume_drafts', JSON.stringify(drafts));
+      
+      input.value = "";
+      renderDraftsList();
+    } else {
+      // Secure Cloud Sync
+      var btn = document.getElementById('saveDraftBtn');
+      var originalBtnText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = 'Syncing...';
+      
+      try {
+        const response = await fetch(getApiUrl('/api/users/me/drafts'), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({ name: name, resume_data: S })
+        });
+        
+        if (!response.ok) throw new Error("Server sync error");
+        input.value = "";
+        await fetchDraftsFromServer();
+      } catch (err) {
+        alert("Failed to sync cloud draft. Connecting offline.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnText;
+      }
+    }
+  }
+
+  function loadDraft(id) {
+    var drafts = JSON.parse(localStorage.getItem('mdk_resume_drafts') || '[]');
+    var found = drafts.find(function(d) { return d.id === id; });
+    if (!found) return;
+    
+    Object.keys(found.data).forEach(function(k) { S[k] = found.data[k]; });
+
+    if (S.sectionOrder && !S.sectionOrder.includes("Languages")) S.sectionOrder.push("Languages");
+    if (S.spokenLanguages === undefined) S.spokenLanguages = "";
+    if (S.fileName === undefined) S.fileName = found.name.replace(/[^a-zA-Z0-9_\-]/g, '_');
+    
+    document.getElementById('docTitle').textContent = S.fileName;
+    
+    renderPrimarySidebar();
+    renderResume();
+    saveToLocal();
+  }
+
+  function loadServerDraft(name) {
+    var found = SERVER_DRAFTS.find(function(d) { return d.name === name; });
+    if (!found) return;
+    
+    Object.keys(found.resume_data).forEach(function(k) { S[k] = found.resume_data[k]; });
+
+    if (S.sectionOrder && !S.sectionOrder.includes("Languages")) S.sectionOrder.push("Languages");
+    if (S.spokenLanguages === undefined) S.spokenLanguages = "";
+    if (S.fileName === undefined) S.fileName = found.name.replace(/[^a-zA-Z0-9_\-]/g, '_');
+    
+    document.getElementById('docTitle').textContent = S.fileName;
+    
+    renderPrimarySidebar();
+    renderResume();
+    saveToLocal();
+  }
+
+  function deleteDraft(id) {
+    var drafts = JSON.parse(localStorage.getItem('mdk_resume_drafts') || '[]');
+    drafts = drafts.filter(function(d) { return d.id !== id; });
+    localStorage.setItem('mdk_resume_drafts', JSON.stringify(drafts));
+    renderDraftsList();
+  }
+
+  async function deleteServerDraft(name) {
+    if (!confirm("Are you sure you want to delete this secure cloud draft permanently?")) return;
+    try {
+      const response = await fetch(getApiUrl('/api/users/me/drafts/' + encodeURIComponent(name)), {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (!response.ok) throw new Error("Failed to delete draft");
+      await fetchDraftsFromServer();
+    } catch(err) {
+      alert("Failed to delete cloud draft: " + err.message);
+    }
+  }
+
+  /* ----------------------------------
+     Global Event Listeners & Router
+  ---------------------------------- */
+
+  // 1. Navigation Tab Switching in vertical Activity Bar
+  document.querySelectorAll('.activity-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var importTa = document.getElementById('importTa');
+      if (importTa) aiParserInputCache = importTa.value;
+      
+      S.activeView = this.dataset.view;
+      renderPrimarySidebar();
+      saveToLocal();
+    });
+  });
+
+  // 2. Persistent Event Delegation on Dynamic Sidebar Content
+  var sidebarContent = document.getElementById('sidebarContent');
+  
+  sidebarContent.addEventListener('click', async function(e) {
+    if (e.target.closest('#uploadPhotoBtn') || e.target.closest('.photo-upload-placeholder')) {
+      var inp = document.getElementById('photoUpload');
+      if (inp) inp.click();
+      return;
+    }
+    
+    if (e.target.id === 'removePhotoBtn') {
+      S.personal.photo = '';
+      renderPrimarySidebar();
+      renderResume();
+      return;
+    }
+
+    var tabBtn = e.target.closest('[data-tab]');
+    if (tabBtn) {
+      activeTab = tabBtn.dataset.tab;
+      renderTabs();
+      renderForm();
+      return;
+    }
+    
+    var togBtn = e.target.closest('[data-tog]');
+    if (togBtn) {
+      var k = togBtn.dataset.tog;
+      S.socialEnabled[k] = !S.socialEnabled[k];
+      renderForm();
+      renderResume();
+      return;
+    }
+    
+    var addBtn = e.target.closest('[data-add]');
+    if (addBtn) {
+      var key = addBtn.dataset.add;
+      S[key].push(JSON.parse(JSON.stringify(DEFS[key])));
+      renderForm();
+      renderResume();
+      return;
+    }
+    
+    var rmBtn = e.target.closest('[data-rm]');
+    if (rmBtn) {
+      var key = rmBtn.dataset.rm, idx = +rmBtn.dataset.idx;
+      S[key].splice(idx, 1);
+      renderForm();
+      renderResume();
+      return;
+    }
+    
+    if (e.target.id === "aiBtn") {
+      var txt = document.getElementById('importTa').value.trim();
+      var aiStatus = document.getElementById('aiStatus');
+      if (!txt) { aiStatus.innerHTML = '<span class="ai-err">Please paste plain text first.</span>'; return; }
+      
+      e.target.disabled = true;
+      aiStatus.innerHTML = '<span class="spin"></span> Gemini parsing data...';
+      
+      try {
+        var parsed = await parseResumeWithAI(txt);
+        applyParsed(parsed);
+        aiParserInputCache = "";
+        
+        S.activeView = "editor";
+        renderPrimarySidebar();
+        renderResume();
+      } catch (err) {
+        aiStatus.innerHTML = '<span class="ai-err">' + esc(err.message) + '</span>';
+      } finally {
+        e.target.disabled = false;
+      }
+      return;
+    }
+    
+    if (e.target.id === "clrBtn") {
+      document.getElementById('importTa').value = '';
+      aiParserInputCache = "";
+      document.getElementById('aiStatus').innerHTML = '';
+      return;
+    }
+    
+    if (e.target.id === "scoreBtn") {
+      var scoreBtn = e.target;
+      var resDiv = document.getElementById('scoreResult');
+      scoreBtn.disabled = true;
+      scoreBtn.innerHTML = '<span class="spin"></span> Analyzing...';
+      
+      try {
+        const response = await fetch(getApiUrl('/api/score-resume'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ resume: JSON.stringify(S) })
+        });
+        if (!response.ok) throw new Error("Backend error");
+        const data = await response.json();
+        
+        S.atsScore = data.score;
+        S.atsFeedback = data.feedback;
+        
+        renderPrimarySidebar();
+      } catch (err) {
+        resDiv.innerHTML = '<div class="ai-err" style="margin-top:10px;text-align:center">Audit failed. Make sure backend is running.</div>';
+      } finally {
+        scoreBtn.disabled = false;
+        scoreBtn.innerHTML = '📊 Audit & Score Resume';
+      }
+      return;
+    }
+    
+    var accentDot = e.target.closest('.accent-dot');
+    if (accentDot) {
+      document.querySelectorAll('.accent-dot').forEach(d => d.classList.remove('active'));
+      accentDot.classList.add('active');
+      S.accentColor = accentDot.dataset.color;
+      renderResume();
+      return;
+    }
+    
+    var tmplCard = e.target.closest('.template-card');
+    if (tmplCard) {
+      document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active'));
+      tmplCard.classList.add('active');
+      S.template = tmplCard.dataset.template;
+      if (S.template === 'sabrina') {
+        S.accentColor = '#c8986b';
+        saveToLocal();
+      } else if (S.template === 'elizabeth') {
+        S.accentColor = '#2d3748';
+        saveToLocal();
+      }
+      renderResume();
+      return;
+    }
+
+    if (e.target.closest('#aiPolishSummaryShortcutBtn') || e.target.id === 'aiPolishBtn') {
+      const skills = [S.skills.languages, S.skills.tools, S.skills.tech, S.spokenLanguages].filter(Boolean).join(', ');
+      const experience = S.experience.map(e => e.role + " at " + e.company + " (" + e.bullets.join('; ') + ")").join(' | ');
+
+      if (!skills && !experience) {
+        alert("Please enter some skills or work experience details first so Gemini can construct a summary!");
+        return;
+      }
+      
+      var btn = e.target.closest('#aiPolishSummaryShortcutBtn') || e.target;
+      var original = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spin"></span> Building summary...';
+      
+      try {
+        const response = await fetch(getApiUrl('/api/generate-summary'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ skills, experience })
+        });
+        if (!response.ok) throw new Error("Backend server error");
+        const data = await response.json();
+        
+        S.personal.summary = data.summary;
+        var summaryField = document.getElementById('summary-field');
+        if (summaryField) summaryField.value = data.summary;
+        renderResume();
+        
+        if (btn.id === 'aiPolishSummaryShortcutBtn') {
+          alert("Gemini updated your resume summary successfully! Check details inside the Document Editor.");
+        }
+      } catch (err) {
+        alert("Failed to connect to backend server on port 5000.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
+      return;
+    }
+
+    if (e.target.id === "saveDraftBtn") {
+      saveNewDraft();
+      return;
+    }
+
+    var loadBtn = e.target.closest('.load-draft-btn');
+    if (loadBtn) {
+      loadDraft(loadBtn.dataset.id);
+      return;
+    }
+
+    var loadServerBtn = e.target.closest('.load-server-draft-btn');
+    if (loadServerBtn) {
+      loadServerDraft(loadServerBtn.dataset.name);
+      return;
+    }
+
+    var deleteBtn = e.target.closest('.delete-draft-btn');
+    if (deleteBtn) {
+      deleteDraft(deleteBtn.dataset.id);
+      return;
+    }
+
+    var deleteServerBtn = e.target.closest('.delete-server-draft-btn');
+    if (deleteServerBtn) {
+      deleteServerDraft(deleteServerBtn.dataset.name);
+      return;
+    }
+
+    if (e.target.id === "exportBtn") {
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S, null, 2));
+      var dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", S.fileName + "_backup.json");
+      dlAnchor.click();
+      return;
+    }
+
+    if (e.target.id === "importBtn") {
+      document.getElementById('fileInput').click();
+      return;
+    }
+  });
+
+  // 3. Primary Sidebar Input Sync Event Delegation
+  sidebarContent.addEventListener('input', function (e) {
+    var t = e.target, p = t.dataset.p; 
+    if (!p) return;
+    
+    if (p === 'coursework') { 
+      S.coursework = t.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean); 
+      renderResume(); 
+      return; 
+    }
+    if (p === 'headline') { 
+      S.headline = t.value; 
+      renderResume(); 
+      return; 
+    }
+    
+    var keys = p.split('.'); 
+    var cur = S;
+    for (var i = 0; i < keys.length - 1; i++) { 
+      cur = cur[isNaN(keys[i]) ? keys[i] : +keys[i]]; 
+    }
+    
+    var last = keys[keys.length - 1];
+    if (last === 'bullets') {
+      cur[last] = t.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+    } else {
+      cur[last] = t.value;
+    }
+    renderResume();
+  });
+
+  sidebarContent.addEventListener('change', function(e) {
+    if (e.target.id === 'fileInput') {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        try {
+          var p = JSON.parse(ev.target.result);
+          Object.keys(p).forEach(function (k) { S[k] = p[k]; });
+          
+          document.getElementById('docTitle').textContent = S.fileName || "my_resume";
+          renderPrimarySidebar();
+          renderResume();
+          alert("JSON backup loaded successfully!");
+        } catch (err) {
+          alert("Invalid JSON file formatting.");
+        }
+      };
+      reader.readAsText(file);
+    }
+    else if (e.target.id === 'photoUpload') {
+      var file = e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        alert("Please upload a valid image file (PNG, JPG, JPEG, WebP).");
+        return;
+      }
+      if (file.size > 1.2 * 1024 * 1024) {
+        alert("Image size should be less than 1.2MB for optimal performance.");
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        S.personal.photo = ev.target.result;
+        renderPrimarySidebar();
+        renderResume();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // 4. Drag & Drop Reordering for Editor Entries
+  var dragIdx = null;
+  sidebarContent.addEventListener('dragstart', function(e) {
+    var item = e.target.closest('[draggable]');
+    if (!item) return;
+    dragIdx = +item.dataset.idx;
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  sidebarContent.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  });
+  sidebarContent.addEventListener('drop', function(e) {
+    e.preventDefault();
+    var item = e.target.closest('[draggable]');
+    if (!item || dragIdx === null) return;
+    var dropIdx = +item.dataset.idx;
+    if (dragIdx !== dropIdx) {
+      var moving = S.sectionOrder.splice(dragIdx, 1)[0];
+      S.sectionOrder.splice(dropIdx, 0, moving);
+      renderForm(); 
+      renderResume();
+    }
+    dragIdx = null;
+  });
+
+  /* ----------------------------------
+     Document Title Inline Editor
+  ---------------------------------- */
+
+  document.getElementById('titleContainer').addEventListener('dblclick', function(e) {
+    if (document.getElementById('titleInput')) return;
+    
+    var current = S.fileName || "my_resume";
+    var container = this;
+    container.innerHTML = `<input type="text" id="titleInput" value="${current}" style="font-size:12px; font-weight:700; color:var(--text-primary); background:var(--bg-input); border:1px solid var(--border-focus); border-radius:6px; padding:2px 6px; width:160px; outline:none; height:22px">`;
+    
+    var input = document.getElementById('titleInput');
+    input.focus();
+    input.select();
+    
+    function saveTitle() {
+      var val = input.value.trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
+      if (!val) val = "my_resume";
+      S.fileName = val;
+      container.innerHTML = `<span class="document-title-text" id="docTitle">${val}</span><span class="document-title-ext">.pdf</span><span class="document-edit-icon">✏️</span>`;
+      saveToLocal();
+    }
+    
+    input.addEventListener('keydown', function(evt) {
+      if (evt.key === 'Enter') saveTitle();
+      if (evt.key === 'Escape') {
+        container.innerHTML = `<span class="document-title-text" id="docTitle">${S.fileName}</span><span class="document-title-ext">.pdf</span><span class="document-edit-icon">✏️</span>`;
+      }
+    });
+    
+    input.addEventListener('blur', saveTitle);
+  });
+
+  /* ----------------------------------
+     Print PDF Download Override
+  ---------------------------------- */
+
+  document.getElementById('dlbtn').addEventListener('click', function () { 
+    var originalTitle = document.title;
+    document.title = S.fileName || "my_resume";
+    window.print(); 
+    document.title = originalTitle; 
+  });
+
+  /* ----------------------------------
+     Zooming Canvas Controls
+  ---------------------------------- */
+
+  var zoomLevel = 1.0;
+  var zoomLabel = document.getElementById('zoomLabel');
+  
+  function updateZoom(level) {
+    zoomLevel = Math.max(0.5, Math.min(1.5, level));
+    zoomLabel.textContent = Math.round(zoomLevel * 100) + '%';
+    document.documentElement.style.setProperty('--resume-scale', zoomLevel);
+  }
+  
+  document.getElementById('zoomOutBtn').addEventListener('click', function() {
+    updateZoom(zoomLevel - 0.1);
+  });
+  
+  document.getElementById('zoomInBtn').addEventListener('click', function() {
+    updateZoom(zoomLevel + 0.1);
+  });
+  
+  document.getElementById('zoomFitBtn').addEventListener('click', function() {
+    var wrapper = document.querySelector('.pp');
+    var fitScale = (wrapper.clientWidth - 40) / 800;
+    updateZoom(Math.min(1.0, fitScale));
+  });
+
+  /* ----------------------------------
+     Dark / Light Theme Toggler
+  ---------------------------------- */
+
+  var themeToggleBtn = document.getElementById('themeToggleBtn');
+  var themeIcon = document.getElementById('themeIcon');
+  
+  function updateThemeIcon() {
+    var isDark = document.body.classList.contains('dark-mode');
+    if (isDark) {
+      themeIcon.innerHTML = `<circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
+    } else {
+      themeIcon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+    }
+  }
+
+  themeToggleBtn.addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    var isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('editor_dark_mode', isDark);
+    updateThemeIcon();
+  });
+
+  function initTheme() {
+    var isDark = localStorage.getItem('editor_dark_mode') === 'true';
+    if (isDark) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+    updateThemeIcon();
+  }
+
+  /* ----------------------------------
+     Local Workspace Persistence (localStorage)
+  ---------------------------------- */
+
+  var syncTimeout = null;
+
+  function saveToLocal() { 
+    localStorage.setItem('resume_data', JSON.stringify(S)); 
+
+    // Cloud auto-saving debouncer (sync to server 3 seconds after typing/changes stop)
+    if (currentUser && token) {
+      clearTimeout(syncTimeout);
+      syncTimeout = setTimeout(async function() {
+        try {
+          await fetch(getApiUrl('/api/users/me/drafts'), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({
+              name: S.fileName || "my_resume",
+              resume_data: S
+            })
+          });
+          // Update the list silently to keep timestamps fresh
+          fetchDraftsFromServer();
+        } catch(err) {
+          console.warn("Auto-sync to PostgreSQL failed:", err.message);
+        }
+      }, 3000);
+    }
+  }
+  
+  function loadFromLocal() {
+    var saved = localStorage.getItem('resume_data');
+    if (saved) {
+      try {
+        var p = JSON.parse(saved);
+        Object.keys(p).forEach(function (k) { S[k] = p[k]; });
+        
+        // Add migrations
+        if (S.sectionOrder && !S.sectionOrder.includes("Languages")) {
+          S.sectionOrder.push("Languages");
+        }
+        if (S.sectionOrder && !S.sectionOrder.includes("References")) {
+          S.sectionOrder.push("References");
+        }
+        if (S.references === undefined) {
+          S.references = "";
+        }
+        if (S.spokenLanguages === undefined) {
+          S.spokenLanguages = "";
+        }
+        if (S.activeView === undefined) {
+          S.activeView = "ai";
+        }
+        if (S.fileName === undefined) {
+          S.fileName = "my_resume";
+        }
+        
+        // Sync document title in header
+        document.getElementById('docTitle').textContent = S.fileName;
+        
+      } catch (e) { console.error("Workspace load failed", e); }
+    }
+  }
+
+  // Auto-save hooking into render triggers
+  var originalRenderForm = renderForm;
+  renderForm = function() { originalRenderForm(); saveToLocal(); }
+  var originalRenderResume = renderResume;
+  renderResume = function() { originalRenderResume(); saveToLocal(); }
+
+  /* ----------------------------------
+     Initialization
+  ---------------------------------- */
+
+  initTheme();
+  loadFromLocal();
+  initHeaderUserUI();
+
+  // If newly signed up, try to migrate current unsaved local work to their server account immediately!
+  if (currentUser && token) {
+    (async function() {
+      try {
+        await fetch(getApiUrl('/api/users/me/drafts'), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({
+            name: S.fileName || "Migrated_Local_Draft",
+            resume_data: S
+          })
+        });
+      } catch(e) {}
+      await fetchDraftsFromServer();
+    })();
+  }
+
+  S.activeView = "ai"; // Always open AI Co-pilot first on page load
+  renderPrimarySidebar();
+  renderResume();
+
+</script>
+</body>
+</html>
