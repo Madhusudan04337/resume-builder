@@ -29,11 +29,10 @@
             <a href="#ats-demo" class="nav-link">ATS Auditor</a>
         </div>
         <div class="nav-actions">
-            <button class="btn-secondary" id="loginNavBtn">Log In</button>
-            <button class="btn-primary" id="signupNavBtn">
-                Get Started
+            <a href="workspace.html" class="btn-primary" id="launchBtn">
+                Launch App
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </button>
+            </a>
         </div>
     </nav>
 
@@ -47,7 +46,7 @@
             Accelerate your career with instant AI parsing, smart ATS keyword auditing, and gorgeous responsive templates designed to pass recruiters and land interviews.
         </p>
         <div class="hero-actions">
-            <button class="btn-primary btn-lg btn-emerald" id="heroCTA">Start Building Free</button>
+            <a href="workspace.html" class="btn-primary btn-lg btn-emerald" id="heroCTA">Start Building Free</a>
         </div>
     </header>
 
@@ -153,7 +152,7 @@
                     </svg>
                 </div>
                 <h3 class="feature-name">Files</h3>
-                <p class="feature-desc">Save multiple drafts locally in browser memory or persist them on your secure database profile.</p>
+                <p class="feature-desc">Save multiple drafts locally in your browser and export or import them as JSON backups anytime.</p>
             </div>
         </div>
     </section>
@@ -173,79 +172,8 @@
         </div>
     </footer>
 
-    <!-- Authenticate Dialog Modal Overlay -->
-    <div class="auth-overlay" id="authOverlay">
-        <div class="auth-modal">
-            <button class="auth-close" id="authCloseBtn">×</button>
-            
-            <!-- Loading Indicator Spinner -->
-            <div class="auth-loading-overlay" id="authLoading">
-                <div class="auth-spinner"></div>
-                <div class="auth-loading-text" id="authLoadingText">Establishing secure session...</div>
-            </div>
-
-            <div class="auth-header">
-                <h2 class="auth-title" id="authModalTitle">Create Your Account</h2>
-                <p class="auth-subtitle" id="authModalSubtitle">Unlock persistent cloud saving and unlimited exports.</p>
-            </div>
-
-            <!-- Error Banner -->
-            <div class="auth-error-banner" id="authErrorBanner">An error occurred. Please try again.</div>
-
-
-            <!-- Email Signup/Login Form -->
-            <form class="auth-form" id="authForm" novalidate>
-                <div class="form-group" id="nameGroup">
-                    <label class="form-label" for="authName">Full Name</label>
-                    <input type="text" class="form-input" id="authName" placeholder="John Doe">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="authEmail">Email Address</label>
-                    <input type="email" class="form-input" id="authEmail" placeholder="you@example.com" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="authPassword">Password</label>
-                    <input type="password" class="form-input" id="authPassword" placeholder="Minimum 6 characters" required>
-                </div>
-                <button type="submit" class="btn-submit" id="authSubmitBtn">
-                    Create Account
-                </button>
-            </form>
-
-            <div class="auth-switch" id="authSwitch">
-                Already have an account? <a href="#" id="authSwitchLink">Log In</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Active Frontend Logic Script -->
+    <!-- Frontend Logic -->
     <script>
-        // DOM Elements
-        const authOverlay = document.getElementById('authOverlay');
-        const authCloseBtn = document.getElementById('authCloseBtn');
-        const signupNavBtn = document.getElementById('signupNavBtn');
-        const loginNavBtn = document.getElementById('loginNavBtn');
-        const heroCTA = document.getElementById('heroCTA');
-        const authModalTitle = document.getElementById('authModalTitle');
-        const authModalSubtitle = document.getElementById('authModalSubtitle');
-        const authSubmitBtn = document.getElementById('authSubmitBtn');
-        const authSwitchLink = document.getElementById('authSwitchLink');
-        const nameGroup = document.getElementById('nameGroup');
-        const authForm = document.getElementById('authForm');
-        const authName = document.getElementById('authName');
-        const authEmail = document.getElementById('authEmail');
-        const authPassword = document.getElementById('authPassword');
-        const authLoading = document.getElementById('authLoading');
-        const authLoadingText = document.getElementById('authLoadingText');
-        const authErrorBanner = document.getElementById('authErrorBanner');
-        
-        let authMode = 'signup'; // 'signup' or 'login'
-
-        // Check if already logged in and redirect to workspace immediately
-        if (localStorage.getItem('mdk_token')) {
-            window.location.href = '/workspace';
-        }
-
         // Rolling ATS score count-up simulation on load
         window.addEventListener('DOMContentLoaded', () => {
             const counter = document.getElementById('atsScoreCount');
@@ -256,146 +184,10 @@
                 counter.textContent = count;
                 if (count >= target) {
                     clearInterval(interval);
-                    // Add subtle scale pulse to mock ATS circle
                     counter.parentElement.style.transform = 'scale(1.08)';
                     counter.parentElement.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                 }
             }, 30);
-
-            // Check query parameters to open auth modal in specific mode
-            const urlParams = new URLSearchParams(window.location.search);
-            const action = urlParams.get('action');
-            if (action === 'login') {
-                openAuthModal('login');
-            } else if (action === 'signup') {
-                openAuthModal('signup');
-            }
-        });
-
-        // Open Dialog Modal Helper
-        function openAuthModal(mode) {
-            authMode = mode;
-            authErrorBanner.style.display = 'none';
-            authOverlay.classList.add('active');
-            
-            if (authMode === 'signup') {
-                authModalTitle.textContent = 'Create Your Account';
-                authModalSubtitle.textContent = 'Unlock persistent cloud saving and unlimited exports.';
-                authSubmitBtn.textContent = 'Create Account';
-                nameGroup.style.display = 'flex';
-                authSwitch.innerHTML = 'Already have an account? <a href="#" id="authSwitchLink">Log In</a>';
-            } else {
-                authModalTitle.textContent = 'Welcome Back';
-                authModalSubtitle.textContent = 'Log in to access your secure saved resume drafts.';
-                authSubmitBtn.textContent = 'Sign In';
-                nameGroup.style.display = 'none';
-                authSwitch.innerHTML = 'New to MDK Resume AI? <a href="#" id="authSwitchLink">Sign Up Free</a>';
-            }
-            
-            // Re-bind dynamically generated switch link
-            document.getElementById('authSwitchLink').addEventListener('click', (e) => {
-                e.preventDefault();
-                openAuthModal(authMode === 'signup' ? 'login' : 'signup');
-            });
-        }
-
-        // Close Modal
-        function closeAuthModal() {
-            authOverlay.classList.remove('active');
-        }
-
-        // Event Listeners
-        signupNavBtn.addEventListener('click', () => openAuthModal('signup'));
-        heroCTA.addEventListener('click', () => openAuthModal('signup'));
-        loginNavBtn.addEventListener('click', () => openAuthModal('login'));
-        authCloseBtn.addEventListener('click', closeAuthModal);
-        
-        // Click outside modal to close
-        authOverlay.addEventListener('click', (e) => {
-            if (e.target === authOverlay) closeAuthModal();
-        });
-
-        // Show/Hide Spinner Loaders
-        function showLoading(text) {
-            authLoadingText.textContent = text;
-            authLoading.classList.add('active');
-        }
-
-        function hideLoading() {
-            authLoading.classList.remove('active');
-        }
-
-        // Render Error Banner
-        function showError(message) {
-            authErrorBanner.textContent = message;
-            authErrorBanner.style.display = 'block';
-        }
-
-
-        function getApiUrl(path) {
-            if (window.location.protocol === 'file:') {
-                return 'http://localhost:5000' + path;
-            }
-            if ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000') {
-                return 'http://localhost:5000' + path;
-            }
-            return path;
-        }
-
-        // Handle Email Login & Signup Submission
-        authForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            authErrorBanner.style.display = 'none';
-
-            const email = authEmail.value.trim();
-            const password = authPassword.value;
-            const name = authName.value.trim();
-
-            if (!email || !password) {
-                showError("Please enter both email and password.");
-                return;
-            }
-
-            if (authMode === 'signup' && password.length < 6) {
-                showError("Password must be at least 6 characters long.");
-                return;
-            }
-
-            const endpoint = authMode === 'signup' ? '/api/auth/signup' : '/api/auth/login';
-            const loadingText = authMode === 'signup' ? 'Creating secure profile...' : 'Verifying credentials...';
-            
-            showLoading(loadingText);
-            
-            try {
-                const response = await fetch(getApiUrl(endpoint), {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email,
-                        password,
-                        name: authMode === 'signup' ? (name || 'User') : undefined,
-                        provider: authMode === 'signup' ? 'email' : undefined
-                    })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || "Authentication server error.");
-                }
-
-                // Cache token and details in browser
-                localStorage.setItem('mdk_token', data.token);
-                localStorage.setItem('mdk_user', JSON.stringify(data.user));
-
-                showLoading("Success! Redirecting to AI workspace...");
-                await new Promise(resolve => setTimeout(resolve, 800));
-
-                window.location.href = '/workspace';
-            } catch (err) {
-                hideLoading();
-                showError(err.message);
-            }
         });
     </script>
 </body>
