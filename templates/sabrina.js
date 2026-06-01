@@ -152,14 +152,22 @@
       else if (secName === "Skills") {
         // Collect skill categories
         var skillLists = [];
-        if (Sk.languages) {
-          Sk.languages.split(',').forEach(function(s) { if (s.trim()) skillLists.push(s.trim()); });
-        }
-        if (Sk.tech) {
-          Sk.tech.split(',').forEach(function(s) { if (s.trim()) skillLists.push(s.trim()); });
-        }
-        if (Sk.tools) {
-          Sk.tools.split(',').forEach(function(s) { if (s.trim()) skillLists.push(s.trim()); });
+        if (Array.isArray(Sk)) {
+          Sk.forEach(function(s) {
+            if (s.list) {
+              s.list.split(',').forEach(function(item) { if (item.trim()) skillLists.push(item.trim()); });
+            }
+          });
+        } else {
+          if (Sk.languages) {
+            Sk.languages.split(',').forEach(function(s) { if (s.trim()) skillLists.push(s.trim()); });
+          }
+          if (Sk.tech) {
+            Sk.tech.split(',').forEach(function(s) { if (s.trim()) skillLists.push(s.trim()); });
+          }
+          if (Sk.tools) {
+            Sk.tools.split(',').forEach(function(s) { if (s.trim()) skillLists.push(s.trim()); });
+          }
         }
         if (S.spokenLanguages) {
           S.spokenLanguages.split(',').forEach(function(s) { if (s.trim()) skillLists.push(s.trim()); });
@@ -218,6 +226,14 @@
       else if (secName === "References" && S.references) {
         h += sh('References');
         h += '<div style="font-size:10.5px;color:#4a5568;font-style:italic;line-height:1.5">' + linkify(esc(S.references)) + '</div>';
+      }
+      
+      else if (secName.startsWith("custom_")) {
+        var cs = (S.customSections || []).find(function(c) { return c.id === secName; });
+        if (cs && cs.heading && cs.content) {
+          h += sh(cs.heading);
+          h += '<div style="font-size:10.5px;color:#2d3748;line-height:1.5;text-align:justify;white-space:pre-line;margin-bottom:8px">' + linkify(esc(cs.content)) + '</div>';
+        }
       }
       
     });

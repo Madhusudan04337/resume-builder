@@ -62,8 +62,44 @@ async function generateContentWithFallback(options) {
     }
 }
 
+// Middleware to ensure API key is configured and not using placeholder values
+const checkApiKey = (req, res, next) => {
+    const key = process.env.GEMINI_API_KEY;
+    if (!key || key.trim() === '' || key === 'your_gemini_api_key_here') {
+        return res.status(400).json({
+            error: "Configuration Error",
+            message: "Gemini API Key is missing or not configured. Please add a valid GEMINI_API_KEY inside your .env file."
+        });
+    }
+    next();
+};
+
+// Robust helper to extract and clean error messages returned by @google/genai SDK
+function formatGeminiError(error) {
+    let message = error.message || "An unknown error occurred inside Gemini AI";
+    
+    // Often @google/genai SDK wraps API errors as a serialized JSON string in error.message
+    if (typeof message === 'string' && message.trim().startsWith('{')) {
+        try {
+            const parsed = JSON.parse(message);
+            if (parsed.error && parsed.error.message) {
+                message = parsed.error.message;
+            }
+        } catch (e) {
+            // Keep original message if parsing fails
+        }
+    }
+    
+    // Check for common error contexts
+    if (message.includes("API key was reported as leaked") || message.includes("API key") || error.status === 403) {
+        return "Your Gemini API Key is invalid or has been reported as leaked. Please update the GEMINI_API_KEY inside your .env file with a new, valid key from Google AI Studio (https://aistudio.google.com/).";
+    }
+    
+    return message;
+}
+
 // Endpoint to generate resume content via AI
-app.post('/api/generate-summary', async (req, res) => {
+app.post('/api/generate-summary', checkApiKey, async (req, res) => {
     const { skills, experience } = req.body;
 
     try {
@@ -78,7 +114,7 @@ app.post('/api/generate-summary', async (req, res) => {
         res.json({ summary: response.text });
     } catch (error) {
         console.error("Gemini Error:", error);
-        res.status(500).json({ error: "Failed to generate summary", message: error.message, stack: error.stack });
+        res.status(500).json({ error: "Failed to generate summary", message: formatGeminiError(error) });
     }
 });
 
@@ -136,7 +172,7 @@ function safeParseJSON(text) {
 }
 
 // Endpoint to parse full resume text into JSON
-app.post('/api/parse-resume', async (req, res) => {
+app.post('/api/parse-resume', checkApiKey, async (req, res) => {
     const { text } = req.body;
 
     try {
@@ -156,7 +192,8 @@ app.post('/api/parse-resume', async (req, res) => {
   "skills": {"languages": "", "tools": "", "tech": ""},
   "spokenLanguages": "",
   "leadership": [{"org": "", "role": "", "start": "", "end": "", "loc": "", "bullets": []}],
-  "certifications": [{"name": "", "url": "", "provider": "", "start": "", "end": "", "skills": ""}]
+  "certifications": [{"name": "", "url": "", "provider": "", "start": "", "end": "", "skills": ""}],
+  "customSections": [{"heading": "", "content": ""}]
 }
 
 Resume:
@@ -164,7 +201,7 @@ Resume:
 ${text}
 """`,
             config: {
-                systemInstruction: "You are a highly precise resume parser. Extract all information and return ONLY valid, raw JSON matching the requested structure. CRITICAL: Ensure all internal quotes and newlines inside string values are properly escaped so that the response parses perfectly using standard JSON.parse(). Do not truncate the JSON output.",
+                systemInstruction: "You are a highly precise resume parser. Extract all information and return ONLY valid, raw JSON matching the requested structure. CRITICAL: Analyze the entire resume text. If there is any significant section or information that does not fit into the standard predefined tabs (such as Declarations, Hobbies, Publications, Patents, Interests, etc.), dynamically extract it into the 'customSections' list, generating a professional title/heading for each section based on its content. Do not create custom sections for information that already fits the standard predefined fields. Ensure all internal quotes and newlines inside string values are properly escaped so that the response parses perfectly using standard JSON.parse(). Do not truncate the JSON output.",
                 responseMimeType: "application/json",
                 maxOutputTokens: 8000
             }
@@ -173,12 +210,12 @@ ${text}
         res.json(safeParseJSON(response.text));
     } catch (error) {
         console.error("Gemini Error:", error);
-        res.status(500).json({ error: "Failed to parse resume", message: error.message, stack: error.stack });
+        res.status(500).json({ error: "Failed to parse resume", message: formatGeminiError(error) });
     }
 });
 
 // Endpoint to score resume for ATS optimization
-app.post('/api/score-resume', async (req, res) => {
+app.post('/api/score-resume', checkApiKey, async (req, res) => {
     const { resume } = req.body;
 
     try {
@@ -200,7 +237,7 @@ Return ONLY a JSON object: {"score": 85, "feedback": "Detailed advice..."}`,
         res.json(safeParseJSON(response.text));
     } catch (error) {
         console.error("Gemini Error:", error);
-        res.status(500).json({ error: "Failed to score resume", message: error.message, stack: error.stack });
+        res.status(500).json({ error: "Failed to score resume", message: formatGeminiError(error) });
     }
 });
 

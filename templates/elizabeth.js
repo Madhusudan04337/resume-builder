@@ -91,36 +91,49 @@
     }
     
     // Spacer divider
-    if (E.length && (Sk.languages || Sk.tools || Sk.tech || S.spokenLanguages)) {
+    if (E.length && ((Array.isArray(Sk) ? Sk.some(s => s.category && s.list) : (Sk.languages || Sk.tools || Sk.tech)) || S.spokenLanguages)) {
       h += '<div style="margin-top: 10px; margin-bottom: 10px"></div>';
     }
     
     // Skills (do not include spoken languages)
-    if (Sk.languages || Sk.tools || Sk.tech) {
+    if (Array.isArray(Sk) ? Sk.some(s => s.category && s.list) : (Sk.languages || Sk.tools || Sk.tech)) {
       h += sh('Skills');
-      if (Sk.languages) {
-        h += '<div style="font-weight:600;color:#64748b;font-size:11px;margin-bottom:2px;margin-top:8px;">Programming Languages</div>';
-        h += '<ul style="background:#f8fafc;border-radius:6px;padding:7px 12px 7px 18px;margin-bottom:6px;font-size:11px;color:#2d3748;list-style-type:disc;">';
-        Sk.languages.split(/[,;]+/).forEach(function(skill) {
-          if (skill.trim()) h += '<li style="margin-bottom:2.5px;line-height:1.5;">' + esc(skill.trim()) + '</li>';
+      if (Array.isArray(Sk)) {
+        Sk.forEach(function(s) {
+          if (s.category && s.list) {
+            h += '<div style="font-weight:600;color:#64748b;font-size:11px;margin-bottom:2px;margin-top:8px;">' + esc(s.category) + '</div>';
+            h += '<ul style="background:#f8fafc;border-radius:6px;padding:7px 12px 7px 18px;margin-bottom:6px;font-size:11px;color:#2d3748;list-style-type:disc;">';
+            s.list.split(/[,;]+/).forEach(function(skill) {
+              if (skill.trim()) h += '<li style="margin-bottom:2.5px;line-height:1.5;">' + esc(skill.trim()) + '</li>';
+            });
+            h += '</ul>';
+          }
         });
-        h += '</ul>';
-      }
-      if (Sk.tools) {
-        h += '<div style="font-weight:600;color:#64748b;font-size:11px;margin-bottom:2px;margin-top:8px;">Developer tools</div>';
-        h += '<ul style="background:#f8fafc;border-radius:6px;padding:7px 12px 7px 18px;margin-bottom:6px;font-size:11px;color:#2d3748;list-style-type:disc;">';
-        Sk.tools.split(/[,;]+/).forEach(function(skill) {
-          if (skill.trim()) h += '<li style="margin-bottom:2.5px;line-height:1.5;">' + esc(skill.trim()) + '</li>';
-        });
-        h += '</ul>';
-      }
-      if (Sk.tech) {
-        h += '<div style="font-weight:600;color:#64748b;font-size:11px;margin-bottom:2px;margin-top:8px;">Technologies / frameworks</div>';
-        h += '<ul style="background:#f8fafc;border-radius:6px;padding:7px 12px 7px 18px;margin-bottom:6px;font-size:11px;color:#2d3748;list-style-type:disc;">';
-        Sk.tech.split(/[,;]+/).forEach(function(skill) {
-          if (skill.trim()) h += '<li style="margin-bottom:2.5px;line-height:1.5;">' + esc(skill.trim()) + '</li>';
-        });
-        h += '</ul>';
+      } else {
+        if (Sk.languages) {
+          h += '<div style="font-weight:600;color:#64748b;font-size:11px;margin-bottom:2px;margin-top:8px;">Programming Languages</div>';
+          h += '<ul style="background:#f8fafc;border-radius:6px;padding:7px 12px 7px 18px;margin-bottom:6px;font-size:11px;color:#2d3748;list-style-type:disc;">';
+          Sk.languages.split(/[,;]+/).forEach(function(skill) {
+            if (skill.trim()) h += '<li style="margin-bottom:2.5px;line-height:1.5;">' + esc(skill.trim()) + '</li>';
+          });
+          h += '</ul>';
+        }
+        if (Sk.tools) {
+          h += '<div style="font-weight:600;color:#64748b;font-size:11px;margin-bottom:2px;margin-top:8px;">Developer tools</div>';
+          h += '<ul style="background:#f8fafc;border-radius:6px;padding:7px 12px 7px 18px;margin-bottom:6px;font-size:11px;color:#2d3748;list-style-type:disc;">';
+          Sk.tools.split(/[,;]+/).forEach(function(skill) {
+            if (skill.trim()) h += '<li style="margin-bottom:2.5px;line-height:1.5;">' + esc(skill.trim()) + '</li>';
+          });
+          h += '</ul>';
+        }
+        if (Sk.tech) {
+          h += '<div style="font-weight:600;color:#64748b;font-size:11px;margin-bottom:2px;margin-top:8px;">Technologies / frameworks</div>';
+          h += '<ul style="background:#f8fafc;border-radius:6px;padding:7px 12px 7px 18px;margin-bottom:6px;font-size:11px;color:#2d3748;list-style-type:disc;">';
+          Sk.tech.split(/[,;]+/).forEach(function(skill) {
+            if (skill.trim()) h += '<li style="margin-bottom:2.5px;line-height:1.5;">' + esc(skill.trim()) + '</li>';
+          });
+          h += '</ul>';
+        }
       }
     }
 
@@ -203,6 +216,14 @@
       else if (secName === "References" && S.references) {
         h += sh('References');
         h += '<div style="font-size:11px;color:#64748b;font-style:italic;line-height:1.5">' + linkify(esc(S.references)) + '</div>';
+      }
+      
+      else if (secName.startsWith("custom_")) {
+        var cs = (S.customSections || []).find(function(c) { return c.id === secName; });
+        if (cs && cs.heading && cs.content) {
+          h += sh(cs.heading);
+          h += '<div style="font-size:11px;color:#2d3748;line-height:1.5;text-align:justify;white-space:pre-line;margin-bottom:10px">' + linkify(esc(cs.content)) + '</div>';
+        }
       }
       
     });

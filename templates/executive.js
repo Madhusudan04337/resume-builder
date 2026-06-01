@@ -39,11 +39,19 @@
       }
     });
 
-    if (Sk.languages || Sk.tools || Sk.tech) {
+    if (Array.isArray(Sk) ? Sk.some(s => s.category && s.list) : (Sk.languages || Sk.tools || Sk.tech)) {
       sidebar += '<div style="font-weight:700;color:'+st.brand+';margin:22px 0 10px;text-transform:uppercase;letter-spacing:1px;font-size:11.5px">Skills</div>';
-      if (Sk.languages) sidebar += '<div style="margin-bottom:10px"><b>Languages:</b><br>' + esc(Sk.languages) + '</div>';
-      if (Sk.tools) sidebar += '<div style="margin-bottom:10px"><b>Tools:</b><br>' + esc(Sk.tools) + '</div>';
-      if (Sk.tech) sidebar += '<div style="margin-bottom:10px"><b>Tech:</b><br>' + esc(Sk.tech) + '</div>';
+      if (Array.isArray(Sk)) {
+        Sk.forEach(function(s) {
+          if (s.category && s.list) {
+            sidebar += '<div style="margin-bottom:10px"><b>' + esc(s.category) + ':</b><br>' + esc(s.list) + '</div>';
+          }
+        });
+      } else {
+        if (Sk.languages) sidebar += '<div style="margin-bottom:10px"><b>Languages:</b><br>' + esc(Sk.languages) + '</div>';
+        if (Sk.tools) sidebar += '<div style="margin-bottom:10px"><b>Tools:</b><br>' + esc(Sk.tools) + '</div>';
+        if (Sk.tech) sidebar += '<div style="margin-bottom:10px"><b>Tech:</b><br>' + esc(Sk.tech) + '</div>';
+      }
     }
     if (S.spokenLanguages) {
       sidebar += '<div style="font-weight:700;color:'+st.brand+';margin:22px 0 10px;text-transform:uppercase;letter-spacing:1px;font-size:11.5px">Languages</div>';
@@ -135,10 +143,16 @@
               buls(e.bullets) +
             '</div>';
           });
-        } else if (secName === "References" && S.references) {
-          main += '<div style="font-weight:700;color:'+st.brand+';border-bottom:2px solid '+st.brand+';margin-bottom:10px;padding-bottom:2px;text-transform:uppercase;font-size:12.5px">References</div>';
-          main += '<div style="font-size:10.5px;color:#475569;font-style:italic;line-height:1.5">' + linkify(esc(S.references)) + '</div>';
-        }
+         } else if (secName === "References" && S.references) {
+           main += '<div style="font-weight:700;color:'+st.brand+';border-bottom:2px solid '+st.brand+';margin-bottom:10px;padding-bottom:2px;text-transform:uppercase;font-size:12.5px">References</div>';
+           main += '<div style="font-size:10.5px;color:#475569;font-style:italic;line-height:1.5">' + linkify(esc(S.references)) + '</div>';
+         } else if (secName.startsWith("custom_")) {
+           var cs = (S.customSections || []).find(function(c) { return c.id === secName; });
+           if (cs && cs.heading && cs.content) {
+             main += '<div style="font-weight:700;color:'+st.brand+';border-bottom:2px solid '+st.brand+';margin-bottom:8px;padding-bottom:2px;text-transform:uppercase;font-size:12.5px">' + esc(cs.heading) + '</div>';
+             main += '<div style="font-size:10.5px;color:#475569;line-height:1.5;text-align:justify;white-space:pre-line;margin-bottom:10px">' + linkify(esc(cs.content)) + '</div>';
+           }
+         }
     });
     main += '</div>';
 

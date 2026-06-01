@@ -226,21 +226,28 @@
         });
       } 
       
-      else if (secName === "Skills" && (Sk.languages || Sk.tools || Sk.tech)) {
+      else if (secName === "Skills" && (Array.isArray(Sk) ? Sk.some(s => s.category && s.list) : (Sk.languages || Sk.tools || Sk.tech))) {
         h += sh('Skills'); 
-        // Grouped skills categories styled with semibold labels (600) in brandColor and spacious line margins
         h += '<div style="line-height:1.55;margin-bottom:8px;font-size:10px">';
-        if (Sk.languages) {
-          h += '<div style="margin-bottom:4px"><span style="font-weight:600;color:' + st.brand + '">Languages</span>: ' + esc(Sk.languages) + '</div>';
-        }
-        if (Sk.tech) {
-          h += '<div style="margin-bottom:4px"><span style="font-weight:600;color:' + st.brand + '">Technologies / Frameworks</span>: ' + esc(Sk.tech) + '</div>';
-        }
-        if (Sk.tools) {
-          h += '<div style="margin-bottom:4px"><span style="font-weight:600;color:' + st.brand + '">Developer Tools</span>: ' + esc(Sk.tools) + '</div>';
+        if (Array.isArray(Sk)) {
+          Sk.forEach(function(s) {
+            if (s.category && s.list) {
+              h += '<div style="margin-bottom:4px"><span style="font-weight:600;color:' + st.brand + '">' + esc(s.category) + '</span>: ' + esc(s.list) + '</div>';
+            }
+          });
+        } else {
+          if (Sk.languages) {
+            h += '<div style="margin-bottom:4px"><span style="font-weight:600;color:' + st.brand + '">Languages</span>: ' + esc(Sk.languages) + '</div>';
+          }
+          if (Sk.tech) {
+            h += '<div style="margin-bottom:4px"><span style="font-weight:600;color:' + st.brand + '">Technologies / Frameworks</span>: ' + esc(Sk.tech) + '</div>';
+          }
+          if (Sk.tools) {
+            h += '<div style="margin-bottom:4px"><span style="font-weight:600;color:' + st.brand + '">Developer Tools</span>: ' + esc(Sk.tools) + '</div>';
+          }
         }
         h += '</div>';
-      } 
+      } 	 
       
       else if (secName === "Languages" && S.spokenLanguages) {
         h += sh('Languages'); 
@@ -287,6 +294,14 @@
       } else if (secName === "References" && S.references) {
         h += sh('References');
         h += '<div style="font-size:10px;color:#111;font-style:italic;line-height:1.45;margin-bottom:8px">' + linkify(esc(S.references)) + '</div>';
+      }
+      
+      else if (secName.startsWith("custom_")) {
+        var cs = (S.customSections || []).find(function(c) { return c.id === secName; });
+        if (cs && cs.heading && cs.content) {
+          h += sh(cs.heading);
+          h += '<div style="text-align:justify;line-height:1.45;margin-bottom:8px;white-space:pre-line">' + linkify(esc(cs.content)) + '</div>';
+        }
       }
       
     });

@@ -98,11 +98,19 @@
           
           h += buls(p.bullets) + '</div>'; 
         });
-      } else if (secName === "Skills" && (Sk.languages || Sk.tools || Sk.tech)) {
+      } else if (secName === "Skills" && (Array.isArray(Sk) ? Sk.some(s => s.category && s.list) : (Sk.languages || Sk.tools || Sk.tech))) {
         h += sh('Skills', st); 
-        if (Sk.languages) h += '<div><span class="rb" style="color:' + st.brand + '">Languages</span>: ' + esc(Sk.languages) + '</div>';
-        if (Sk.tools) h += '<div><span class="rb" style="color:' + st.brand + '">Developer Tools</span>: ' + esc(Sk.tools) + '</div>'; 
-        if (Sk.tech) h += '<div><span class="rb" style="color:' + st.brand + '">Technologies/Frameworks</span>: ' + esc(Sk.tech) + '</div>';
+        if (Array.isArray(Sk)) {
+          Sk.forEach(function(s) {
+            if (s.category && s.list) {
+              h += '<div><span class="rb" style="color:' + st.brand + '">' + esc(s.category) + '</span>: ' + esc(s.list) + '</div>';
+            }
+          });
+        } else {
+          if (Sk.languages) h += '<div><span class="rb" style="color:' + st.brand + '">Languages</span>: ' + esc(Sk.languages) + '</div>';
+          if (Sk.tools) h += '<div><span class="rb" style="color:' + st.brand + '">Developer Tools</span>: ' + esc(Sk.tools) + '</div>'; 
+          if (Sk.tech) h += '<div><span class="rb" style="color:' + st.brand + '">Technologies/Frameworks</span>: ' + esc(Sk.tech) + '</div>';
+        }
       } else if (secName === "Languages" && S.spokenLanguages) {
         h += sh('Languages', st); h += '<div>' + esc(S.spokenLanguages) + '</div>';
 
@@ -132,6 +140,12 @@
       } else if (secName === "References" && S.references) {
         h += sh('References', st);
         h += '<div style="font-size:10px;color:#444;font-style:italic;line-height:1.5">' + linkify(esc(S.references)) + '</div>';
+      } else if (secName.startsWith("custom_")) {
+        var cs = (S.customSections || []).find(function(c) { return c.id === secName; });
+        if (cs && cs.heading && cs.content) {
+          h += sh(cs.heading, st);
+          h += '<div style="font-size:10px;color:#444;line-height:1.5;text-align:justify;white-space:pre-line">' + linkify(esc(cs.content)) + '</div>';
+        }
       }
     });
     h += '</div>';
