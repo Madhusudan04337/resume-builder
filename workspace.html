@@ -232,14 +232,17 @@
   };
   
   function getApiUrl(path) {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      if (window.location.port !== '5000') {
+        return 'http://localhost:5000' + path;
+      }
+      return path;
+    }
     if (window.location.protocol === 'file:') {
       return 'http://localhost:5000' + path;
     }
-    // If the frontend is hosted locally on a port other than 5000, redirect requests to the backend Express server on port 5000
-    if ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000') {
-      return 'http://localhost:5000' + path;
-    }
-    return path;
+    // Deployed production environment: route '/api/parse-resume' to '/.netlify/functions/parse-resume'
+    return '/.netlify/functions' + path.replace('/api', '');
   }
   
   async function parseResumeWithAI(text) {
