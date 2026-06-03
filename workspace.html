@@ -373,7 +373,8 @@
     var E = S.education, C = S.coursework, X = S.experience, Pr = S.projects, Sk = S.skills, L = S.leadership, Ct = S.certifications;
     if (tab === "Education") return sec('Education') +
       E.map(function (e, i) {
-        return '<div class="entry"><button class="rmv" data-rm="education" data-idx="' + i + '">×</button>' +
+        return '<div class="entry" draggable="true" data-idx="' + i + '"><button class="rmv" data-rm="education" data-idx="' + i + '">×</button>' +
+          '<span class="entry-drag-handle" style="position:absolute; top:10px; right:35px; cursor:grab; font-size:14px; opacity:0.5">☰</span>' +
           '<div class="fld"><label class="lbl">Institution</label><input class="inp" data-p="education.' + i + '.university" value="' + esc(e.university) + '" placeholder="University name"></div>' +
           '<div class="fld"><label class="lbl">Degree / class</label><input class="inp" data-p="education.' + i + '.degree" value="' + esc(e.degree) + '" placeholder="B.Tech Computer Science"></div>' +
           '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="education.' + i + '.start" value="' + esc(e.start) + '" placeholder="2021"></div>' +
@@ -387,7 +388,8 @@
       '<p class="hint">Displayed in 4 columns on the resume</p>';
     if (tab === "Experience") return sec('Work experience') +
       X.map(function (e, i) {
-        return '<div class="entry"><button class="rmv" data-rm="experience" data-idx="' + i + '">×</button>' +
+        return '<div class="entry" draggable="true" data-idx="' + i + '"><button class="rmv" data-rm="experience" data-idx="' + i + '">×</button>' +
+          '<span class="entry-drag-handle" style="position:absolute; top:10px; right:35px; cursor:grab; font-size:14px; opacity:0.5">☰</span>' +
           '<div class="fld"><label class="lbl">Company</label><input class="inp" data-p="experience.' + i + '.company" value="' + esc(e.company) + '" placeholder="Company name"></div>' +
           '<div class="fld"><label class="lbl">Role</label><input class="inp" data-p="experience.' + i + '.role" value="' + esc(e.role) + '" placeholder="Software Engineer"></div>' +
           '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="experience.' + i + '.start" value="' + esc(e.start) + '" placeholder="Jun 2024"></div>' +
@@ -399,7 +401,8 @@
       '<button class="addbtn" data-add="experience">+ Add experience</button>';
     if (tab === "Projects") return sec('Projects') +
       Pr.map(function (p, i) {
-        return '<div class="entry"><button class="rmv" data-rm="projects" data-idx="' + i + '">×</button>' +
+        return '<div class="entry" draggable="true" data-idx="' + i + '"><button class="rmv" data-rm="projects" data-idx="' + i + '">×</button>' +
+          '<span class="entry-drag-handle" style="position:absolute; top:10px; right:35px; cursor:grab; font-size:14px; opacity:0.5">☰</span>' +
           '<div class="fld"><label class="lbl">Project name</label><input class="inp" data-p="projects.' + i + '.name" value="' + esc(p.name) + '" placeholder="My Portfolio"></div>' +
           '<div class="fld"><label class="lbl">Tech stack</label><input class="inp" data-p="projects.' + i + '.tech" value="' + esc(p.tech) + '" placeholder="React, Node.js, MongoDB"></div>' +
           '<div class="fld"><label class="lbl">Date</label><input class="inp" data-p="projects.' + i + '.date" value="' + esc(p.date) + '" placeholder="2025"></div>' +
@@ -437,7 +440,8 @@
       '<p class="hint">List spoken languages you are proficient in.</p>';
     if (tab === "Leadership") return sec('Achievements & extracurricular') +
       L.map(function (e, i) {
-        return '<div class="entry"><button class="rmv" data-rm="leadership" data-idx="' + i + '">×</button>' +
+        return '<div class="entry" draggable="true" data-idx="' + i + '"><button class="rmv" data-rm="leadership" data-idx="' + i + '">×</button>' +
+          '<span class="entry-drag-handle" style="position:absolute; top:10px; right:35px; cursor:grab; font-size:14px; opacity:0.5">☰</span>' +
           '<div class="fld"><label class="lbl">Section title</label><input class="inp" data-p="leadership.' + i + '.org" value="' + esc(e.org) + '" placeholder="Achievements"></div>' +
           '<div class="fld"><label class="lbl">Subtitle / role (optional)</label><input class="inp" data-p="leadership.' + i + '.role" value="' + esc(e.role) + '"></div>' +
           '<div class="row2"><div class="fld"><label class="lbl">Start</label><input class="inp" data-p="leadership.' + i + '.start" value="' + esc(e.start) + '"></div>' +
@@ -449,7 +453,8 @@
       '<button class="addbtn" data-add="leadership">+ Add section</button>';
     if (tab === "Certifications") return sec('Certifications') +
       Ct.map(function (c, i) {
-        return '<div class="entry"><button class="rmv" data-rm="certifications" data-idx="' + i + '">×</button>' +
+        return '<div class="entry" draggable="true" data-idx="' + i + '"><button class="rmv" data-rm="certifications" data-idx="' + i + '">×</button>' +
+          '<span class="entry-drag-handle" style="position:absolute; top:10px; right:35px; cursor:grab; font-size:14px; opacity:0.5">☰</span>' +
           '<div class="fld"><label class="lbl">Name</label><input class="inp" data-p="certifications.' + i + '.name" value="' + esc(c.name) + '" placeholder="AWS Solutions Architect"></div>' +
           '<div class="fld"><label class="lbl">Certificate URL</label><input class="inp" placeholder="https://..." data-p="certifications.' + i + '.url" value="' + esc(c.url) + '"></div>' +
           '<div class="fld"><label class="lbl">Provider</label><input class="inp" data-p="certifications.' + i + '.provider" value="' + esc(c.provider) + '" placeholder="Amazon Web Services"></div>' +
@@ -753,13 +758,14 @@
     }
   }
 
-  function renderTabs() { 
+  function renderTabs() {
     var container = document.getElementById('tabs');
     if (!container) return;
-    container.innerHTML = TABS.map(function (t) { 
+    container.innerHTML = TABS.map(function (t) {
       var ico = TAB_ICONS[t] || '';
-      return '<button class="tab' + (t === activeTab ? ' on' : '') + '" data-tab="' + t + '">' + ico + t + '</button>'; 
-    }).join(''); 
+      var displayLabel = (t === "Leadership") ? "Achievements" : t;
+      return '<button class="tab' + (t === activeTab ? ' on' : '') + '" data-tab="' + t + '">' + ico + displayLabel + '</button>';
+    }).join('');
   }
   
   function renderForm() { 
