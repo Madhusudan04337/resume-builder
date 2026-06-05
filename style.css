@@ -157,7 +157,7 @@ body {
 .app-main {
   flex: 1;
   display: flex;
-  height: calc(100vh - 80px); /* Subtract header and footer */
+  height: calc(100vh - 56px); /* Subtract header only (footer/status-bar hidden) */
   overflow: hidden;
 }
 
@@ -1337,6 +1337,7 @@ body.dark-mode .rp {
 ---------------------------------- */
 
 .status-bar {
+  display: none !important;
   height: 24px;
   min-height: 24px;
   background: var(--bg-status-bar);
@@ -1520,6 +1521,130 @@ body.dark-mode .rp {
   page-break-inside: avoid;
 }
 
+
+/* Hamburger Menu Button */
+.hamburger-menu {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  /* Hide the leftmost activity bar sidebar */
+  .activity-bar {
+    display: none !important;
+  }
+
+  .hamburger-menu {
+    display: inline-flex;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-primary);
+    padding: 6px;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease;
+    margin-right: 8px;
+  }
+
+  .hamburger-menu:hover {
+    background: var(--bg-input);
+  }
+
+  .hamburger-menu svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Mobile Nav Drawer Overlay & Drawer Container */
+.mobile-nav-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1500;
+  backdrop-filter: blur(2px);
+}
+
+.mobile-nav-drawer {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: 280px;
+  height: 100vh;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border-color);
+  z-index: 1501;
+  box-shadow: var(--shadow-lg);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-nav-drawer .drawer-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mobile-nav-drawer .drawer-header span {
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+}
+
+.mobile-nav-drawer .drawer-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.drawer-item svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2.2px;
+  fill: none;
+}
+
+.drawer-item:hover {
+  background: var(--bg-input);
+  color: var(--text-primary);
+}
+
+.drawer-item.active {
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--color-indigo);
+}
+
 /* ----------------------------------
    Print Layout Configuration
 ---------------------------------- */
@@ -1539,7 +1664,9 @@ body.dark-mode .rp {
   .workspace-toolbar,
   .status-bar,
   .page-break-gap,
-  .mobile-preview-overlay {
+  .mobile-preview-overlay,
+  .mobile-nav-overlay,
+  .mobile-nav-drawer {
     display: none !important;
   }
   
@@ -1577,5 +1704,12 @@ body.dark-mode .rp {
   @page {
     size: A4;
     margin: 0; /* margins are controlled by .rp padding now, ensuring 1:1 match */
+  }
+}
+
+/* Hide header logo elements only on mobile screens (widths <= 768px), keeping them on desktop and tablet */
+@media (max-width: 768px) {
+  .header-logo-elements {
+    display: none !important;
   }
 }

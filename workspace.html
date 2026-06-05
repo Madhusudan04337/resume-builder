@@ -12,7 +12,15 @@
   <!-- Top Workspace Header -->
   <header class="app-header">
     <div class="logo-container">
-      <div class="logo-badge">
+      <!-- Hamburger Menu Button -->
+      <button class="hamburger-menu" id="hamburgerMenuBtn" title="Toggle Navigation Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <div class="logo-badge header-logo-elements">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
           <polyline points="14 2 14 8 20 8"></polyline>
@@ -20,12 +28,11 @@
           <line x1="16" y1="17" x2="8" y2="17"></line>
         </svg>
       </div>
-      <span class="logo-text">MDK Resume AI</span>
-      <span class="app-mode-badge">WORKSPACE PRO</span>
+      <span class="logo-text header-logo-elements">MDK Resume AI</span>
     </div>
 
-    <!-- Active Document Title (Double click to rename) -->
-    <div class="document-title-container" id="titleContainer" title="Double click to rename">
+    <!-- Active Document Title (Double click to rename) - Hidden to preserve Javascript state integrity -->
+    <div class="document-title-container" id="titleContainer" title="Double click to rename" style="display: none !important;">
       <span class="document-title-text" id="docTitle">my_resume</span>
       <span class="document-title-ext">.pdf</span>
       <span class="document-edit-icon">✏️</span>
@@ -79,9 +86,17 @@
         </button>
       </div>
       
-      <!-- System Heartbeat indicator -->
-      <div class="activity-footer" title="System Connected">
-        <div class="api-pulse-dot"></div>
+      <!-- Logo and System Heartbeat indicator at the bottom of navigation bar -->
+      <div class="activity-footer" style="flex-direction: column; gap: 16px;">
+        <div class="logo-badge" title="MDK Resume AI">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+        </div>
+        <div class="api-pulse-dot" title="System Connected"></div>
       </div>
     </nav>
 
@@ -164,6 +179,51 @@
     <div class="overlay-zoom-container" id="overlayZoomContainer">
       <div class="overlay-rp" id="overlayRp"></div>
     </div>
+  </div>
+</div>
+
+<!-- Mobile Navigation Drawer Overlay -->
+<div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+
+<!-- Mobile Navigation Drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer">
+  <div class="drawer-header">
+    <span>Navigation Menu</span>
+    <button class="rmv" id="closeDrawerBtn">×</button>
+  </div>
+  <div class="drawer-content">
+    <button class="drawer-item" data-view="ai">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span>AI Co-pilot</span>
+    </button>
+    <button class="drawer-item" data-view="editor">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span>Editor</span>
+    </button>
+    <button class="drawer-item" data-view="ats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+      <span>ATS score</span>
+    </button>
+    <button class="drawer-item" data-view="design">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="9" y1="9" x2="21" y2="9"/></svg>
+      <span>Design Lab</span>
+    </button>
+    <button class="drawer-item" data-view="file">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      <span>Files</span>
+    </button>
+  </div>
+  <!-- Mobile Drawer Footer with Logo -->
+  <div class="drawer-footer" style="padding: 16px 20px; border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; margin-top: auto; background: var(--bg-panel);">
+    <div class="logo-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="16" y1="13" x2="8" y2="13"></line>
+        <line x1="16" y1="17" x2="8" y2="17"></line>
+      </svg>
+    </div>
+    <span class="logo-text" style="font-weight: 800; font-size: 14px;">MDK Resume AI</span>
   </div>
 </div>
 
@@ -641,8 +701,8 @@
     var subtitle = document.getElementById('sidebarSubtitle');
     var content = document.getElementById('sidebarContent');
     
-    // Sync active activity tab styling
-    document.querySelectorAll('.activity-tab').forEach(function(t) {
+    // Sync active activity tab and drawer item styling
+    document.querySelectorAll('.activity-tab, .drawer-item').forEach(function(t) {
       if (t.dataset.view === view) t.classList.add('active');
       else t.classList.remove('active');
     });
@@ -692,35 +752,7 @@
         clearBtn.addEventListener('click', handleClearResume);
         header.appendChild(clearBtn);
 
-        // Add preview button to the header on mobile screens
-        if (window.innerWidth <= 1024) {
-          var sidebarPreviewBtn = document.createElement('button');
-          sidebarPreviewBtn.id = 'sidebarPreviewBtn';
-          sidebarPreviewBtn.className = 'ai-btn';
-          sidebarPreviewBtn.title = 'Preview Resume';
-          sidebarPreviewBtn.innerHTML = '👁️ Preview';
-          sidebarPreviewBtn.style.position = 'absolute';
-          sidebarPreviewBtn.style.top = '22px';
-          sidebarPreviewBtn.style.right = '90px';
-          sidebarPreviewBtn.style.padding = '4px 10px';
-          sidebarPreviewBtn.style.fontSize = '10.5px';
-          sidebarPreviewBtn.style.fontWeight = '700';
-          sidebarPreviewBtn.style.cursor = 'pointer';
-          sidebarPreviewBtn.style.display = 'flex';
-          sidebarPreviewBtn.style.alignItems = 'center';
-          sidebarPreviewBtn.style.gap = '4px';
-          sidebarPreviewBtn.style.transition = 'all 0.15s ease';
-          
-          sidebarPreviewBtn.addEventListener('click', function() {
-            // Open fullscreen preview modal
-            overlayRp.innerHTML = document.getElementById('rp').innerHTML;
-            mobilePreviewOverlay.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            updateOverlayScale();
-          });
-          
-          header.appendChild(sidebarPreviewBtn);
-        }
+
       }
 
       content.innerHTML = `<div class="tabs" id="tabs"></div><div class="fc" id="fc"></div>`;
@@ -1146,6 +1178,45 @@
       S.activeView = this.dataset.view;
       renderPrimarySidebar();
       saveToLocal();
+    });
+  });
+
+  // 1b. Mobile Drawer Navigation & Interaction
+  var hamburgerMenuBtn = document.getElementById('hamburgerMenuBtn');
+  var closeDrawerBtn = document.getElementById('closeDrawerBtn');
+  var mobileNavOverlay = document.getElementById('mobileNavOverlay');
+  var mobileNavDrawer = document.getElementById('mobileNavDrawer');
+
+  function closeMobileDrawer() {
+    if (mobileNavDrawer) mobileNavDrawer.style.left = '-280px';
+    if (mobileNavOverlay) mobileNavOverlay.style.display = 'none';
+  }
+
+  if (hamburgerMenuBtn) {
+    hamburgerMenuBtn.addEventListener('click', function() {
+      if (mobileNavDrawer) mobileNavDrawer.style.left = '0';
+      if (mobileNavOverlay) mobileNavOverlay.style.display = 'block';
+    });
+  }
+
+  if (closeDrawerBtn) {
+    closeDrawerBtn.addEventListener('click', closeMobileDrawer);
+  }
+
+  if (mobileNavOverlay) {
+    mobileNavOverlay.addEventListener('click', closeMobileDrawer);
+  }
+
+  document.querySelectorAll('.drawer-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      if (!this.dataset.view) return;
+      var importTa = document.getElementById('importTa');
+      if (importTa) aiParserInputCache = importTa.value;
+
+      S.activeView = this.dataset.view;
+      renderPrimarySidebar();
+      saveToLocal();
+      closeMobileDrawer();
     });
   });
 
