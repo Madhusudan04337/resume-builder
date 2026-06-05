@@ -42,6 +42,8 @@
         Export PDF
       </button>
 
+
+
       <!-- Theme Switcher -->
       <button class="control-btn" id="themeToggleBtn" title="Toggle Theme" style="padding: 6px; border-radius: 50%; width: 32px; height: 32px; background:var(--bg-input); border:1px solid var(--border-color); box-shadow:var(--shadow-sm); margin-right: 4px;">
         <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px; height:14px; color:var(--text-primary)"></svg>
@@ -74,6 +76,13 @@
         <button class="activity-tab" data-view="file" title="Workspace Files">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
           <span class="tab-label">Files</span>
+        </button>
+        <button class="activity-tab" id="activityPreviewBtn" title="Resume Preview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span class="tab-label">Preview</span>
         </button>
       </div>
       
@@ -140,6 +149,29 @@
       <span class="status-item" id="statusSections">Sections: <strong>8</strong></span>
     </div>
   </footer>
+</div>
+
+<!-- Mobile Fullscreen Preview Overlay -->
+<div class="mobile-preview-overlay" id="mobilePreviewOverlay">
+  <div class="overlay-header">
+    <h3>Resume Preview</h3>
+    <div style="display: flex; gap: 8px;">
+      <button class="dlbtn" id="overlayDlBtn" style="height: 32px; font-size: 11.5px; padding: 6px 14px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; margin-right: 4px;">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+        Download
+      </button>
+      <button class="clr-btn" id="overlayCloseBtn" style="height: 32px; font-size: 11.5px; padding: 6px 12px;">Close</button>
+    </div>
+  </div>
+  <div class="overlay-body">
+    <div class="overlay-zoom-container" id="overlayZoomContainer">
+      <div class="overlay-rp" id="overlayRp"></div>
+    </div>
+  </div>
 </div>
 
 <script src="templates/utils.js"></script>
@@ -1082,6 +1114,7 @@
   // 1. Navigation Tab Switching in vertical Activity Bar
   document.querySelectorAll('.activity-tab').forEach(function(tab) {
     tab.addEventListener('click', function() {
+      if (!this.dataset.view) return;
       var importTa = document.getElementById('importTa');
       if (importTa) aiParserInputCache = importTa.value;
       
@@ -1528,7 +1561,11 @@
   var zoomLabel = document.getElementById('zoomLabel');
   
   function updateZoom(level) {
-    zoomLevel = Math.max(0.5, Math.min(1.5, level));
+    if (window.innerWidth <= 1024) {
+      zoomLevel = 1.0;
+    } else {
+      zoomLevel = Math.max(0.5, Math.min(1.5, level));
+    }
     zoomLabel.textContent = Math.round(zoomLevel * 100) + '%';
     document.documentElement.style.setProperty('--resume-scale', zoomLevel);
   }
@@ -1545,6 +1582,62 @@
     var wrapper = document.querySelector('.pp');
     var fitScale = (wrapper.clientWidth - 40) / 800;
     updateZoom(Math.min(1.0, fitScale));
+  });
+
+  /* ----------------------------------
+     Mobile Fullscreen Preview Overlay Controls
+  ---------------------------------- */
+  var activityPreviewBtn = document.getElementById('activityPreviewBtn');
+  var mobilePreviewOverlay = document.getElementById('mobilePreviewOverlay');
+  var overlayCloseBtn = document.getElementById('overlayCloseBtn');
+  var overlayDlBtn = document.getElementById('overlayDlBtn');
+  var overlayRp = document.getElementById('overlayRp');
+  var overlayZoomContainer = document.getElementById('overlayZoomContainer');
+
+  function updateOverlayScale() {
+    if (mobilePreviewOverlay && mobilePreviewOverlay.style.display === 'block') {
+      var availableWidth = window.innerWidth - 40;
+      var a4WidthPx = 794; // 210mm at 96 DPI
+      var scale = availableWidth / a4WidthPx;
+      overlayZoomContainer.style.transform = 'scale(' + Math.min(1.0, scale) + ')';
+    }
+  }
+
+  if (activityPreviewBtn) {
+    activityPreviewBtn.addEventListener('click', function() {
+      // 1. Sync contents from desktop preview
+      overlayRp.innerHTML = document.getElementById('rp').innerHTML;
+      
+      // 2. Display overlay
+      mobilePreviewOverlay.style.display = 'block';
+      document.body.style.overflow = 'hidden'; // prevent background scroll
+      
+      // 3. Set fit scale
+      updateOverlayScale();
+    });
+  }
+
+  if (overlayCloseBtn) {
+    overlayCloseBtn.addEventListener('click', function() {
+      mobilePreviewOverlay.style.display = 'none';
+      document.body.style.overflow = ''; // restore background scroll
+    });
+  }
+
+  if (overlayDlBtn) {
+    overlayDlBtn.addEventListener('click', function() {
+      var originalTitle = document.title;
+      document.title = S.fileName || "my_resume";
+      window.print();
+      document.title = originalTitle;
+    });
+  }
+
+  window.addEventListener('resize', function() {
+    updateOverlayScale();
+    if (window.innerWidth <= 1024) {
+      updateZoom(1.0);
+    }
   });
 
   /* ----------------------------------
