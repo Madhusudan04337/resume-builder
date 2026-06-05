@@ -1006,3 +1006,10 @@ body::after {
     color: var(--text-muted);
     border: 1px solid rgba(15, 23, 42, 0.06);
 }
+
+/* Hide navigation links (Features and ATS Auditor) on mobile viewports */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none !important;
+    }
+}

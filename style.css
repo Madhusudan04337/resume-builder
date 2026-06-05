@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
+
 /* Remove extra space in home-footer */
 .home-footer, .footer-content, .footer-links, .footer-logo, .footer-copy {
   margin: 0 !important;
@@ -41,7 +43,6 @@
  * dynamic theme tokens, activity bars, status bars, and A4 print preservation.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
 
 :root {
   /* Color Tokens - Light Mode */
@@ -77,25 +78,7 @@
   --resume-scale: 1;
 }
 
-body.dark-mode {
-  /* Color Tokens - Dark Mode */
-  --bg-workspace: #0f172a;
-  --bg-panel: #090d16;
-  --bg-activity-bar: #04060b;
-  --bg-status-bar: #020306;
-  --bg-card: #131b2e;
-  --bg-input: #0b0f19;
-  --border-color: #1e293b;
-  --border-focus: #818cf8;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-tertiary: #475569;
-  
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.35);
-  --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-}
+
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
@@ -225,9 +208,7 @@ body {
   background: rgba(0, 0, 0, 0.03);
   border-color: var(--border-color);
 }
-body.dark-mode .document-title-container:hover {
-  background: rgba(255, 255, 255, 0.03);
-}
+
 
 .document-title-text {
   font-size: 13px;
@@ -443,9 +424,7 @@ body.dark-mode .document-title-container:hover {
   overflow-x: auto;
   scrollbar-width: none;
 }
-body.dark-mode .tabs {
-  background: rgba(255, 255, 255, 0.02);
-}
+
 
 .tabs::-webkit-scrollbar {
   display: none;
@@ -817,9 +796,7 @@ body.dark-mode .tabs {
   border-color: var(--text-tertiary);
   color: var(--text-primary);
 }
-body.dark-mode .clr-btn:hover {
-  background: rgba(255, 255, 255, 0.02);
-}
+
 
 .ai-status {
   font-size: 10.5px;
@@ -862,9 +839,7 @@ body.dark-mode .clr-btn:hover {
   background: rgba(0, 0, 0, 0.01);
   margin-top: 10px;
 }
-body.dark-mode .ats-placeholder-info {
-  background: rgba(255, 255, 255, 0.01);
-}
+
 
 .ats-dashboard {
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.04), rgba(99, 102, 241, 0.04));
@@ -992,20 +967,16 @@ body.dark-mode .ats-placeholder-info {
   margin-bottom: 8px;
   user-select: none;
 }
-body.dark-mode .tmpl-preview-box {
-  background: #1e293b;
-  border-color: #334155;
-  color: #475569;
-}
+
 
 .tmpl-preview-box.serif { font-family: Georgia, serif; }
 .tmpl-preview-box.sans { font-family: var(--font-sans); }
 .tmpl-preview-box.elegant { font-family: Garamond, serif; font-weight: normal; }
 .tmpl-preview-box.signature { font-family: 'Outfit', sans-serif; font-style: italic; }
 .tmpl-preview-box.sidebar-tmpl { border-left: 10px solid #cbd5e1; }
-body.dark-mode .tmpl-preview-box.sidebar-tmpl { border-left-color: #334155; }
+
 .tmpl-preview-box.jakes { font-family: Georgia, serif; border-bottom: 2px solid #cbd5e1; padding-bottom: 2px; }
-body.dark-mode .tmpl-preview-box.jakes { border-bottom-color: #334155; }
+
 
 .tmpl-title {
   font-size: 11.5px;
@@ -1054,9 +1025,7 @@ body.dark-mode .tmpl-preview-box.jakes { border-bottom-color: #334155; }
   background: #cbd5e1;
   overflow: hidden;
 }
-body.dark-mode .app-editor-area {
-  background: #0f172a;
-}
+
 
 .workspace-toolbar {
   height: 40px;
@@ -1086,9 +1055,7 @@ body.dark-mode .app-editor-area {
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-body.dark-mode .toolbar-status-badge {
-  background: rgba(255, 255, 255, 0.05);
-}
+
 
 .toolbar-center {
   display: flex;
@@ -1216,9 +1183,7 @@ body.dark-mode .toolbar-status-badge {
   letter-spacing: 0.5px;
 }
 
-body.dark-mode .page-break-gap {
-  background: #0f172a; /* matches dark-mode app-editor-area background */
-}
+
 
 /* Prevent awkward splits inside main blocks */
 .rp > * {
@@ -1227,9 +1192,7 @@ body.dark-mode .page-break-gap {
 }
 }
 
-body.dark-mode .rp {
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-}
+
 
 /* Dynamic resume brand accent classes */
 .rp a {
@@ -1713,3 +1676,4 @@ body.dark-mode .rp {
     display: none !important;
   }
 }
+
