@@ -77,13 +77,6 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
           <span class="tab-label">Files</span>
         </button>
-        <button class="activity-tab" id="activityPreviewBtn" title="Resume Preview">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
-          <span class="tab-label">Preview</span>
-        </button>
       </div>
       
       <!-- System Heartbeat indicator -->
@@ -657,6 +650,8 @@
     // Remove any existing clear button from header
     var existingClear = document.getElementById('clearResumeBtn');
     if (existingClear) existingClear.remove();
+    var existingPreview = document.getElementById('sidebarPreviewBtn');
+    if (existingPreview) existingPreview.remove();
 
     if (view === "editor") {
       title.textContent = "Document Editor";
@@ -696,6 +691,36 @@
         
         clearBtn.addEventListener('click', handleClearResume);
         header.appendChild(clearBtn);
+
+        // Add preview button to the header on mobile screens
+        if (window.innerWidth <= 1024) {
+          var sidebarPreviewBtn = document.createElement('button');
+          sidebarPreviewBtn.id = 'sidebarPreviewBtn';
+          sidebarPreviewBtn.className = 'ai-btn';
+          sidebarPreviewBtn.title = 'Preview Resume';
+          sidebarPreviewBtn.innerHTML = '👁️ Preview';
+          sidebarPreviewBtn.style.position = 'absolute';
+          sidebarPreviewBtn.style.top = '22px';
+          sidebarPreviewBtn.style.right = '90px';
+          sidebarPreviewBtn.style.padding = '4px 10px';
+          sidebarPreviewBtn.style.fontSize = '10.5px';
+          sidebarPreviewBtn.style.fontWeight = '700';
+          sidebarPreviewBtn.style.cursor = 'pointer';
+          sidebarPreviewBtn.style.display = 'flex';
+          sidebarPreviewBtn.style.alignItems = 'center';
+          sidebarPreviewBtn.style.gap = '4px';
+          sidebarPreviewBtn.style.transition = 'all 0.15s ease';
+          
+          sidebarPreviewBtn.addEventListener('click', function() {
+            // Open fullscreen preview modal
+            overlayRp.innerHTML = document.getElementById('rp').innerHTML;
+            mobilePreviewOverlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            updateOverlayScale();
+          });
+          
+          header.appendChild(sidebarPreviewBtn);
+        }
       }
 
       content.innerHTML = `<div class="tabs" id="tabs"></div><div class="fc" id="fc"></div>`;
@@ -1603,20 +1628,6 @@
     }
   }
 
-  if (activityPreviewBtn) {
-    activityPreviewBtn.addEventListener('click', function() {
-      // 1. Sync contents from desktop preview
-      overlayRp.innerHTML = document.getElementById('rp').innerHTML;
-      
-      // 2. Display overlay
-      mobilePreviewOverlay.style.display = 'block';
-      document.body.style.overflow = 'hidden'; // prevent background scroll
-      
-      // 3. Set fit scale
-      updateOverlayScale();
-    });
-  }
-
   if (overlayCloseBtn) {
     overlayCloseBtn.addEventListener('click', function() {
       mobilePreviewOverlay.style.display = 'none';
@@ -1637,6 +1648,9 @@
     updateOverlayScale();
     if (window.innerWidth <= 1024) {
       updateZoom(1.0);
+    }
+    if (typeof renderPrimarySidebar === 'function') {
+      renderPrimarySidebar();
     }
   });
 

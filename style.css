@@ -1453,16 +1453,6 @@ body.dark-mode .rp {
   }
 }
 
-/* Mobile Preview Option in Sidebar Activity Bar */
-#activityPreviewBtn {
-  display: none;
-}
-
-@media (max-width: 1024px) {
-  #activityPreviewBtn {
-    display: flex !important;
-  }
-}
 
 /* Fullscreen Mobile Preview Overlay */
 .mobile-preview-overlay {
