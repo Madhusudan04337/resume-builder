@@ -1,93 +1,102 @@
 # 📄 MDK Resume AI — Workspace Pro
 
-> A powerful **AI-powered Resume Builder** with real-time preview, multiple professional templates, Gemini AI integration, ATS scoring, Cloud Authentication, and a clean VS Code-inspired workspace UI.
+> An **AI-powered Resume Builder** designed for modern professionals. Features real-time live preview, Gemini 2.5 AI integration, an ATS auditor, Cloud Authentication for draft control, and 4 meticulously crafted templates.
 
 ---
 
-## ✨ Features at a Glance
+## ✨ Core Capabilities
 
-### 🤖 Gemini AI Co-pilot & Magic Wand
-- **Intelligent Resume Parser** — Paste raw resume text or LinkedIn data, and Gemini AI auto-fills all fields instantly.
-- **AI Summary Polisher** — Generates a professional 3-line summary based on your skills & experience.
-- **Magic Bullet Rewriter** — Select any bullet point and let AI instantly rewrite it to be more impactful and ATS-friendly.
-- **Automatic Model Fallback** — Switches from `gemini-2.5-flash` → `gemini-2.5-flash-lite` with exponential backoff if quota is exceeded.
+### 🤖 Gemini AI Co-pilot
+- **Intelligent Parser** — Paste raw resume text or your LinkedIn profile, and our AI instantly extracts and categorizes all your details into the workspace.
+- **Magic Bullet Rewriter** — Select any bullet point and let the AI instantly rewrite it to be more impactful, action-oriented, and ATS-friendly.
+- **AI Summary Polisher** — Generates a professional 3-line summary tailored to your specific skills and experience.
+- **Robust Model Fallback** — Uses `gemini-2.5-flash` natively, with automatic failover to `gemini-2.5-flash-lite` using exponential backoff if quotas are exceeded.
 
-### 📝 Document Editor
-- 9 editable resume sections with live A4 preview:
-  - Personal Details, Education, Coursework, Experience, Projects, Skills, Spoken Languages, Leadership / Achievements, Certifications
-- Toggle social links on/off (LinkedIn, GitHub, Portfolio, LeetCode, GFG, Twitter, HackerRank, CodeChef)
-- Profile photo upload support
-- Drag-and-drop section reordering
-- Inline GitHub Repository & Live Demo links on project entries
+### 📝 Precision Document Editor
+- 9 fully editable document sections with live A4 preview scaling:
+  - Personal Details, Education, Coursework, Experience, Projects, Skills, Spoken Languages, Achievements, Certifications
+- Drag-and-drop section reordering to customize your layout flow.
+- Granular control over social links (LinkedIn, GitHub, Portfolio, LeetCode, GFG, Twitter, HackerRank, CodeChef).
+- Profile photo upload support.
+- Inline GitHub Repository & Live Demo links embedded directly on project entries.
 
-### 🎨 Design Lab
-- **Multiple Resume Templates:**
+### 🎨 Dynamic Design Lab
+- **4 Professional Layout Templates:**
+
   | Template | Style |
   |---|---|
-  | **Classic** | Traditional serif (Georgia), centered header |
-  | **Executive** | Dual-column compact structure |
-  | **Jake's (ATS)** | LaTeX-inspired single-column, ATS-optimized |
-  | **Sabrina** | Elegant luxury gold serif layout |
-  | **Elizabeth** | Minimalist modern boxed header |
+  | **Classic** | Traditional serif layout |
+  | **Jake's (ATS)** | LaTeX-inspired single-column format |
+  | **Sabrina (Luxury Gold)** | Elegant serif layout |
+  | **Elizabeth (Modern Box)** | Minimalist boxed header |
 
-- **Accent Brand Color Picker** — Dynamically updates all headers and links across the resume
-- Live preview updates instantly on every change
+- **Brand Accent Colors** — Instantly inject personality into your document. Dynamically updates all headers and links across the layout.
+- Real-time CSS rendering ensures your preview updates instantly on every single keystroke.
 
-### ☁️ Cloud Authentication & Draft Control
-- **Firebase Auth** — Secure login and sign-up (Email/Password & Google Login) to protect your workspaces.
-- **Branch & Overwrite Drafts** — Manage your resume versions by branching out a "Save New" draft, or instantly "Overwrite" your current active draft.
-- **Export / Import JSON** — Download your full workspace state as a `.json` backup and restore it anytime.
-- **Auto-save** — Your data is automatically synced locally so you never lose progress.
+### ☁️ Cloud Auth & Version Control
+- **Firebase Authentication** — Secure login and sign-up (Email/Password & Google OAuth) to protect your workspace.
+- **Advanced Draft Control** — 
+  - **Branching**: Save your current workspace as a brand new draft.
+  - **Overwriting**: Push updates directly to your actively loaded draft without cluttering your history.
+- **Offline JSON Backups** — Export your entire workspace state as a portable `.json` backup file and import it anytime.
+- **Auto-save** — Your data is synced automatically to local storage; you never lose progress.
 
-### 🖨️ Export & ATS Auditor
-- **ATS Score Auditor** — Scores your resume from 0–100 with actionable keyword and clarity feedback.
-- **Export PDF** — Pixel-perfect, A4-optimized, print-ready PDF export directly from the browser natively.
-- Zoom controls (zoom in, zoom out, fit screen) and live word count.
+### 🖨️ ATS Auditor & Exporting
+- **ATS Auditor Engine** — Scans your resume and returns an ATS Strength Score (0–100) alongside detailed, actionable feedback for keyword optimization.
+- **Pixel-Perfect PDF Export** — A4-optimized, print-ready PDF export directly from the browser natively. Text remains completely selectable for ATS scrapers.
+- Zoom controls (zoom in, zoom out, fit screen) and a live word-count diagnostic.
 
 ---
 
-## 🏗️ Project Structure
+## 🏗️ Project Architecture
 
 ```
 resume-builder/
 │
-├── index.html           # Landing page with features showcase
-├── home.css             # Styles for the landing page
-├── workspace.html       # Full resume editor SPA (UI, state, event logic)
-├── style.css            # Design system — dark/light themes, VS Code-inspired layout
-├── legal.html           # Terms, Privacy Policy, Security guidelines
+├── index.html           # Landing page with feature showcases
+├── workspace.html       # Main Application SPA (UI, state, routing, events)
+├── legal.html           # Terms of Service, Privacy Policy, Security Guidelines
 │
-├── server.js            # Express backend — Gemini AI API proxy
-├── package.json         # Node.js project config & scripts
-├── netlify.toml         # Netlify CI/CD configuration
+├── home.css             # Styles for the landing page
+├── style.css            # Workspace design system & VS Code-inspired theme
+│
+├── server.js            # Node/Express backend — Gemini API proxy endpoints
+├── package.json         # Project configuration & NPM scripts
+├── netlify.toml         # Netlify CI/CD deployment configuration
 ├── build-firebase.js    # Build script to dynamically generate Firebase config
-├── auth-ui.js           # Firebase authentication logic and UI controllers
+├── auth-ui.js           # Firebase authentication logic and UI modal controllers
+├── auth.js              # Firebase SDK wrapper functions
 ├── .env                 # Secrets — Gemini & Firebase API keys (not committed)
 │
-└── templates/           # Individual JS files handling template HTML generation
+└── templates/           
+    ├── utils.js         # Shared document rendering utilities
+    ├── classic.js       # Classic layout template logic
+    ├── jakes.js         # Jake's ATS layout template logic
+    ├── sabrina.js       # Sabrina layout template logic
+    └── elizabeth.js     # Elizabeth layout template logic
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
 | Layer | Technology |
 |---|---|
-| **Frontend** | HTML5, Vanilla CSS3, Vanilla JavaScript |
-| **Backend** | Node.js + Express 5 |
+| **Frontend UI** | HTML5, CSS3, Vanilla JavaScript |
+| **Backend API Proxy** | Node.js + Express 5 |
 | **Authentication** | Google Firebase Auth |
-| **AI Engine** | Google Gemini API via `@google/genai` SDK |
-| **Persistence** | Browser `localStorage` + Cloud Draft logic |
-| **Hosting** | Ready for deployment via Netlify |
+| **AI Intelligence** | Google Gemini API (`@google/genai` SDK) |
+| **State Persistence** | Browser `localStorage` + JSON state serialization |
+| **Hosting & CI/CD** | Pre-configured for Netlify |
 
 ---
 
-## ⚙️ Setup & Installation
+## ⚙️ Setup & Local Installation
 
 ### Prerequisites
 - **Node.js v18+**
 - A free [Google AI Studio](https://aistudio.google.com/) API key
-- A free [Firebase Project](https://firebase.google.com/) configuration
+- A free [Firebase Project](https://console.firebase.google.com/)
 
 ### 1. Clone the Repository
 ```bash
@@ -100,8 +109,8 @@ cd resume-builder
 npm install
 ```
 
-### 3. Configure Environment
-Create a `.env` file in the root directory and add your keys:
+### 3. Configure Environment Variables
+Create a `.env` file in the root directory. This file is ignored by Git to keep your credentials secure.
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
@@ -114,10 +123,8 @@ FIREBASE_APP_ID=1:123456:web:123abc456
 FIREBASE_MEASUREMENT_ID=G-12345ABC
 ```
 
-> ⚠️ **Security Note:** `firebase.js` is included in `.gitignore` to prevent credential leaks on GitHub.
-
 ### 4. Build Firebase Config
-Generate your local `firebase.js` file from your `.env` variables:
+Run the build script to securely generate your local `firebase.js` file from your `.env` variables:
 ```bash
 npm run build
 ```
@@ -126,34 +133,19 @@ npm run build
 ```bash
 npm start
 ```
-Navigate to **[http://localhost:5000](http://localhost:5000)**
+Navigate to **[http://localhost:5000](http://localhost:5000)** in your browser.
+
+> **Note:** If you are testing Google Login locally, ensure `127.0.0.1` or `localhost` is added to your **Authorized Domains** inside the Firebase Authentication settings.
 
 ---
 
-## 🚀 Deployment (Netlify)
-This project is configured out-of-the-box for **Netlify**. 
+## 🚀 Cloud Deployment (Netlify)
+
+This repository is optimized for deployment on Netlify.
 1. Connect your GitHub repository to Netlify.
-2. In the Netlify dashboard, go to **Site settings > Environment variables** and paste all your `.env` variables.
-3. The `netlify.toml` file automatically triggers `npm run build` during deployment, securely generating your Firebase configuration on their servers!
-
----
-
-## 📌 Features Checklist
-
-- [x] Secure Firebase Authentication (Email/Password & Google)
-- [x] AI-powered resume parsing (Gemini 2.5 Flash)
-- [x] Magic AI Bullet Rewriter
-- [x] ATS score auditor (0–100 with detailed feedback)
-- [x] Automatic model fallback with exponential backoff
-- [x] 5 resume templates (Classic, Executive, Jake's, Sabrina, Elizabeth)
-- [x] Drag-and-drop section reordering
-- [x] Accent color picker (4 presets)
-- [x] Toggle social links visibility
-- [x] Branch Drafts / Overwrite Drafts
-- [x] JSON export and import backup
-- [x] Pixel-perfect A4 PDF export
-- [x] Dark / Light theme toggle with persistence
-- [x] Live word count diagnostics
+2. Go to your Netlify dashboard: **Site settings > Environment variables**.
+3. Add all the keys from your `.env` file into the Netlify dashboard.
+4. Deploy! The included `netlify.toml` automatically runs `npm run build` during the deployment process to securely generate your Firebase configuration on the server.
 
 ---
 
