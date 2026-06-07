@@ -54,6 +54,20 @@ style.innerHTML = `
     .scanner-line {
         animation: scan 2.5s ease-in-out infinite;
     }
+    @media (max-width: 768px) {
+        .auth-modal-content {
+            flex-direction: column !important;
+            width: 95% !important;
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+        }
+        .auth-modal-content > div:first-child {
+            display: none !important;
+        }
+        .auth-modal-content > div:last-child {
+            padding: 30px 20px !important;
+        }
+    }
 `;
 document.head.appendChild(style);
 
