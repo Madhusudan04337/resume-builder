@@ -1,4 +1,4 @@
-import { loginWithEmail, signUpWithEmail, logoutUser, loginWithGoogle, onAuthStateChanged, auth, resetPasswordWithEmail, setAuthPersistence } from './auth.js';
+import { loginWithEmail, signUpWithEmail, logoutUser, loginWithGoogle, onAuthStateChanged, auth, resetPasswordWithEmail, setAuthPersistence } from './auth.js?v=2';
 
 const style = document.createElement('style');
 style.innerHTML = `
