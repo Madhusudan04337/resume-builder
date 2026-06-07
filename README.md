@@ -1,16 +1,16 @@
 # 📄 MDK Resume AI — Workspace Pro
 
-> A powerful **AI-powered Resume Builder** with real-time preview, 4 professional templates, Gemini AI integration, ATS scoring, and a clean VS Code-inspired workspace UI — runs entirely on your local machine.
+> A powerful **AI-powered Resume Builder** with real-time preview, multiple professional templates, Gemini AI integration, ATS scoring, Cloud Authentication, and a clean VS Code-inspired workspace UI.
 
 ---
 
 ## ✨ Features at a Glance
 
-### 🤖 AI Co-pilot (Opens by Default)
-- **Intelligent Resume Parser** — Paste raw resume text and Gemini AI auto-fills all fields instantly
-- **AI Summary Polisher** — Generates a professional 3-line summary based on your skills & experience
-- **ATS Score Auditor** — Scores your resume from 0–100 with actionable keyword and clarity feedback
-- **Automatic Model Fallback** — Switches from `gemini-2.5-flash` → `gemini-2.5-flash-lite` with exponential backoff if quota is exceeded
+### 🤖 Gemini AI Co-pilot & Magic Wand
+- **Intelligent Resume Parser** — Paste raw resume text or LinkedIn data, and Gemini AI auto-fills all fields instantly.
+- **AI Summary Polisher** — Generates a professional 3-line summary based on your skills & experience.
+- **Magic Bullet Rewriter** — Select any bullet point and let AI instantly rewrite it to be more impactful and ATS-friendly.
+- **Automatic Model Fallback** — Switches from `gemini-2.5-flash` → `gemini-2.5-flash-lite` with exponential backoff if quota is exceeded.
 
 ### 📝 Document Editor
 - 9 editable resume sections with live A4 preview:
@@ -18,12 +18,10 @@
 - Toggle social links on/off (LinkedIn, GitHub, Portfolio, LeetCode, GFG, Twitter, HackerRank, CodeChef)
 - Profile photo upload support
 - Drag-and-drop section reordering
-- Per-bullet AI Polish shortcut for the Professional Summary
 - Inline GitHub Repository & Live Demo links on project entries
 
 ### 🎨 Design Lab
-- **4 Resume Templates:**
-
+- **Multiple Resume Templates:**
   | Template | Style |
   |---|---|
   | **Classic** | Traditional serif (Georgia), centered header |
@@ -35,19 +33,16 @@
 - **Accent Brand Color Picker** — Dynamically updates all headers and links across the resume
 - Live preview updates instantly on every change
 
-### 💾 Local Drafts
-- **Save Drafts** — Save and load multiple resume versions in browser `localStorage`
-- **Export JSON** — Download full workspace state as a `.json` backup
-- **Import JSON** — Restore any previously exported workspace instantly
-- Auto-save on every change — your data is never lost between sessions
+### ☁️ Cloud Authentication & Draft Control
+- **Firebase Auth** — Secure login and sign-up (Email/Password & Google Login) to protect your workspaces.
+- **Branch & Overwrite Drafts** — Manage your resume versions by branching out a "Save New" draft, or instantly "Overwrite" your current active draft.
+- **Export / Import JSON** — Download your full workspace state as a `.json` backup and restore it anytime.
+- **Auto-save** — Your data is automatically synced locally so you never lose progress.
 
-### 🖨️ Export
-- **Export PDF** — A4-optimized, print-ready PDF directly from the browser
-- Live word count in the toolbar
-- Zoom controls (zoom in, zoom out, fit screen)
-
-### 🌙 Theme
-- Light / Dark mode toggle with persistent preference
+### 🖨️ Export & ATS Auditor
+- **ATS Score Auditor** — Scores your resume from 0–100 with actionable keyword and clarity feedback.
+- **Export PDF** — Pixel-perfect, A4-optimized, print-ready PDF export directly from the browser natively.
+- Zoom controls (zoom in, zoom out, fit screen) and live word count.
 
 ---
 
@@ -60,18 +55,16 @@ resume-builder/
 ├── home.css             # Styles for the landing page
 ├── workspace.html       # Full resume editor SPA (UI, state, event logic)
 ├── style.css            # Design system — dark/light themes, VS Code-inspired layout
+├── legal.html           # Terms, Privacy Policy, Security guidelines
 │
-├── server.js            # Express backend — Gemini AI API proxy (3 endpoints)
-├── package.json         # Node.js project config & dependencies
-├── .env                 # Secrets — Gemini API key (not committed)
+├── server.js            # Express backend — Gemini AI API proxy
+├── package.json         # Node.js project config & scripts
+├── netlify.toml         # Netlify CI/CD configuration
+├── build-firebase.js    # Build script to dynamically generate Firebase config
+├── auth-ui.js           # Firebase authentication logic and UI controllers
+├── .env                 # Secrets — Gemini & Firebase API keys (not committed)
 │
-└── templates/
-    ├── utils.js         # Shared render utilities (esc, linkify, dr, buls, sh)
-    ├── classic.js       # Classic serif template
-    ├── executive.js     # Executive dual-column template
-    ├── jakes.js         # Jake's LaTeX-style ATS template
-    ├── sabrina.js       # Sabrina elegant gold template
-    └── elizabeth.js     # Elizabeth modern boxed template
+└── templates/           # Individual JS files handling template HTML generation
 ```
 
 ---
@@ -82,31 +75,10 @@ resume-builder/
 |---|---|
 | **Frontend** | HTML5, Vanilla CSS3, Vanilla JavaScript |
 | **Backend** | Node.js + Express 5 |
+| **Authentication** | Google Firebase Auth |
 | **AI Engine** | Google Gemini API via `@google/genai` SDK |
-| **AI Models** | `gemini-2.5-flash` (primary) → `gemini-2.5-flash-lite` (fallback) |
-| **Persistence** | Browser `localStorage` (drafts + auto-save) |
-| **PDF Export** | Browser native `window.print()` — A4-optimized CSS |
-
----
-
-## 🤖 AI API Endpoints
-
-All endpoints live in `server.js` on port `5000`.
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/parse-resume` | Parses raw resume text → structured JSON for all fields |
-| `POST` | `/api/generate-summary` | Generates a professional 3-line summary from skills + experience |
-| `POST` | `/api/score-resume` | Returns ATS score (0–100) + detailed optimization feedback |
-
-### 🛡️ Robust Failover & Retry Engineering
-
-The backend uses a `generateContentWithFallback()` wrapper:
-
-1. **Primary model** — `gemini-2.5-flash` is attempted first
-2. **Automatic fallback** — If quota is exhausted (`429`) or server overloaded (`503`), switches to `gemini-2.5-flash-lite`
-3. **Exponential backoff** — Up to 2 retries with `1500ms → 3000ms` delay on the fallback model
-4. **Safe JSON Parser** — `safeParseJSON()` handles markdown code blocks, unescaped newlines inside strings, and trailing commas from AI responses
+| **Persistence** | Browser `localStorage` + Cloud Draft logic |
+| **Hosting** | Ready for deployment via Netlify |
 
 ---
 
@@ -115,6 +87,7 @@ The backend uses a `generateContentWithFallback()` wrapper:
 ### Prerequisites
 - **Node.js v18+**
 - A free [Google AI Studio](https://aistudio.google.com/) API key
+- A free [Firebase Project](https://firebase.google.com/) configuration
 
 ### 1. Clone the Repository
 ```bash
@@ -128,90 +101,59 @@ npm install
 ```
 
 ### 3. Configure Environment
-Create a `.env` file in the root directory:
+Create a `.env` file in the root directory and add your keys:
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
+FIREBASE_API_KEY=your_firebase_api_key
+FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+FIREBASE_PROJECT_ID=your_project
+FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
+FIREBASE_MESSAGING_SENDER_ID=123456789
+FIREBASE_APP_ID=1:123456:web:123abc456
+FIREBASE_MEASUREMENT_ID=G-12345ABC
 ```
 
-> ⚠️ **Never commit your `.env` file.** It is already listed in `.gitignore`.
+> ⚠️ **Security Note:** `firebase.js` is included in `.gitignore` to prevent credential leaks on GitHub.
 
-### 4. Start the Server
+### 4. Build Firebase Config
+Generate your local `firebase.js` file from your `.env` variables:
 ```bash
-node server.js
+npm run build
 ```
 
-### 5. Open the App
+### 5. Start the Server
+```bash
+npm start
+```
 Navigate to **[http://localhost:5000](http://localhost:5000)**
 
 ---
 
-## 📦 How to Use
-
-1. **Open the app** at `http://localhost:5000`
-2. Click **"Start Building Free"** to go directly to the workspace
-3. The **AI Co-pilot** panel opens automatically — paste your existing resume text to auto-fill all fields instantly
-4. Switch to the **Editor** tab to manually refine any section
-5. Use the **ATS Auditor** to score your resume and get improvement feedback
-6. Use **Design Lab** to pick a template and accent color
-7. Go to **Files** to save drafts locally or export/import JSON backups
-8. Click **"Export PDF"** in the top-right to download your A4-formatted resume
-
----
-
-## 🧩 Resume Data Model
-
-The app state (`S`) holds the following structure:
-
-```js
-{
-  personal: { firstName, lastName, address, phone, email,
-              linkedin, github, portfolio, leetcode, gfg,
-              twitter, hackerrank, codechef, summary, photo },
-  headline: "",
-  socialEnabled: { /* per-link visibility toggles */ },
-  template: "classic",          // active template key
-  accentColor: "#32166f",       // CSS brand color
-  education: [],                // [ { university, degree, start, end, loc } ]
-  coursework: [],               // [ "Course Name", ... ]
-  experience: [],               // [ { company, role, start, end, loc, bullets[] } ]
-  projects: [],                 // [ { name, tech, date, github, demo, bullets[] } ]
-  skills: { languages, tools, tech },
-  spokenLanguages: "",
-  leadership: [],               // [ { org, role, start, end, loc, bullets[] } ]
-  certifications: [],           // [ { name, url, provider, start, end, skills } ]
-  sectionOrder: [],             // drag-reordered section display order
-  activeView: "ai",             // always opens AI Co-pilot on first load
-  fileName: "my_resume",
-  atsScore: null,
-  atsFeedback: ""
-}
-```
+## 🚀 Deployment (Netlify)
+This project is configured out-of-the-box for **Netlify**. 
+1. Connect your GitHub repository to Netlify.
+2. In the Netlify dashboard, go to **Site settings > Environment variables** and paste all your `.env` variables.
+3. The `netlify.toml` file automatically triggers `npm run build` during deployment, securely generating your Firebase configuration on their servers!
 
 ---
 
 ## 📌 Features Checklist
 
-- [x] No login or signup required — open instantly
+- [x] Secure Firebase Authentication (Email/Password & Google)
 - [x] AI-powered resume parsing (Gemini 2.5 Flash)
-- [x] AI professional summary generator
+- [x] Magic AI Bullet Rewriter
 - [x] ATS score auditor (0–100 with detailed feedback)
 - [x] Automatic model fallback with exponential backoff
 - [x] 5 resume templates (Classic, Executive, Jake's, Sabrina, Elizabeth)
 - [x] Drag-and-drop section reordering
 - [x] Accent color picker (4 presets)
 - [x] Toggle social links visibility
-- [x] Profile photo upload
-- [x] GitHub + Live Demo links in project entries
-- [x] Auto-save to `localStorage` on every change
-- [x] Draft save / load / delete (local browser storage)
+- [x] Branch Drafts / Overwrite Drafts
 - [x] JSON export and import backup
-- [x] A4 PDF export via browser print
+- [x] Pixel-perfect A4 PDF export
 - [x] Dark / Light theme toggle with persistence
-- [x] Zoom controls on resume preview canvas
-- [x] AI Co-pilot opens on every first page load
 - [x] Live word count diagnostics
-- [x] Clear all resume data shortcut
 
 ---
 
