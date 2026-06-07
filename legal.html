@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal & Policies | MDK Resume AI</title>
+    <link rel="stylesheet" href="home.css">
+    <style>
+        .legal-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 40px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: var(--glow-card);
+            border: 1px solid var(--border-glass);
+            min-height: 500px;
+        }
+        .legal-nav {
+            display: flex;
+            gap: 20px;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .legal-nav a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        .legal-nav a:hover, .legal-nav a.active {
+            color: var(--color-indigo);
+            background: rgba(99, 102, 241, 0.1);
+        }
+        .legal-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .legal-section.active {
+            display: block;
+        }
+        .legal-section h2 {
+            font-family: var(--font-head);
+            font-size: 28px;
+            color: #0f172a;
+            margin-bottom: 20px;
+        }
+        .legal-section p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+        .legal-section h3 {
+            font-family: var(--font-head);
+            font-size: 18px;
+            color: #0f172a;
+            margin: 24px 0 12px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="home-nav">
+        <a href="index.html" class="nav-logo">
+            <div class="logo-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+            </div>
+            <span class="logo-text">MDK Resume AI</span>
+        </a>
+        <div class="nav-actions">
+            <a href="index.html" class="btn-secondary">Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="legal-container">
+        <div class="legal-nav">
+            <a href="#security" id="nav-security">Security Policy</a>
+            <a href="#terms" id="nav-terms">Terms of Service</a>
+            <a href="#privacy" id="nav-privacy">Privacy Settings</a>
+        </div>
+
+        <div id="security" class="legal-section">
+            <h2>Security Policy</h2>
+            <p>At MDK Resume AI, your data security is our highest priority. We utilize industry-standard encryption protocols to ensure that your personal information, career history, and generated resumes remain strictly confidential.</p>
+            <h3>Data Encryption</h3>
+            <p>All data transmitted between your browser and our servers is encrypted using TLS 1.3. Your personal resume data is stored securely and is never shared with third parties without your explicit consent.</p>
+            <h3>Account Protection</h3>
+            <p>We leverage Firebase Authentication to provide secure, token-based login mechanisms, ensuring that only you have access to your workspace and documents.</p>
+        </div>
+
+        <div id="terms" class="legal-section">
+            <h2>Terms of Service</h2>
+            <p>By using MDK Resume AI, you agree to these Terms of Service. Our platform provides AI-assisted resume generation and ATS auditing tools designed to help you improve your career prospects.</p>
+            <h3>Acceptable Use</h3>
+            <p>You agree not to use our services for any unlawful purpose. You retain full ownership of the content you input into our platform.</p>
+            <h3>Service Availability</h3>
+            <p>While we strive for 99.9% uptime, we do not guarantee uninterrupted access to the platform. We reserve the right to modify or discontinue features at any time.</p>
+        </div>
+
+        <div id="privacy" class="legal-section">
+            <h2>Privacy Settings</h2>
+            <p>We believe in transparent data practices. Your privacy is protected under our comprehensive privacy framework.</p>
+            <h3>Information Collection</h3>
+            <p>We only collect information necessary to provide our resume building services, including the text you provide for your resume and basic authentication details (like your email address).</p>
+            <h3>Your Rights</h3>
+            <p>You have the right to request deletion of your account and all associated data at any time. Simply navigate to your account settings or contact our support team to initiate a data purge.</p>
+        </div>
+    </div>
+
+    <script>
+        function updateTab() {
+            // Get hash without the #
+            let hash = window.location.hash.substring(1);
+            if (!['security', 'terms', 'privacy'].includes(hash)) {
+                hash = 'security'; // default
+            }
+
+            // Update nav links
+            document.querySelectorAll('.legal-nav a').forEach(a => a.classList.remove('active'));
+            document.getElementById('nav-' + hash).classList.add('active');
+
+            // Update content sections
+            document.querySelectorAll('.legal-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(hash).classList.add('active');
+        }
+
+        window.addEventListener('hashchange', updateTab);
+        window.addEventListener('DOMContentLoaded', updateTab);
+    </script>
+</body>
+</html>

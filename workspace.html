@@ -38,7 +38,11 @@
       <span class="document-edit-icon">✏️</span>
     </div>
 
-    <div class="header-controls">
+    <div class="header-controls" style="display: flex; align-items: center;">
+      <div id="authBtnWrapper" style="display: flex; justify-content: flex-end; gap: 8px; margin-right: 12px;">
+        <button class="dlbtn dlbtn-login" id="navLoginBtn" style="display: none;">Login</button>
+        <button class="dlbtn dlbtn-logout" id="navLogoutBtn" style="display: inline-flex;">Logout</button>
+      </div>
       <!-- Quick Action: Export PDF -->
       <button class="dlbtn" id="dlbtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -292,6 +296,7 @@
 
   var activeTab = "Personal";
   var aiParserInputCache = ""; // Retain text pasted inside parser between view shifts
+  var currentLoadedDraftId = null; // Track which draft is actively loaded
   
   function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
   
@@ -867,14 +872,21 @@
       syncDesignViewStates();
     } 
     else if (view === "file") {
+      var drafts = JSON.parse(localStorage.getItem('mdk_resume_drafts') || '[]');
+      var loadedName = "";
+      if (currentLoadedDraftId) {
+          var f = drafts.find(function(d) { return d.id === currentLoadedDraftId; });
+          if (f) loadedName = f.name;
+      }
       title.textContent = "Document Center";
       subtitle.textContent = "Saved drafts and offline exports";
       content.innerHTML = `
         <div class="sec-label">Saved Drafts</div>
         <p class="hint" style="margin-bottom:10px">Save copies of your resumes in local browser storage to swap between them instantly.</p>
         <div style="display:flex; gap:6px; margin-bottom:12px">
-          <input class="inp" id="draftNameInput" placeholder="Draft name..." style="height:32px; font-size:12px; flex:1">
-          <button class="ai-btn" id="saveDraftBtn" style="padding:4px 12px; font-size:11.5px; height:32px; flex-shrink:0">Save Draft</button>
+          <input class="inp" id="draftNameInput" value="${esc(loadedName)}" placeholder="Draft name..." style="height:32px; font-size:12px; flex:1">
+          <button class="ai-btn" id="saveDraftBtn" style="padding:4px 12px; font-size:11.5px; height:32px; flex-shrink:0" title="Save as new draft">Save New</button>
+          <button class="ai-btn" id="overwriteDraftBtn" style="padding:4px 12px; font-size:11.5px; height:32px; flex-shrink:0; background: linear-gradient(135deg, var(--color-emerald), #059669); display:${currentLoadedDraftId ? 'inline-flex' : 'none'}" title="Overwrite current draft">Overwrite</button>
         </div>
         <div class="drafts-list" id="draftsList" style="margin-bottom:20px"></div>
         
@@ -1113,8 +1125,9 @@
     }
     
     var drafts = JSON.parse(localStorage.getItem('mdk_resume_drafts') || '[]');
+    var newId = "dr_" + Date.now();
     var newDraft = {
-      id: "dr_" + Date.now(),
+      id: newId,
       name: name,
       timestamp: Date.now(),
       data: JSON.parse(JSON.stringify(S))
@@ -1122,11 +1135,36 @@
     drafts.push(newDraft);
     localStorage.setItem('mdk_resume_drafts', JSON.stringify(drafts));
     
-    input.value = "";
-    renderDraftsList();
+    currentLoadedDraftId = newId;
+    renderPrimarySidebar(); // re-renders to show Overwrite button
+  }
+
+  function overwriteDraft() {
+    if (!currentLoadedDraftId) return;
+    var input = document.getElementById('draftNameInput');
+    var name = input ? input.value.trim() : "";
+    
+    var drafts = JSON.parse(localStorage.getItem('mdk_resume_drafts') || '[]');
+    var index = drafts.findIndex(function(d) { return d.id === currentLoadedDraftId; });
+    
+    if (index !== -1) {
+      if (name) drafts[index].name = name;
+      drafts[index].timestamp = Date.now();
+      drafts[index].data = JSON.parse(JSON.stringify(S));
+      localStorage.setItem('mdk_resume_drafts', JSON.stringify(drafts));
+      
+      var btn = document.getElementById('overwriteDraftBtn');
+      if (btn) {
+        var old = btn.innerHTML;
+        btn.innerHTML = "Saved ✓";
+        setTimeout(function() { btn.innerHTML = old; }, 1500);
+      }
+      renderDraftsList();
+    }
   }
 
   function loadDraft(id) {
+    currentLoadedDraftId = id;
     var drafts = JSON.parse(localStorage.getItem('mdk_resume_drafts') || '[]');
     var found = drafts.find(function(d) { return d.id === id; });
     if (!found) return;
@@ -1464,6 +1502,10 @@
       saveNewDraft();
       return;
     }
+    if (e.target.id === "overwriteDraftBtn") {
+      overwriteDraft();
+      return;
+    }
 
     var loadBtn = e.target.closest('.load-draft-btn');
     if (loadBtn) {
@@ -1795,5 +1837,6 @@
   renderResume();
 
 </script>
+<script type="module" src="auth-ui.js"></script>
 </body>
 </html>
