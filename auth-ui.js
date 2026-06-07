@@ -144,34 +144,6 @@ document.body.appendChild(authContainer);
 let loginBtn = document.getElementById('navLoginBtn');
 let logoutBtn = document.getElementById('navLogoutBtn');
 
-if (!loginBtn || !logoutBtn) {
-    loginBtn = document.createElement('a');
-    loginBtn.href = "#";
-    loginBtn.className = "btn-primary";
-    loginBtn.id = "navLoginBtn";
-    loginBtn.textContent = "Login";
-
-    logoutBtn = document.createElement('a');
-    logoutBtn.href = "#";
-    logoutBtn.className = "btn-primary btn-logout";
-    logoutBtn.id = "navLogoutBtn";
-    logoutBtn.textContent = "Logout";
-    logoutBtn.style.display = "none";
-
-    // Find the auth placeholder container and inject our buttons
-    const authBtnWrapper = document.getElementById('authBtnWrapper');
-    if (authBtnWrapper) {
-        authBtnWrapper.appendChild(loginBtn);
-        authBtnWrapper.appendChild(logoutBtn);
-    } else {
-        const navActions = document.querySelector('.nav-actions') || document.querySelector('.header-controls');
-        if (navActions) {
-            navActions.prepend(logoutBtn);
-            navActions.prepend(loginBtn);
-        }
-    }
-}
-
 // 3. UI State variables and Element Selection
 const authModal = document.getElementById('authModal');
 const authToggleLink = document.getElementById('authToggleLink');
@@ -222,20 +194,24 @@ const getFriendlyErrorMessage = (error) => {
 };
 
 // 4. Event Listeners
-loginBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    showAuthMessage(""); // clear message on open
-    authModal.style.display = "flex";
-});
+if (loginBtn) {
+    loginBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showAuthMessage(""); // clear message on open
+        authModal.style.display = "flex";
+    });
+}
 
 authCloseBtn.addEventListener('click', () => {
     authModal.style.display = "none";
 });
 
-logoutBtn.addEventListener('click', async (e) => {
-    e.preventDefault();
-    await logoutUser();
-});
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        await logoutUser();
+    });
+}
 
 authToggleLink.addEventListener('click', (e) => {
     e.preventDefault();
@@ -312,17 +288,19 @@ onAuthStateChanged(auth, (user) => {
     const currentPath = window.location.pathname;
     
     if (user) {
-        loginBtn.style.display = "none";
-        logoutBtn.style.display = "inline-flex";
-        logoutBtn.textContent = `Logout`;
+        if (loginBtn) loginBtn.style.display = "none";
+        if (logoutBtn) {
+            logoutBtn.style.display = "inline-flex";
+            logoutBtn.textContent = `Logout`;
+        }
         
         // If on index page, redirect to workspace
         if (currentPath === '/' || currentPath.endsWith('index.html')) {
             window.location.href = '/workspace.html';
         }
     } else {
-        loginBtn.style.display = "inline-flex";
-        logoutBtn.style.display = "none";
+        if (loginBtn) loginBtn.style.display = "inline-flex";
+        if (logoutBtn) logoutBtn.style.display = "none";
         
         // If on workspace page and not logged in, redirect to index page
         if (currentPath.includes('workspace')) {
