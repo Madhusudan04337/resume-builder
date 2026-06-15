@@ -1754,13 +1754,21 @@
     });
   }
 
+  let lastWidth = window.innerWidth;
   window.addEventListener('resize', function() {
+    const currentWidth = window.innerWidth;
     updateOverlayScale();
-    if (window.innerWidth <= 1024) {
+    if (currentWidth <= 1024) {
       updateZoom(1.0);
     }
-    if (typeof renderPrimarySidebar === 'function') {
-      renderPrimarySidebar();
+
+    // Only re-render sidebar if the width changed (e.g. orientation change or desktop resize)
+    // Mobile keyboard only changes height, so we skip re-render to keep input focus.
+    if (currentWidth !== lastWidth) {
+      if (typeof renderPrimarySidebar === 'function') {
+        renderPrimarySidebar();
+      }
+      lastWidth = currentWidth;
     }
   });
 
