@@ -223,7 +223,15 @@ authCloseBtn.addEventListener('click', () => {
 if (logoutBtn) {
     logoutBtn.addEventListener('click', async (e) => {
         e.preventDefault();
-        await logoutUser();
+        try {
+            await logoutUser();
+        } catch (err) {
+            console.warn("Logout error:", err);
+        }
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (isLocalhost) {
+            window.location.href = '/';
+        }
     });
 }
 
@@ -300,12 +308,13 @@ authGoogleBtn.addEventListener('click', async () => {
 // 5. Global Auth State tracking
 onAuthStateChanged(auth, (user) => {
     const currentPath = window.location.pathname;
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     
-    if (user) {
+    if (user || isLocalhost) {
         if (loginBtn) loginBtn.style.display = "none";
         if (logoutBtn) {
             logoutBtn.style.display = "inline-flex";
-            logoutBtn.textContent = `Logout`;
+            logoutBtn.textContent = isLocalhost ? "Local Mode" : "Logout";
         }
         
         // If on index page, redirect to workspace
@@ -328,6 +337,11 @@ const indexLaunchBtn = document.getElementById('launchBtn');
 const indexHeroCTA = document.getElementById('heroCTA');
 
 const handleLaunchClick = (e) => {
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (isLocalhost) {
+        window.location.href = '/workspace.html';
+        return;
+    }
     e.preventDefault();
     // Open the login modal instead of navigating
     authModal.style.display = "flex";
