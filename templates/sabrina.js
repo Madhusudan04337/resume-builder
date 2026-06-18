@@ -170,7 +170,11 @@
           }
         }
         if (S.spokenLanguages) {
-          S.spokenLanguages.split(',').forEach(function(s) { if (s.trim()) skillLists.push(s.trim()); });
+          if (S.spokenLanguages.indexOf('\n') !== -1) {
+            S.spokenLanguages.split('\n').forEach(function(s) { if (s.trim()) skillLists.push(s.trim()); });
+          } else {
+            S.spokenLanguages.split(',').forEach(function(s) { if (s.trim()) skillLists.push(s.trim()); });
+          }
         }
         
         if (skillLists.length) {
@@ -199,7 +203,7 @@
       else if (secName === "Languages" && S.spokenLanguages && !Sk.languages) {
         // Fallback only if not grouped in skills above
         h += sh('Languages'); 
-        h += '<div style="line-height:1.5;margin-bottom:8px">' + esc(S.spokenLanguages) + '</div>';
+        h += '<div style="line-height:1.5;margin-bottom:8px;white-space: pre-line">' + esc(S.spokenLanguages) + '</div>';
       } 
       
       else if (secName === "Certifications" && Ct && Ct.length) {

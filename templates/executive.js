@@ -55,7 +55,7 @@
     }
     if (S.spokenLanguages) {
       sidebar += '<div style="font-weight:700;color:'+st.brand+';margin:22px 0 10px;text-transform:uppercase;letter-spacing:1px;font-size:11.5px">Languages</div>';
-      sidebar += '<div>' + esc(S.spokenLanguages) + '</div>';
+      sidebar += '<div style="white-space: pre-line; line-height: 1.45">' + esc(S.spokenLanguages) + '</div>';
     }
     sidebar += '</div>';
 

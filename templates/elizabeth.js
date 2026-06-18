@@ -140,7 +140,7 @@
     // Spoken Languages (separate section)
     if (S.spokenLanguages) {
       h += sh('Languages');
-      h += '<div style="background:#f8fafc;border-radius:6px;padding:7px 12px 7px 12px;margin-bottom:12px;font-size:11px;color:#2d3748;">' + esc(S.spokenLanguages) + '</div>';
+      h += '<div style="background:#f8fafc;border-radius:6px;padding:7px 12px;margin-bottom:12px;font-size:11px;color:#2d3748;white-space: pre-line;line-height:1.45">' + esc(S.spokenLanguages) + '</div>';
     }
     
     h += '  </div>'; // End Left Column

@@ -112,7 +112,7 @@
           if (Sk.tech) h += '<div><span class="rb" style="color:' + st.brand + '">Technologies/Frameworks</span>: ' + esc(Sk.tech) + '</div>';
         }
       } else if (secName === "Languages" && S.spokenLanguages) {
-        h += sh('Languages', st); h += '<div>' + esc(S.spokenLanguages) + '</div>';
+        h += sh('Languages', st); h += '<div style="white-space: pre-line; line-height: 1.45">' + esc(S.spokenLanguages) + '</div>';
 
       } else if (secName === "Certifications" && Ct && Ct.length) {
         h += sh('Certifications', st);

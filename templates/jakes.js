@@ -251,7 +251,7 @@
       
       else if (secName === "Languages" && S.spokenLanguages) {
         h += sh('Languages'); 
-        h += '<div style="line-height:1.4;margin-bottom:6px">' + esc(S.spokenLanguages) + '</div>';
+        h += '<div style="line-height:1.4;margin-bottom:6px;white-space: pre-line">' + esc(S.spokenLanguages) + '</div>';
       } 
       
       else if (secName === "Certifications" && Ct && Ct.length) {
