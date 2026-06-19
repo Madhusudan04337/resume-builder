@@ -76,6 +76,7 @@
   /* Resume Live Variables */
   --resume-brand: #32166f;
   --resume-scale: 1;
+  --resume-font-size-offset: 0px;
 }
 
 
@@ -1152,7 +1153,7 @@ body {
   background: #ffffff !important;
   color: #000000 !important;
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: 12px !important;
+  font-size: calc(12px + var(--resume-font-size-offset, 0px)) !important;
   line-height: 1.3;
   width: 210mm;
   min-height: 297mm;
@@ -1223,7 +1224,7 @@ body {
 .rp .rsh {
   border-bottom: 1.5px solid var(--resume-brand) !important;
   color: var(--resume-brand) !important;
-  font-size: 11px;
+  font-size: calc(11px + var(--resume-font-size-offset, 0px));
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -1238,14 +1239,14 @@ body {
 
 .rp .rn {
   color: var(--resume-brand) !important;
-  font-size: 20px;
+  font-size: calc(20px + var(--resume-font-size-offset, 0px));
   font-weight: 800;
   letter-spacing: -0.5px;
   line-height: 1.15;
 }
 
 .rp .rtitle {
-  font-size: 12px;
+  font-size: calc(12px + var(--resume-font-size-offset, 0px));
   font-weight: 600;
   color: #555 !important;
   margin-top: 1px;
@@ -1254,7 +1255,7 @@ body {
 }
 
 .rp .ra {
-  font-size: 9.5px;
+  font-size: calc(9.5px + var(--resume-font-size-offset, 0px));
   color: #555 !important;
   margin-top: 3px;
 }
@@ -1263,7 +1264,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 2px 8px;
-  font-size: 9px;
+  font-size: calc(9px + var(--resume-font-size-offset, 0px));
   margin-top: 3px;
   font-weight: 500;
 }
@@ -1276,18 +1277,18 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  font-size: 11px;
+  font-size: calc(11px + var(--resume-font-size-offset, 0px));
 }
 
 .rp .ri {
-  font-size: 10px;
+  font-size: calc(10px + var(--resume-font-size-offset, 0px));
 }
 
 .rp .rcrs {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2px 8px;
-  font-size: 10px;
+  font-size: calc(10px + var(--resume-font-size-offset, 0px));
 }
 
 .rp .rcrs ul {
@@ -1299,7 +1300,7 @@ body {
 .rp ul:not(.rcrs ul):not(.rcert ul) {
   margin: 1px 0 3px 16px;
   padding: 0;
-  font-size: 10px;
+  font-size: calc(10px + var(--resume-font-size-offset, 0px));
   list-style-type: disc;
 }
 
@@ -1312,7 +1313,7 @@ body {
 
 .rp .rcert ul {
   list-style: none;
-  font-size: 10px;
+  font-size: calc(10px + var(--resume-font-size-offset, 0px));
 }
 
 /* ----------------------------------
@@ -1489,7 +1490,7 @@ body {
   background: #ffffff;
   color: #000000;
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: 12px;
+  font-size: calc(12px + var(--resume-font-size-offset, 0px));
   line-height: 1.3;
   width: 210mm;
   min-height: 297mm;

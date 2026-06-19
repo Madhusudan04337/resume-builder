@@ -269,6 +269,7 @@
     socialEnabled: { phone: true, email: true, linkedin: true, github: true, portfolio: false, leetcode: false, gfg: false, twitter: false, hackerrank: false, codechef: false, summary: true },
     template: "classic",
     accentColor: "#32166f",
+    fontSize: "default",
     education: [], coursework: [], experience: [], projects: [],
     skills: [
       { category: "Programming Languages", list: "" },
@@ -659,12 +660,46 @@
   
   function resumeHTML() {
     var t = S.template || "classic";
+    var html = "";
     if (window.templates && window.templates[t]) {
-      return window.templates[t](S, SOCIAL_DEFS);
+      html = window.templates[t](S, SOCIAL_DEFS);
+    } else {
+      html = window.templates.classic(S, SOCIAL_DEFS);
     }
-    return window.templates.classic(S, SOCIAL_DEFS);
+    
+    // Postprocess and convert all hardcoded font-sizes into dynamic calc expressions referencing --resume-font-size-offset
+    html = html.replace(/font-size\s*:\s*(\d+(?:\.\d+)?)\s*px/gi, function(match, p1) {
+      return "font-size:calc(" + p1 + "px + var(--resume-font-size-offset, 0px))";
+    });
+    
+    return html;
   }
   
+  function updateFontSize(size) {
+    S.fontSize = size || "default";
+    var offset = "0px";
+    if (S.fontSize === "medium") offset = "1px";
+    else if (S.fontSize === "large") offset = "2px";
+    else if (S.fontSize === "xlarge") offset = "3px";
+    document.documentElement.style.setProperty('--resume-font-size-offset', offset);
+    
+    // Sync active state of buttons if visible
+    var fsSelector = document.getElementById('fontSizeSelector');
+    if (fsSelector) {
+      fsSelector.querySelectorAll('.fs-btn').forEach(function(btn) {
+        if (btn.dataset.size === S.fontSize) {
+          btn.style.background = 'var(--color-indigo)';
+          btn.style.color = '#ffffff';
+          btn.style.borderColor = 'var(--color-indigo)';
+        } else {
+          btn.style.background = '';
+          btn.style.color = '';
+          btn.style.borderColor = '';
+        }
+      });
+    }
+  }
+
   function sec(label) { return '<div class="sec-label">' + label + '</div>'; }
 
   function handleClearResume() {
@@ -676,6 +711,8 @@
     S.socialEnabled = { phone: true, email: true, linkedin: true, github: true, portfolio: false, leetcode: false, gfg: false, twitter: false, hackerrank: false, codechef: false, summary: true };
     S.template = "classic";
     S.accentColor = "#32166f";
+    S.fontSize = "default";
+    updateFontSize("default");
     S.education = [];
     S.coursework = [];
     S.experience = [];
@@ -849,6 +886,15 @@
           <span class="accent-dot" data-color="#c8986b" style="background:#c8986b" title="Luxury Gold"></span>
           <span class="accent-dot" data-color="#2d3748" style="background:#2d3748" title="Slate Charcoal"></span>
         </div>
+
+        <div class="sec-label">Resume Font Size</div>
+        <p class="hint" style="margin-bottom:10px">Adjust the base font size of the resume layout. Default is optimized for A4.</p>
+        <div class="font-size-selector" id="fontSizeSelector" style="background:var(--bg-card); padding:10px 12px; border-radius:10px; border:1px solid var(--border-color); display:flex; gap:6px; margin-bottom:20px">
+          <button class="clr-btn fs-btn" data-size="default" style="flex:1; text-align:center; padding:5px 0; border-radius:6px; font-size:11px;">Default</button>
+          <button class="clr-btn fs-btn" data-size="medium" style="flex:1; text-align:center; padding:5px 0; border-radius:6px; font-size:11px;">Medium (+1px)</button>
+          <button class="clr-btn fs-btn" data-size="large" style="flex:1; text-align:center; padding:5px 0; border-radius:6px; font-size:11px;">Large (+2px)</button>
+          <button class="clr-btn fs-btn" data-size="xlarge" style="flex:1; text-align:center; padding:5px 0; border-radius:6px; font-size:11px;">XL (+3px)</button>
+        </div>
         
         <div class="sec-label">Layout Templates</div>
         <p class="hint" style="margin-bottom:12px">Choose a formatting layout. Your document details are preserved.</p>
@@ -927,6 +973,9 @@
         if (card.dataset.template === S.template) card.classList.add('active');
         else card.classList.remove('active');
       });
+    }
+    if (S.fontSize) {
+      updateFontSize(S.fontSize);
     }
   }
 
@@ -1420,6 +1469,13 @@
       return;
     }
     
+    var fsBtn = e.target.closest('.fs-btn');
+    if (fsBtn) {
+      updateFontSize(fsBtn.dataset.size);
+      renderResume();
+      return;
+    }
+
     var accentDot = e.target.closest('.accent-dot');
     if (accentDot) {
       document.querySelectorAll('.accent-dot').forEach(d => d.classList.remove('active'));
@@ -1827,6 +1883,10 @@
         if (S.customSections === undefined) {
           S.customSections = [];
         }
+        if (S.fontSize === undefined) {
+          S.fontSize = "default";
+        }
+        updateFontSize(S.fontSize);
         
         // Sync document title in header
         document.getElementById('docTitle').textContent = S.fileName;
