@@ -19,15 +19,21 @@
     sidebar += '<div style="font-weight:700;color:'+st.brand+';margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;font-size:11.5px">Contact</div>';
     
     // Exact ordered contact list: Email, Phone number, Location, Portfolio, LinkedIn, GitHub
-    if (P.email && S.socialEnabled.email) sidebar += '<div style="margin-bottom:6px;word-break:break-all">✉ ' + esc(P.email) + '</div>';
+    if (P.email && S.socialEnabled.email) sidebar += '<div style="margin-bottom:6px;word-break:break-all">✉ <a href="mailto:' + esc(P.email) + '" style="color:inherit;text-decoration:underline">' + esc(P.email) + '</a></div>';
     if (P.phone && S.socialEnabled.phone) sidebar += '<div style="margin-bottom:6px">☎ ' + esc(P.phone) + '</div>';
     if (P.address) sidebar += '<div style="margin-bottom:6px">📍 ' + esc(P.address) + '</div>';
     if (P.portfolio && S.socialEnabled.portfolio) {
       var portUrl = P.portfolio.startsWith('http') ? P.portfolio : 'https://' + P.portfolio;
-      sidebar += '<div style="margin-bottom:6px;display:flex;align-items:center;gap:4px;word-break:break-all"><b>⬡</b> <a href="' + esc(portUrl) + '" target="_blank" style="color:inherit;text-decoration:none">' + esc(portUrl.replace(/^https?:\/\//, '')) + '</a></div>';
+      sidebar += '<div style="margin-bottom:6px;display:flex;align-items:center;gap:4px;word-break:break-all"><b>⬡</b> <a href="' + esc(portUrl) + '" target="_blank" style="color:inherit;text-decoration:underline">' + esc(portUrl) + '</a></div>';
     }
-    if (P.linkedin && S.socialEnabled.linkedin) sidebar += '<div style="margin-bottom:6px;display:flex;align-items:center;gap:4px;word-break:break-all"><b>in</b> <a href="' + (P.linkedin.startsWith('http') ? P.linkedin : 'https://linkedin.com/in/' + P.linkedin) + '" target="_blank" style="color:inherit;text-decoration:none">' + esc(P.linkedin.replace(/^https?:\/\/(www\.)?linkedin\.com\/in\//, '')) + '</a></div>';
-    if (P.github && S.socialEnabled.github) sidebar += '<div style="margin-bottom:6px;display:flex;align-items:center;gap:4px;word-break:break-all"><b>GH</b> <a href="' + (P.github.startsWith('http') ? P.github : 'https://github.com/' + P.github) + '" target="_blank" style="color:inherit;text-decoration:none">' + esc(P.github.replace(/^https?:\/\/(www\.)?github\.com\//, '')) + '</a></div>';
+    if (P.linkedin && S.socialEnabled.linkedin) {
+      var liUrl = P.linkedin.startsWith('http') ? P.linkedin : 'https://linkedin.com/in/' + P.linkedin;
+      sidebar += '<div style="margin-bottom:6px;display:flex;align-items:center;gap:4px;word-break:break-all"><b>in</b> <a href="' + esc(liUrl) + '" target="_blank" style="color:inherit;text-decoration:underline">' + esc(liUrl) + '</a></div>';
+    }
+    if (P.github && S.socialEnabled.github) {
+      var ghUrl = P.github.startsWith('http') ? P.github : 'https://github.com/' + P.github;
+      sidebar += '<div style="margin-bottom:6px;display:flex;align-items:center;gap:4px;word-break:break-all"><b>GH</b> <a href="' + esc(ghUrl) + '" target="_blank" style="color:inherit;text-decoration:underline">' + esc(ghUrl) + '</a></div>';
+    }
     
     // Render other enabled socials from SOCIAL_DEFS
     SOCIAL_DEFS.forEach(function(sd){
@@ -35,7 +41,7 @@
       if (S.socialEnabled[sd.key] && P[sd.key]) {
         var val = P[sd.key];
         var href = sd.isLink ? (val.startsWith('http') ? val : sd.prefix + val) : null;
-        sidebar += '<div style="margin-bottom:6px;display:flex;align-items:center;gap:4px;word-break:break-all"><b>' + sd.icon + '</b> ' + (href ? '<a href="' + esc(href) + '" target="_blank" style="color:inherit;text-decoration:none">' + esc(val) + '</a>' : esc(val)) + '</div>';
+        sidebar += '<div style="margin-bottom:6px;display:flex;align-items:center;gap:4px;word-break:break-all"><b>' + sd.icon + '</b> ' + (href ? '<a href="' + esc(href) + '" target="_blank" style="color:inherit;text-decoration:underline">' + esc(href) + '</a>' : esc(val)) + '</div>';
       }
     });
 

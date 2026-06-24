@@ -279,12 +279,12 @@
     spokenLanguages: "",
     leadership: [], certifications: [],
     references: "",
-    sectionOrder: ["Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Certifications", "Leadership", "References"],
+    sectionOrder: ["Skills", "Experience", "Projects", "Education", "Certifications", "Leadership", "custom_ai_tools", "Languages", "Coursework", "References"],
     activeView: "ai",
     fileName: "my_resume",
     atsScore: null,
     atsFeedback: "",
-    customSections: []
+    customSections: [{ id: "custom_ai_tools", heading: "AI Tools Application", content: "" }]
   };
   var TABS = ["Personal", "Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Leadership", "Certifications", "References", "Custom"];
   
@@ -451,7 +451,7 @@
       '<div class="fld"><label class="lbl">Last name</label><input class="inp" data-p="personal.lastName" value="' + esc(P.lastName) + '" placeholder="Doe"></div></div>' +
       '<div class="fld"><label class="lbl">Headline / title</label><input class="inp" data-p="headline" value="' + esc(S.headline) + '" placeholder="Software Engineer | Python | React"></div>' +
       '<div class="fld" style="margin-bottom:14px"><label class="lbl">Address / location</label><input class="inp" data-p="personal.address" value="' + esc(P.address) + '" placeholder="City, State"></div>' +
-      sec('Professional Summary') +
+      sec('Career Objective') +
       '<div class="fld"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
       '<div style="display:flex;align-items:center;gap:8px"><button class="stog ' + (S.socialEnabled.summary ? 'on' : 'off') + '" data-tog="summary"></button>' +
       '<label class="lbl" style="margin-bottom:0">Show on resume</label></div>' +
@@ -726,10 +726,10 @@
     S.leadership = [];
     S.certifications = [];
     S.references = "";
-    S.sectionOrder = ["Education", "Coursework", "Experience", "Projects", "Skills", "Languages", "Certifications", "Leadership", "References"];
+    S.sectionOrder = ["Skills", "Experience", "Projects", "Education", "Certifications", "Leadership", "custom_ai_tools", "Languages", "Coursework", "References"];
     S.atsScore = null;
     S.atsFeedback = "";
-    S.customSections = [];
+    S.customSections = [{ id: "custom_ai_tools", heading: "AI Tools Application", content: "" }];
     
     saveToLocal();
     renderPrimarySidebar();
@@ -824,7 +824,7 @@
         <button class="clr-btn" id="aiPolishSummaryShortcutBtn" style="width:100%; text-align:left; font-size:11.5px; padding:10px; display:flex; align-items:center; gap:8px; border-radius:10px">
           <span style="font-size:14px">✨</span>
           <div style="flex:1">
-            <strong>Polish Professional Summary</strong>
+            <strong>Polish Career Objective</strong>
             <div style="font-size:10px; opacity:0.8; font-weight:normal; margin-top:2px">Re-writes summary based on your experience and skills.</div>
           </div>
         </button>
@@ -1516,8 +1516,10 @@
       const skills = skillsArr.filter(Boolean).join(', ');
       const experience = S.experience.map(e => e.role + " at " + e.company + " (" + e.bullets.join('; ') + ")").join(' | ');
 
-      if (!skills && !experience) {
-        alert("Please enter some skills or work experience details first so Gemini can construct a summary!");
+      const careerObjective = S.personal.summary || '';
+
+      if (!skills && !experience && !careerObjective) {
+        alert("Please enter a career objective, some skills, or work experience details first so Gemini can build your summary!");
         return;
       }
       
@@ -1530,7 +1532,7 @@
         const response = await fetch(getApiUrl('/api/generate-summary'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ skills, experience })
+          body: JSON.stringify({ skills, experience, careerObjective })
         });
         if (!response.ok) {
           let errMsg = "Backend server error";
@@ -1544,10 +1546,13 @@
         }
         const data = await response.json();
         
+        // Save current state to CO undo stack before applying AI result
+        coPushHistory();
         S.personal.summary = data.summary;
         var summaryField = document.getElementById('summary-field');
         if (summaryField) summaryField.value = data.summary;
         renderResume();
+        _coUpdateBtns();
         
         if (btn.id === 'aiPolishSummaryShortcutBtn') {
           alert("Gemini updated your resume summary successfully! Check details inside the Document Editor.");
@@ -1604,12 +1609,12 @@
     
     if (p === 'coursework') { 
       S.coursework = t.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean); 
-      renderResume(); 
+      renderResume();
       return; 
     }
     if (p === 'headline') { 
       S.headline = t.value; 
-      renderResume(); 
+      renderResume();
       return; 
     }
     
@@ -1860,6 +1865,20 @@
         }
         if (S.sectionOrder && !S.sectionOrder.includes("References")) {
           S.sectionOrder.push("References");
+        }
+        // Migrate: add AI Tools Application custom section if missing
+        if (!S.customSections) S.customSections = [];
+        if (!S.customSections.find(function(c) { return c.id === "custom_ai_tools"; })) {
+          S.customSections.push({ id: "custom_ai_tools", heading: "AI Tools Application", content: "" });
+        }
+        if (S.sectionOrder && !S.sectionOrder.includes("custom_ai_tools")) {
+          // Insert after Leadership (Achievements)
+          var ldIdx = S.sectionOrder.indexOf("Leadership");
+          if (ldIdx !== -1) {
+            S.sectionOrder.splice(ldIdx + 1, 0, "custom_ai_tools");
+          } else {
+            S.sectionOrder.push("custom_ai_tools");
+          }
         }
         if (S.references === undefined) {
           S.references = "";

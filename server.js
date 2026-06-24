@@ -100,23 +100,43 @@ function formatGeminiError(error) {
 
 // Endpoint to generate resume content via AI
 app.post('/api/generate-summary', checkApiKey, async (req, res) => {
-    const { skills, experience } = req.body;
+    const { skills, experience, careerObjective } = req.body;
+
+    // Build the user_input block from whatever context is available
+    const userInputParts = [];
+    if (careerObjective) userInputParts.push(`Career Objective: ${careerObjective}`);
+    if (skills) userInputParts.push(`Skills: ${skills}`);
+    if (experience) userInputParts.push(`Experience: ${experience}`);
+    const userInput = userInputParts.join('\n');
 
     try {
         const response = await generateContentWithFallback({
-            contents: `Create a professional 3-line resume summary for a candidate with these skills: ${skills} and experience: ${experience}.`,
+            contents: `Rewrite the following career objective into a professional ATS-friendly resume summary.
+
+Rules:
+* Return ONLY the final resume summary.
+* Do NOT provide multiple options.
+* Do NOT add headings, explanations, notes, introductions, or quotation marks.
+* Write exactly 3 lines.
+* Keep it between 40-60 words.
+* Use professional resume language.
+* Preserve the candidate's actual skills and experience.
+* Output plain text only.
+
+${userInput}`,
             config: {
-                systemInstruction: "You are an expert resume writer.",
-                maxOutputTokens: 200
+                systemInstruction: "You are an expert resume writer. Your task is to rewrite a candidate's career objective into a polished, ATS-friendly resume summary. Follow all rules exactly as given. Output ONLY the final summary — no headings, no explanations, no quotes, no alternatives. Exactly 3 lines, 40–60 words, plain text.",
+                maxOutputTokens: 250
             }
         });
 
-        res.json({ summary: response.text });
+        res.json({ summary: response.text.trim() });
     } catch (error) {
         console.error("Gemini Error:", error);
         res.status(500).json({ error: "Failed to generate summary", message: formatGeminiError(error) });
     }
 });
+
 
 // Robust JSON parser that handles markdown backticks, unescaped newlines/tabs inside strings, and trailing commas
 function safeParseJSON(text) {

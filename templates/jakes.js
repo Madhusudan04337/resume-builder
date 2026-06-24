@@ -70,17 +70,17 @@
     }
     if (P.portfolio && S.socialEnabled.portfolio) {
       var portUrl = P.portfolio.startsWith('http') ? P.portfolio : 'https://' + P.portfolio;
-      row1Items.push('<span style="display:inline-flex;align-items:center">' + demoIcon + '<a href="' + esc(portUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(portUrl.replace(/^https?:\/\//, '')) + '</a></span>');
+      row1Items.push('<span style="display:inline-flex;align-items:center">' + demoIcon + '<a href="' + esc(portUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(portUrl) + '</a></span>');
     }
     
     // Line 2: linkedin, github, others
     if (P.linkedin && S.socialEnabled.linkedin) {
       var liUrl = P.linkedin.startsWith('http') ? P.linkedin : 'https://linkedin.com/in/' + P.linkedin;
-      row2Items.push('<span style="display:inline-flex;align-items:center">' + liIcon + '<a href="' + esc(liUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(liUrl.replace(/^https?:\/\//, '')) + '</a></span>');
+      row2Items.push('<span style="display:inline-flex;align-items:center">' + liIcon + '<a href="' + esc(liUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(liUrl) + '</a></span>');
     }
     if (P.github && S.socialEnabled.github) {
       var ghUrl = P.github.startsWith('http') ? P.github : 'https://github.com/' + P.github;
-      row2Items.push('<span style="display:inline-flex;align-items:center">' + ghIcon + '<a href="' + esc(ghUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(ghUrl.replace(/^https?:\/\//, '')) + '</a></span>');
+      row2Items.push('<span style="display:inline-flex;align-items:center">' + ghIcon + '<a href="' + esc(ghUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(ghUrl) + '</a></span>');
     }
     
     // Other enabled socials
@@ -89,7 +89,7 @@
       if (!S.socialEnabled[sd.key]) return;
       var val = P[sd.key] || ''; if (!val) return;
       var href = sd.isLink ? (val.startsWith('http') ? val : sd.prefix + val) : null;
-      row2Items.push('<span style="display:inline-flex;align-items:center"><span style="font-size:9px;font-weight:700;margin-right:2px">' + sd.icon + '</span>' + (href ? '<a href="' + esc(href) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(val.replace(/^https?:\/\//, '')) + '</a>' : esc(val)) + '</span>');
+      row2Items.push('<span style="display:inline-flex;align-items:center"><span style="font-size:9px;font-weight:700;margin-right:2px">' + sd.icon + '</span>' + (href ? '<a href="' + esc(href) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(href) + '</a>' : esc(val)) + '</span>');
     });
     
     // Balanced vertical pipe separator spaces (exactly 5px left/right margins)
@@ -110,7 +110,7 @@
 
     // Summary section
     if (P.summary && S.socialEnabled.summary) {
-      h += sh('Professional Summary');
+      h += sh('Career Objective');
       h += '<div style="text-align:justify;line-height:1.45;margin-bottom:8px">' + linkify(esc(P.summary)) + '</div>';
     }
 

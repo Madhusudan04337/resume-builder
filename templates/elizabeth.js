@@ -50,11 +50,12 @@
     var contactItems = [];
     if (P.phone && S.socialEnabled.phone) contactItems.push('<span>' + esc(P.phone) + ' ☎</span>');
     if (P.email && S.socialEnabled.email) {
-      contactItems.push('<span><a href="mailto:' + esc(P.email) + '" style="color:inherit;text-decoration:none">' + esc(P.email) + '</a> @</span>');
+      contactItems.push('<span><a href="mailto:' + esc(P.email) + '" style="color:inherit;text-decoration:underline">' + esc(P.email) + '</a> @</span>');
     }
     if (P.address) contactItems.push('<span>' + esc(P.address) + ' 📍</span>');
     if (P.linkedin && S.socialEnabled.linkedin) {
-      contactItems.push('<span><a href="' + (P.linkedin.startsWith('http') ? P.linkedin : 'https://linkedin.com/in/' + P.linkedin) + '" target="_blank" style="color:inherit;text-decoration:none">' + esc(P.linkedin.replace(/^https?:\/\/(www\.)?linkedin\.com\/in\//, '')) + '</a> <b>in</b></span>');
+      var liUrl = P.linkedin.startsWith('http') ? P.linkedin : 'https://linkedin.com/in/' + P.linkedin;
+      contactItems.push('<span><a href="' + esc(liUrl) + '" target="_blank" style="color:inherit;text-decoration:underline">' + esc(liUrl) + '</a> <b>in</b></span>');
     }
     
     h += '  <div style="font-size:10.5px;color:#64748b;text-align:right;display:flex;flex-direction:column;gap:2.5px;line-height:1.2">';

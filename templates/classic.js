@@ -17,7 +17,7 @@
     var row2Items = [];
     // 1. Email
     if (P.email && S.socialEnabled.email) {
-      row1Items.push('<span style="display:flex;align-items:center;gap:1px">@ <a href="mailto:' + esc(P.email) + '" style="color:inherit;text-decoration:none">' + esc(P.email) + '</a></span>');
+      row1Items.push('<span style="display:flex;align-items:center;gap:1px">@ <a href="mailto:' + esc(P.email) + '" style="color:inherit;text-decoration:underline">' + esc(P.email) + '</a></span>');
     }
     // 2. Phone
     if (P.phone && S.socialEnabled.phone) {
@@ -30,17 +30,17 @@
     // 4. Portfolio
     if (P.portfolio && S.socialEnabled.portfolio) {
       var portUrl = P.portfolio.startsWith('http') ? P.portfolio : 'https://' + P.portfolio;
-      row1Items.push('<span style="display:flex;align-items:center;gap:1px">⬡ <a href="' + esc(portUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">' + esc(portUrl.replace(/^https?:\/\//, '')) + '</a></span>');
+      row1Items.push('<span style="display:flex;align-items:center;gap:1px">⬡ <a href="' + esc(portUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(portUrl) + '</a></span>');
     }
     // 5. LinkedIn
     if (P.linkedin && S.socialEnabled.linkedin) {
       var liUrl = P.linkedin.startsWith('http') ? P.linkedin : 'https://linkedin.com/in/' + P.linkedin;
-      row2Items.push('<span style="display:flex;align-items:center;gap:1px">in <a href="' + esc(liUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">' + esc(P.linkedin.replace(/^https?:\/\/(www\.)?linkedin\.com\/in\//, '')) + '</a></span>');
+      row2Items.push('<span style="display:flex;align-items:center;gap:1px">in <a href="' + esc(liUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(liUrl) + '</a></span>');
     }
     // 6. GitHub
     if (P.github && S.socialEnabled.github) {
       var ghUrl = P.github.startsWith('http') ? P.github : 'https://github.com/' + P.github;
-      row2Items.push('<span style="display:flex;align-items:center;gap:1px">GH <a href="' + esc(ghUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">' + esc(P.github.replace(/^https?:\/\/(www\.)?github\.com\//, '')) + '</a></span>');
+      row2Items.push('<span style="display:flex;align-items:center;gap:1px">GH <a href="' + esc(ghUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(ghUrl) + '</a></span>');
     }
     // Other socials
     SOCIAL_DEFS.forEach(function (sd) {
@@ -49,7 +49,7 @@
       var val = P[sd.key] || ''; if (!val) return;
       var href = sd.isLink ? (val.startsWith('http') ? val : sd.prefix + val) : null;
       var ico = '<span style="font-size:9px;font-weight:700;margin-right:2px">' + sd.icon + '</span>';
-      row2Items.push('<span style="display:flex;align-items:center;gap:1px">' + ico + (href ? '<a href="' + esc(href) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">' + esc(val) + '</a>' : esc(val)) + '</span>');
+      row2Items.push('<span style="display:flex;align-items:center;gap:1px">' + ico + (href ? '<a href="' + esc(href) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(href) + '</a>' : esc(val)) + '</span>');
     });
 
     if (row1Items.length || row2Items.length) {
@@ -64,7 +64,7 @@
     }
 
     if (P.summary && S.socialEnabled.summary) {
-      h += sh('Professional Summary', st);
+      h += sh('Career Objective', st);
       h += '<div style="margin-bottom:6px;font-size:10.5px;text-align:justify;line-height:1.55">' + linkify(esc(P.summary)) + '</div>';
     }
 
