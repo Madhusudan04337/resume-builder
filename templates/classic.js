@@ -10,14 +10,16 @@
     h += '<div class="rn" style="text-align:' + st.align + ';color:' + st.brand + '">' + esc(P.firstName) + (P.lastName ? ' ' + esc(P.lastName) : '') + '</div>';
     if (S.headline) h += '<div class="rtitle" style="text-align:' + st.align + ';font-style:italic;font-size:11px;color:#555;margin-top:4px;text-transform:none">' + esc(S.headline) + '</div>';
     
-    var ghIcon = '<svg style="width:10px;height:10px;fill:none;stroke:' + st.brand + ';stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1px)" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>';
-    var demoIcon = '<svg style="width:10px;height:10px;fill:' + st.brand + ';display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1px)" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/><path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/></svg>';
+    var emailIcon = '<svg style="width:10px;height:10px;fill:none;stroke:' + st.brand + ';stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1.2px)" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>';
+    var liIcon = '<svg style="width:10px;height:10px;fill:none;stroke:' + st.brand + ';stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1.2px)" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>';
+    var ghIcon = '<svg style="width:10px;height:10px;fill:none;stroke:' + st.brand + ';stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1.2px)" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>';
+    var demoIcon = '<svg style="width:10px;height:10px;fill:' + st.brand + ';display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1.2px)" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/><path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/></svg>';
 
     var row1Items = [];
     var row2Items = [];
     // 1. Email
     if (P.email && S.socialEnabled.email) {
-      row1Items.push('<span style="display:flex;align-items:center;gap:1px">@ <a href="mailto:' + esc(P.email) + '" style="color:inherit;text-decoration:underline">' + esc(P.email) + '</a></span>');
+      row1Items.push('<span style="display:flex;align-items:center;gap:1px">' + emailIcon + '<a href="mailto:' + esc(P.email) + '" style="color:inherit;text-decoration:underline">' + esc(P.email) + '</a></span>');
     }
     // 2. Phone
     if (P.phone && S.socialEnabled.phone) {
@@ -35,12 +37,12 @@
     // 5. LinkedIn
     if (P.linkedin && S.socialEnabled.linkedin) {
       var liUrl = P.linkedin.startsWith('http') ? P.linkedin : 'https://linkedin.com/in/' + P.linkedin;
-      row2Items.push('<span style="display:flex;align-items:center;gap:1px">in <a href="' + esc(liUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(liUrl) + '</a></span>');
+      row2Items.push('<span style="display:flex;align-items:center;gap:1px">' + liIcon + '<a href="' + esc(liUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(liUrl) + '</a></span>');
     }
     // 6. GitHub
     if (P.github && S.socialEnabled.github) {
       var ghUrl = P.github.startsWith('http') ? P.github : 'https://github.com/' + P.github;
-      row2Items.push('<span style="display:flex;align-items:center;gap:1px">GH <a href="' + esc(ghUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(ghUrl) + '</a></span>');
+      row2Items.push('<span style="display:flex;align-items:center;gap:1px">' + ghIcon + '<a href="' + esc(ghUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(ghUrl) + '</a></span>');
     }
     // Other socials
     SOCIAL_DEFS.forEach(function (sd) {
