@@ -1697,5 +1697,20 @@ body {
   .header-logo-elements {
     display: none !important;
   }
+
+  .rp {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    padding: 10mm !important; /* matches screen padding exactly */
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 0; /* margins are controlled by .rp padding now, ensuring 1:1 match */
+  }
 }
 
