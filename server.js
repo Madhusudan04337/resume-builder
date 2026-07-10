@@ -138,7 +138,7 @@ ${userInput}`,
 });
 
 
-// Robust JSON parser that handles markdown backticks, unescaped newlines/tabs inside strings, and trailing commas
+// Robust JSON parser that handles markdown backticks, unescaped newlines/tabs inside strings, trailing commas, and wrong closing brackets
 function safeParseJSON(text) {
     let cleanText = text.trim();
     
@@ -156,9 +156,12 @@ function safeParseJSON(text) {
         
         try {
             // 2. Escape literal newlines and control characters inside double-quoted string values
+            //    AND fix wrong closing brackets: AI sometimes closes an array with } instead of ]
             let inString = false;
             let escaped = false;
             let result = "";
+            // Track context stack: '{' for object, '[' for array
+            let contextStack = [];
             
             for (let i = 0; i < cleanText.length; i++) {
                 let char = cleanText[i];
@@ -175,6 +178,34 @@ function safeParseJSON(text) {
                     result += '\\n'; // escape the literal newline
                 } else if (inString && char === '\t') {
                     result += '\\t'; // escape literal tabs
+                } else if (!inString) {
+                    if (char === '{') {
+                        contextStack.push('{');
+                        result += char;
+                    } else if (char === '[') {
+                        contextStack.push('[');
+                        result += char;
+                    } else if (char === '}') {
+                        // If we're inside an array context, AI used wrong bracket — fix it
+                        if (contextStack.length > 0 && contextStack[contextStack.length - 1] === '[') {
+                            console.warn(`safeParseJSON: Fixed wrong closing bracket at position ${i}: '}' -> ']'`);
+                            result += ']';
+                        } else {
+                            result += char;
+                        }
+                        contextStack.pop();
+                    } else if (char === ']') {
+                        // If we're inside an object context, AI used wrong bracket — fix it
+                        if (contextStack.length > 0 && contextStack[contextStack.length - 1] === '{') {
+                            console.warn(`safeParseJSON: Fixed wrong closing bracket at position ${i}: ']' -> '}'`);
+                            result += '}';
+                        } else {
+                            result += char;
+                        }
+                        contextStack.pop();
+                    } else {
+                        result += char;
+                    }
                 } else {
                     result += char;
                 }
@@ -246,9 +277,13 @@ Provide a score from 0 to 100 based on keyword density, clarity of impact in exp
 Data:
 ${resume}
 
-Return ONLY a JSON object: {"score": 85, "feedback": "Detailed advice..."}`,
+Return ONLY a valid JSON object with exactly two keys:
+- "score": integer from 0 to 100
+- "feedback": a single plain-text string. CRITICAL: Do NOT use literal newline characters inside the feedback string. Use the two-character sequence \\n to represent line breaks instead.
+
+Example: {"score": 85, "feedback": "Good use of action verbs.\\nAdd more quantifiable achievements.\\nInclude relevant keywords."}`,
             config: {
-                systemInstruction: "You are an ATS (Applicant Tracking System) expert. Analyze the resume and provide a score (0-100) and brief feedback. CRITICAL: The output MUST be valid JSON. Escaping all control characters properly.",
+                systemInstruction: "You are an ATS (Applicant Tracking System) expert. Analyze the resume and return ONLY a valid JSON object with keys 'score' (integer 0-100) and 'feedback' (string). CRITICAL RULES: 1) Output must be valid JSON parseable by JSON.parse(). 2) The feedback value must be a single string — never use real newline characters inside it; use the escape sequence \\n for line breaks. 3) Do not include markdown, code fences, or any text outside the JSON object.",
                 responseMimeType: "application/json",
                 maxOutputTokens: 2000
             }
