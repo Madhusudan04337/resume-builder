@@ -69,17 +69,17 @@
       row1Items.push('<span style="display:inline-flex;align-items:center">' + locIcon + esc(P.address) + '</span>');
     }
     if (P.portfolio && S.socialEnabled.portfolio) {
-      var portUrl = P.portfolio.startsWith('http') ? P.portfolio : 'https://' + P.portfolio;
+      var portUrl = window.RT.url(P.portfolio);
       row1Items.push('<span style="display:inline-flex;align-items:center">' + demoIcon + '<a href="' + esc(portUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(portUrl) + '</a></span>');
     }
     
     // Line 2: linkedin, github, others
     if (P.linkedin && S.socialEnabled.linkedin) {
-      var liUrl = P.linkedin.startsWith('http') ? P.linkedin : 'https://linkedin.com/in/' + P.linkedin;
+      var liUrl = window.RT.url(P.linkedin, 'https://linkedin.com/in/');
       row2Items.push('<span style="display:inline-flex;align-items:center">' + liIcon + '<a href="' + esc(liUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(liUrl) + '</a></span>');
     }
     if (P.github && S.socialEnabled.github) {
-      var ghUrl = P.github.startsWith('http') ? P.github : 'https://github.com/' + P.github;
+      var ghUrl = window.RT.url(P.github, 'https://github.com/');
       row2Items.push('<span style="display:inline-flex;align-items:center">' + ghIcon + '<a href="' + esc(ghUrl) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(ghUrl) + '</a></span>');
     }
     
@@ -88,7 +88,7 @@
       if (['email', 'phone', 'linkedin', 'github', 'portfolio'].indexOf(sd.key) !== -1) return;
       if (!S.socialEnabled[sd.key]) return;
       var val = P[sd.key] || ''; if (!val) return;
-      var href = sd.isLink ? (val.startsWith('http') ? val : sd.prefix + val) : null;
+      var href = sd.isLink ? window.RT.url(val, sd.prefix) : null;
       row2Items.push('<span style="display:inline-flex;align-items:center"><span style="font-size:9px;font-weight:700;margin-right:2px">' + sd.icon + '</span>' + (href ? '<a href="' + esc(href) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(href) + '</a>' : esc(val)) + '</span>');
     });
     
@@ -178,13 +178,13 @@
           
           // Render explicit GitHub Repository Link with consistent outline SVG icons
           if (p.github) {
-            var ghUrl = p.github.startsWith('http') ? p.github : 'https://github.com/' + p.github;
+            var ghUrl = window.RT.url(p.github, 'https://github.com/');
             links.push('<span style="display:inline-flex;align-items:center">' + ghIcon + '<a href="' + esc(ghUrl) + '" target="_blank" style="color:' + st.brand + ';text-decoration:underline;font-weight:600">GitHub Repository</a></span>');
           }
           
           // Render explicit Live Demo Link with consistent outline SVG icons
           if (p.demo) {
-            var demoUrl = p.demo.startsWith('http') ? p.demo : 'https://' + p.demo;
+            var demoUrl = window.RT.url(p.demo);
             links.push('<span style="display:inline-flex;align-items:center">' + demoIcon + '<a href="' + esc(demoUrl) + '" target="_blank" style="color:' + st.brand + ';text-decoration:underline;font-weight:600">Live Demo</a></span>');
           }
           

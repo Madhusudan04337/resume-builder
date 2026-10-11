@@ -54,7 +54,7 @@
     }
     if (P.address) contactItems.push('<span>' + esc(P.address) + ' 📍</span>');
     if (P.linkedin && S.socialEnabled.linkedin) {
-      var liUrl = P.linkedin.startsWith('http') ? P.linkedin : 'https://linkedin.com/in/' + P.linkedin;
+      var liUrl = window.RT.url(P.linkedin, 'https://linkedin.com/in/');
       contactItems.push('<span><a href="' + esc(liUrl) + '" target="_blank" style="color:inherit;text-decoration:underline">' + esc(liUrl) + '</a> <b>in</b></span>');
     }
     
@@ -176,11 +176,11 @@
           
           var links = [];
           if (p.github) {
-            var ghUrl = p.github.startsWith('http') ? p.github : 'https://github.com/' + p.github;
+            var ghUrl = window.RT.url(p.github, 'https://github.com/');
             links.push('<a href="' + esc(ghUrl) + '" target="_blank" style="color:' + st.brand + ';text-decoration:underline;font-weight:600">GitHub</a>');
           }
           if (p.demo) {
-            var demoUrl = p.demo.startsWith('http') ? p.demo : 'https://' + p.demo;
+            var demoUrl = window.RT.url(p.demo);
             links.push('<a href="' + esc(demoUrl) + '" target="_blank" style="color:' + st.brand + ';text-decoration:underline;font-weight:600">Live Demo</a>');
           }
           if (links.length) {

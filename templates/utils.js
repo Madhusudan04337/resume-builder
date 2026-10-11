@@ -8,6 +8,14 @@ window.RT = {
       return '<a href="' + href + '" target="_blank" rel="noopener" style="color:#1a0dab;text-decoration:underline">' + url + '</a>';
     });
   },
+  url: function(value, fallbackBase) {
+    var url = String(value || '').trim();
+    if (!url) return '';
+    if (/^https?:\/\//i.test(url)) return url;
+    if (/^\/\//.test(url)) return 'https:' + url;
+    if (/^www\./i.test(url) || /^[a-z0-9-]+(?:\.[a-z0-9-]+)+(?:[\/:?#]|$)/i.test(url)) return 'https://' + url;
+    return fallbackBase ? fallbackBase + url.replace(/^\/+/, '') : 'https://' + url;
+  },
   dr: function(s, e) { return [s, e].filter(Boolean).join(' – '); },
   buls: function(arr) { 
     if (!arr || !arr.length) return ''; 

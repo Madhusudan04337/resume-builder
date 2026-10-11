@@ -23,15 +23,15 @@
     if (P.phone && S.socialEnabled.phone) sidebar += '<div style="margin-bottom:6px">☎ ' + esc(P.phone) + '</div>';
     if (P.address) sidebar += '<div style="margin-bottom:6px">📍 ' + esc(P.address) + '</div>';
     if (P.portfolio && S.socialEnabled.portfolio) {
-      var portUrl = P.portfolio.startsWith('http') ? P.portfolio : 'https://' + P.portfolio;
+      var portUrl = window.RT.url(P.portfolio);
       sidebar += '<div style="margin-bottom:6px;display:flex;align-items:center;gap:4px;word-break:break-all"><b>⬡</b> <a href="' + esc(portUrl) + '" target="_blank" style="color:inherit;text-decoration:underline">' + esc(portUrl) + '</a></div>';
     }
     if (P.linkedin && S.socialEnabled.linkedin) {
-      var liUrl = P.linkedin.startsWith('http') ? P.linkedin : 'https://linkedin.com/in/' + P.linkedin;
+      var liUrl = window.RT.url(P.linkedin, 'https://linkedin.com/in/');
       sidebar += '<div style="margin-bottom:6px;display:flex;align-items:center;gap:4px;word-break:break-all"><b>in</b> <a href="' + esc(liUrl) + '" target="_blank" style="color:inherit;text-decoration:underline">' + esc(liUrl) + '</a></div>';
     }
     if (P.github && S.socialEnabled.github) {
-      var ghUrl = P.github.startsWith('http') ? P.github : 'https://github.com/' + P.github;
+      var ghUrl = window.RT.url(P.github, 'https://github.com/');
       sidebar += '<div style="margin-bottom:6px;display:flex;align-items:center;gap:4px;word-break:break-all"><b>GH</b> <a href="' + esc(ghUrl) + '" target="_blank" style="color:inherit;text-decoration:underline">' + esc(ghUrl) + '</a></div>';
     }
     
@@ -40,7 +40,7 @@
       if (['email', 'phone', 'linkedin', 'github', 'portfolio'].indexOf(sd.key) !== -1) return;
       if (S.socialEnabled[sd.key] && P[sd.key]) {
         var val = P[sd.key];
-        var href = sd.isLink ? (val.startsWith('http') ? val : sd.prefix + val) : null;
+        var href = sd.isLink ? window.RT.url(val, sd.prefix) : null;
         sidebar += '<div style="margin-bottom:6px;display:flex;align-items:center;gap:4px;word-break:break-all"><b>' + sd.icon + '</b> ' + (href ? '<a href="' + esc(href) + '" target="_blank" style="color:inherit;text-decoration:underline">' + esc(href) + '</a>' : esc(val)) + '</div>';
       }
     });
@@ -88,11 +88,11 @@
            var demoIcon = '<svg style="width:10px;height:10px;fill:' + st.brand + ';display:inline-block;vertical-align:middle;margin-right:3px;transform:translateY(-1px)" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/><path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/></svg>';
 
            if (p.github) {
-             var ghUrl = p.github.startsWith('http') ? p.github : 'https://github.com/' + p.github;
+             var ghUrl = window.RT.url(p.github, 'https://github.com/');
              links.push('<span style="display:inline-flex;align-items:center">' + ghIcon + '<a href="' + esc(ghUrl) + '" target="_blank" style="color:' + st.brand + ';text-decoration:underline;font-weight:600">GitHub Repository</a></span>');
            }
            if (p.demo) {
-             var demoUrl = p.demo.startsWith('http') ? p.demo : 'https://' + p.demo;
+             var demoUrl = window.RT.url(p.demo);
              links.push('<span style="display:inline-flex;align-items:center">' + demoIcon + '<a href="' + esc(demoUrl) + '" target="_blank" style="color:' + st.brand + ';text-decoration:underline;font-weight:600">Live Demo</a></span>');
            }
            var linksHTML = '';
